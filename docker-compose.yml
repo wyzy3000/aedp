@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  aedp-portal:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: aedp-portal-app:latest
+    container_name: aedp-portal
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    environment:
+      - NODE_ENV=production
