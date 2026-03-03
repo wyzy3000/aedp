@@ -9,6 +9,6 @@ services:
     container_name: aedp-portal
     restart: unless-stopped
     ports:
-      - "7177:80"
+      - "7177:7177"
     environment:
       - NODE_ENV=production
