@@ -156,6 +156,7 @@
             ? (lang === 'en' ? '⏹ Stop Narration' : '⏹ Simamisha')
             : (lang === 'en' ? '🔊 Play Explanation (Maa)' : '🔊 Sikiliza (Kimaa)')
           }}</span>
+        </button>
         <audio ref="audioElement" src="/Swahili_Early_Warning_Amboseli.mp3" @ended="isPlaying = false" preload="auto" class="hidden"></audio>
         <p class="text-xs text-neutral-600 italic">
           {{ lang === 'en' ? 'Audio narration prepared in Maa language' : 'Maelezo kwa lugha ya Kimaa' }}
