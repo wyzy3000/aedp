@@ -156,8 +156,7 @@
             ? (lang === 'en' ? '⏹ Stop Narration' : '⏹ Simamisha')
             : (lang === 'en' ? '🔊 Play Explanation (Maa)' : '🔊 Sikiliza (Kimaa)')
           }}</span>
-        </button>
-        <audio ref="audioElement" src="/Swahili_Early_Warning_Amboseli.mp3" @ended="isPlaying = false" class="hidden"></audio>
+        <audio ref="audioElement" src="/Swahili_Early_Warning_Amboseli.mp3" @ended="isPlaying = false" preload="auto" class="hidden"></audio>
         <p class="text-xs text-neutral-600 italic">
           {{ lang === 'en' ? 'Audio narration prepared in Maa language' : 'Maelezo kwa lugha ya Kimaa' }}
         </p>
@@ -271,15 +270,21 @@ const interpolateGrassColor = (baseHex, idx) => {
 }
 
 // ── Audio toggle ──────────────────────────────────────────────────────────────
-const toggleAudio = () => {
+const toggleAudio = async () => {
   if (!audioElement.value) return
-  if (isPlaying.value) {
-    audioElement.value.pause()
-    audioElement.value.currentTime = 0
+  
+  try {
+    if (!audioElement.value.paused) {
+      audioElement.value.pause()
+      audioElement.value.currentTime = 0
+      isPlaying.value = false
+    } else {
+      isPlaying.value = true 
+      await audioElement.value.play()
+    }
+  } catch (err) {
+    console.error("Audio playback blocked or failed:", err)
     isPlaying.value = false
-  } else {
-    audioElement.value.play().catch(e => console.error("Audio playback failed:", e))
-    isPlaying.value = true
   }
 }
 
