@@ -70,8 +70,9 @@
           </span>
           <span v-else>{{ lang === 'en' ? '⏹ Stop' : '⏹ Simamisha' }}</span>
         </button>
-        <div class="text-xs text-slate-500 dark:text-neutral-600 transition-colors">
-          {{ lang === 'en' ? 'Synthesis narrated in Swahili for community access' : 'Muhtasari unaosemwa kwa Kiswahili' }}
+        <audio ref="audioElement" src="/Swahili_Early_Warning_Amboseli.mp3" @ended="isPlaying = false" class="hidden"></audio>
+        <div class="text-xs text-slate-500 dark:text-neutral-600 transition-colors flex flex-col gap-1">
+          <span>{{ lang === 'en' ? 'Synthesis narrated in Swahili for community access' : 'Muhtasari unaosemwa kwa Kiswahili' }}</span>
         </div>
       </div>
     </div>
@@ -88,6 +89,7 @@ const isPlaying = ref(false)
 const headerRef = ref(null)
 const cardRef = ref(null)
 const audioRef = ref(null)
+const audioElement = ref(null)
 
 const outlookData = {
   date: 'Current Outlook',
@@ -122,8 +124,15 @@ const conditions = [
 ]
 
 const toggleAudio = () => {
-  isPlaying.value = !isPlaying.value
-  if (isPlaying.value) setTimeout(() => { isPlaying.value = false }, 8000)
+  if (!audioElement.value) return
+  if (isPlaying.value) {
+    audioElement.value.pause()
+    audioElement.value.currentTime = 0
+    isPlaying.value = false
+  } else {
+    audioElement.value.play().catch(e => console.error("Audio playback failed:", e))
+    isPlaying.value = true
+  }
 }
 
 onMounted(() => {

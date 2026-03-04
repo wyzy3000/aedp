@@ -82,7 +82,7 @@
                 <p class="text-[10px] text-neutral-600 text-center">
                   source: assets/habitat2.mp3
                 </p>
-                <audio ref="audioElement" src="/src/assets/habitat2.mp3" @ended="isPlaying = false" class="hidden"></audio>
+                <audio ref="audioElement" src="/habitat2.mp3" @ended="isPlaying = false" class="hidden"></audio>
              </div>
           </div>
         </div>
