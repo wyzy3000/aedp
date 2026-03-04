@@ -157,6 +157,7 @@
             : (lang === 'en' ? '🔊 Play Explanation (Maa)' : '🔊 Sikiliza (Kimaa)')
           }}</span>
         </button>
+        <audio ref="audioElement" src="/Swahili_Early_Warning_Amboseli.mp3" @ended="isPlaying = false" class="hidden"></audio>
         <p class="text-xs text-neutral-600 italic">
           {{ lang === 'en' ? 'Audio narration prepared in Maa language' : 'Maelezo kwa lugha ya Kimaa' }}
         </p>
@@ -177,6 +178,7 @@ const selectorRef = ref(null)
 const chartRef = ref(null)
 const grassRef = ref(null)
 const audioRef = ref(null)
+const audioElement = ref(null)
 
 // ── Per-year ecological profile ───────────────────────────────────────────────
 const yearDataSet = [
@@ -270,8 +272,15 @@ const interpolateGrassColor = (baseHex, idx) => {
 
 // ── Audio toggle ──────────────────────────────────────────────────────────────
 const toggleAudio = () => {
-  isPlaying.value = !isPlaying.value
-  if (isPlaying.value) setTimeout(() => { isPlaying.value = false }, 8000)
+  if (!audioElement.value) return
+  if (isPlaying.value) {
+    audioElement.value.pause()
+    audioElement.value.currentTime = 0
+    isPlaying.value = false
+  } else {
+    audioElement.value.play().catch(e => console.error("Audio playback failed:", e))
+    isPlaying.value = true
+  }
 }
 
 // ── Scroll-reveal ─────────────────────────────────────────────────────────────
