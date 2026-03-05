@@ -5,7 +5,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: aedp-portal-app:latest
     container_name: aedp-portal
     restart: unless-stopped
     ports:
