@@ -12,15 +12,15 @@
       <div class="mb-10 fade-up" ref="headerRef">
         <div class="flex items-center gap-2 mb-3">
           <div class="w-1 h-8 rounded-full" :style="{ background: selectedYearData.lineColor }" />
-          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-neutral-500 transition-colors">Module 01 · Pasture</span>
+          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-white/70 transition-colors">Module 01 · Pasture</span>
         </div>
-        <h2 class="font-display font-extrabold text-4xl md:text-5xl text-slate-900 dark:text-white leading-tight transition-colors">
+        <h2 class="font-display font-extrabold text-4xl md:text-5xl text-white leading-tight transition-colors">
           The Grass Story of Amboseli
         </h2>
-        <p class="mt-2 text-slate-500 dark:text-neutral-500 font-display font-medium text-lg italic transition-colors">
+        <p class="mt-2 text-[#FBB03A] font-display font-medium text-lg italic transition-colors">
           Kiwango cha Nyasi
         </p>
-        <p class="mt-3 text-slate-600 dark:text-neutral-400 text-[15px] leading-relaxed max-w-2xl transition-colors">
+        <p class="mt-3 text-white/90 text-[15px] leading-relaxed max-w-2xl transition-colors">
           {{ selectedYearData.context }}
         </p>
       </div>

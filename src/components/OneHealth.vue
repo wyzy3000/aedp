@@ -9,17 +9,17 @@
     <div class="max-w-[1240px] mx-auto px-8 lg:px-12 w-full relative z-10">
       <!-- Header -->
       <div class="mb-12 fade-up text-center" ref="headerRef">
-        <span class="section-subtitle">Module 07</span>
-        <h2 class="section-heading mt-2 text-center text-slate-900 dark:text-white transition-colors">
+        <span class="section-subtitle text-white/70">Module 07</span>
+        <h2 class="section-heading mt-2 text-center text-white transition-colors">
           Ecosystem One Health Indicators
         </h2>
-        <p class="mt-2 font-display font-medium text-xl text-forest-600 dark:text-forest-400 italic text-center transition-colors">
+        <p class="mt-2 font-display font-medium text-xl text-[#FBB03A] italic text-center transition-colors">
           Biotisho · Eseriani · Eramatare
         </p>
-        <p class="mt-2 text-xs text-slate-500 dark:text-neutral-500 uppercase tracking-widest text-center transition-colors">
+        <p class="mt-2 text-xs text-white/60 uppercase tracking-widest text-center transition-colors">
           Local Community Perceptions
         </p>
-        <p class="mt-4 text-slate-600 dark:text-neutral-400 text-base max-w-2xl leading-relaxed text-center mx-auto transition-colors">
+        <p class="mt-4 text-white/90 text-base max-w-2xl leading-relaxed text-center mx-auto transition-colors">
           Integrating human, animal, and ecosystem health into a unified early-warning
           dashboard, grounded in community perceptions and scientific monitoring.
         </p>

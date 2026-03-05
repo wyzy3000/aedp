@@ -1,12 +1,30 @@
 <template>
   <div class="flex min-h-screen">
 
+    <!-- ─── Global Top-Right Auth Bar (logged in) ───────────── -->
+    <div v-if="!authLoading && user"
+         class="fixed top-4 right-6 z-[200] flex items-center gap-2.5">
+      <!-- My Dashboard button -->
+      <button @click="router.push('/dashboard')"
+        class="group flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold tracking-wide text-white
+               bg-gradient-to-r from-[#FBB03A] to-[#f59e0b]
+               shadow-md
+               border border-white/20
+               hover:brightness-110
+               hover:-translate-y-0.5
+               active:translate-y-0
+               transition-all duration-200 ease-out">
+        <LayoutDashboard class="w-3.5 h-3.5 flex-shrink-0" />
+        <span>My Dashboard</span>
+      </button>
+    </div>
+
     <!-- ─── Left Sidebar ─────────────────────────────────────── -->
     <aside
-      class="fixed left-0 top-0 h-screen z-50 flex flex-col transition-all duration-300
-             border-r bg-[#faf8f3] dark:bg-[#060e08]/96
-             border-stone-200/80 dark:border-white/5
-             shadow-[2px_0_12px_rgba(100,80,30,0.06)] dark:shadow-none
+      class="fixed left-0 top-0 h-screen z-50 flex flex-col transition-[width] duration-300
+             border-r bg-white dark:bg-white
+             border-stone-200 dark:border-stone-200
+             shadow-[2px_0_12px_rgba(0,0,0,0.06)]
              backdrop-blur-sm"
       :class="collapsed ? 'w-[68px]' : 'w-64'"
     >
@@ -17,53 +35,121 @@
 
       <!-- Nav Links -->
       <nav class="flex-1 overflow-y-auto py-4 px-2 flex flex-col gap-1">
-        <!-- Hero link -->
-        <button @click="scrollTo('__top')"
-          class="sidebar-link group w-full"
-          :class="activeSection === '' ? 'active' : ''"
-          :title="collapsed ? 'Home' : ''">
-          <Home class="sidebar-icon" />
-          <Transition name="fade-side">
-            <span v-if="!collapsed" class="sidebar-label">{{ lang === 'en' ? 'Home' : 'Nyumbani' }}</span>
-          </Transition>
-        </button>
+        
+        <!-- ======================= -->
+        <!-- PUBLIC PORTAL SIDEBAR   -->
+        <!-- ======================= -->
+        <template v-if="!isDashboard">
+          <!-- Hero link -->
+          <button @click="scrollTo('__top')"
+            class="sidebar-link group w-full"
+            :class="activeSection === '' ? 'active' : ''"
+            :title="collapsed ? 'Home' : ''">
+            <Home class="sidebar-icon" />
+            <Transition name="fade-side">
+              <span v-if="!collapsed" class="sidebar-label">{{ lang === 'en' ? 'Home' : 'Nyumbani' }}</span>
+            </Transition>
+          </button>
 
-        <div v-if="!collapsed" class="mt-4 mb-2 px-2">
-          <p class="text-[9px] text-stone-400 dark:text-neutral-600 uppercase tracking-widest font-semibold transition-colors">Modules</p>
-        </div>
-        <div v-else class="mt-4 mb-2 border-t border-black/5 dark:border-white/5" />
+          <div v-if="!collapsed" class="mt-4 mb-2 px-2">
+            <p class="text-[9px] text-stone-400 dark:text-neutral-600 uppercase tracking-widest font-semibold transition-colors">Modules</p>
+          </div>
+          <div v-else class="mt-4 mb-2 border-t border-black/5 dark:border-white/5" />
 
-        <button v-for="link in navLinks" :key="link.id"
-          @click="scrollTo(link.id)"
-          class="sidebar-link group w-full"
-          :class="activeSection === link.id ? 'active' : ''"
-          :title="collapsed ? (lang === 'en' ? link.en : link.sw) : ''">
-          <component :is="link.icon" class="sidebar-icon" />
-          <Transition name="fade-side">
-            <!-- Sub-label: show English as secondary label in sw mode -->
-            <div v-if="!collapsed" class="flex flex-col items-start overflow-hidden">
-              <span class="sidebar-label">{{ lang === 'en' ? link.en : link.sw }}</span>
-              <span class="text-[10px] text-stone-400 dark:text-neutral-600 italic leading-none mt-0.5 whitespace-nowrap transition-colors">
-                {{ lang === 'en' ? link.sw : link.en }}
-              </span>
-            </div>
-          </Transition>
-        </button>
+          <button v-for="link in navLinks" :key="link.id"
+            @click="scrollTo(link.id)"
+            class="sidebar-link group w-full"
+            :class="activeSection === link.id ? 'active' : ''"
+            :title="collapsed ? (lang === 'en' ? link.en : link.sw) : ''">
+            <component :is="link.icon" class="sidebar-icon" />
+            <Transition name="fade-side">
+              <!-- Sub-label: show English as secondary label in sw mode -->
+              <div v-if="!collapsed" class="flex flex-col items-start overflow-hidden">
+                <span class="sidebar-label">{{ lang === 'en' ? link.en : link.sw }}</span>
+                <span class="text-[10px] text-stone-400 dark:text-neutral-600 italic leading-none mt-0.5 whitespace-nowrap transition-colors">
+                  {{ lang === 'en' ? link.sw : link.en }}
+                </span>
+              </div>
+            </Transition>
+          </button>
+        </template>
+
+        <!-- ======================= -->
+        <!-- DASHBOARD SIDEBAR       -->
+        <!-- ======================= -->
+        <template v-else>
+          <!-- Back to Portal link (top of Dashboard sidebar) -->
+          <button @click="router.push('/')"
+            class="sidebar-link group w-full mb-2"
+            :title="collapsed ? 'Back to Portal' : ''">
+            <ArrowLeft class="sidebar-icon group-hover:-translate-x-0.5 transition-transform" />
+            <Transition name="fade-side">
+              <span v-if="!collapsed" class="sidebar-label">Back to Portal</span>
+            </Transition>
+          </button>
+
+          <div v-if="!collapsed" class="mb-2 px-2">
+            <p class="text-[9px] text-stone-400 dark:text-neutral-600 uppercase tracking-widest font-semibold transition-colors">My Account</p>
+          </div>
+
+          <button @click="router.push('/dashboard')"
+            class="sidebar-link group w-full active"
+            :title="collapsed ? 'My Diaries' : ''">
+            <BookOpen class="sidebar-icon" />
+            <Transition name="fade-side">
+              <span v-if="!collapsed" class="sidebar-label">My Diaries</span>
+            </Transition>
+          </button>
+          
+          <button @click="router.push('/dashboard/settings')"
+            class="sidebar-link group w-full"
+            :class="route.path === '/dashboard/settings' ? 'active' : ''"
+            :title="collapsed ? 'Settings' : ''">
+            <Settings class="sidebar-icon" />
+            <Transition name="fade-side">
+              <span v-if="!collapsed" class="sidebar-label">Settings</span>
+            </Transition>
+          </button>
+        </template>
       </nav>
 
       <!-- Bottom controls -->
       <div class="flex-shrink-0 border-t border-black/5 dark:border-white/5 p-3 flex flex-col gap-2.5 transition-colors">
         
+        <template v-if="!authLoading && !isDashboard && !user">
+          <button @click="router.push('/login')"
+            class="sidebar-link group w-full border-l-2 border-[#FBB03A]/60 hover:border-[#FBB03A] mb-1"
+            :title="collapsed ? 'Login / Sign Up' : ''">
+            <UserCircle class="sidebar-icon text-[#FBB03A]" />
+            <Transition name="fade-side">
+              <span v-if="!collapsed" class="sidebar-label text-[#FBB03A]">Login / Sign Up</span>
+            </Transition>
+          </button>
+        </template>
+
+        <!-- Sign Out — shown when logged in, on all pages -->
+        <template v-if="!authLoading && user">
+          <button @click="handleSignOut"
+            class="sidebar-link group w-full border-l-2 border-red-400/40 hover:border-red-500 mb-1 text-red-500"
+            :title="collapsed ? 'Sign Out' : ''">
+            <LogOut class="sidebar-icon text-red-500" />
+            <Transition name="fade-side">
+              <span v-if="!collapsed" class="sidebar-label text-red-500">Sign Out</span>
+            </Transition>
+          </button>
+        </template>
+
+
         <!-- Lang toggle -->
         <button @click="toggleLang"
           class="flex items-center gap-2.5 px-3 py-2 rounded-lg w-full
-                 bg-stone-100/80 border border-stone-200/60 hover:bg-stone-200/70
-                 dark:bg-white/[0.04] dark:border-white/[0.08] dark:hover:bg-white/[0.08]
+                 bg-stone-100/80 border border-stone-200/60
+                 dark:bg-white/[0.04] dark:border-white/[0.08]
                  transition-all duration-200 group"
           :title="collapsed ? 'Language' : ''">
-          <Globe class="w-4 h-4 text-stone-500 dark:text-neutral-400 group-hover:text-stone-700 dark:group-hover:text-neutral-200 flex-shrink-0 transition-colors" />
+          <Globe class="w-4 h-4 text-stone-400 dark:text-neutral-500 flex-shrink-0" />
           <Transition name="fade-side">
-            <span v-if="!collapsed" class="text-xs text-stone-600 dark:text-neutral-400 group-hover:text-stone-900 dark:group-hover:text-neutral-200 transition-colors whitespace-nowrap">
+            <span v-if="!collapsed" class="text-xs text-black font-medium whitespace-nowrap">
               {{ lang === 'en' ? 'Switch to Kiswahili' : 'Switch to English' }}
             </span>
           </Transition>
@@ -100,18 +186,31 @@
 </template>
 
 <script setup>
-import { ref, inject, provide } from 'vue'
-import { Sun, Moon, Leaf, Globe, ChevronLeft, Home, Sprout, Trees, BookOpen, Cloud, BarChart2, AlertTriangle, Heart } from 'lucide-vue-next'
+import { ref, inject, provide, computed } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { Sun, Moon, Leaf, Globe, ChevronLeft, Home, Sprout, Trees, BookOpen, Cloud, BarChart2, AlertTriangle, Heart, LayoutDashboard, ArrowLeft, LogOut, UserCircle, Settings } from 'lucide-vue-next'
 
+const router = useRouter()
+const route = useRoute()
 const lang = ref('en')
 const collapsed = ref(false)
 const activeSection = inject('activeSection', ref(''))
 const isDark = inject('isDark')
 const toggleTheme = inject('toggleTheme')
+const user = inject('user', ref(null))
+const signOut = inject('signOut', () => {})
+const authLoading = inject('authLoading', ref(false))
+
+const isDashboard = computed(() => route.path.startsWith('/dashboard'))
 
 provide('lang', lang)
 
 const toggleLang = () => { lang.value = lang.value === 'en' ? 'sw' : 'en' }
+
+const handleSignOut = async () => {
+  await signOut()
+  router.push('/')
+}
 
 const navLinks = [
   { id: 'pasture',   en: 'Pasture',      sw: 'Nyasi',       icon: Sprout },
@@ -125,9 +224,9 @@ const navLinks = [
 
 const scrollTo = (id) => {
   if (id === '__top') {
-    activeSection.value = ''
+    router.push('/')
   } else {
-    activeSection.value = id
+    router.push('/' + id)
   }
   window.scrollTo({ top: 0, behavior: 'instant' })
 }
@@ -164,18 +263,18 @@ const scrollTo = (id) => {
   color: #ffffff;
 }
 
-/* Active — orange left bar accent */
+/* Active — sage green left bar accent (matches brand) */
 .sidebar-link.active {
-  background: rgba(249, 115, 22, 0.08);
-  border-color: rgba(249, 115, 22, 0.15);
-  color: #000000; /* changed to black */
-  box-shadow: inset 3px 0 0 rgba(249, 115, 22, 0.45);
+  background: rgba(74, 125, 65, 0.09);
+  border-color: rgba(74, 125, 65, 0.18);
+  color: #000000;
+  box-shadow: inset 3px 0 0 rgba(74, 125, 65, 0.55);
 }
 :global(.dark) .sidebar-link.active {
-  background: rgba(249, 115, 22, 0.1);
-  border-color: rgba(249, 115, 22, 0.2);
+  background: rgba(74, 125, 65, 0.12);
+  border-color: rgba(74, 125, 65, 0.22);
   color: #ffffff;
-  box-shadow: inset 3px 0 0 rgba(249, 115, 22, 0.55);
+  box-shadow: inset 3px 0 0 rgba(74, 125, 65, 0.65);
 }
 .sidebar-icon {
   width: 18px;

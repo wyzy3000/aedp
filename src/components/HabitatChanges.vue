@@ -11,13 +11,13 @@
       <div class="mb-10 fade-up" ref="headerRef">
         <div class="flex items-center gap-2 mb-3">
           <div class="w-1 h-8 rounded-full bg-savanna-500" />
-          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-neutral-500 transition-colors">Module 02 · Habitat</span>
+          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-white/70 transition-colors">Module 02 · Habitat</span>
         </div>
-        <h2 class="font-display font-extrabold text-4xl md:text-5xl text-slate-900 dark:text-white leading-tight transition-colors" style="letter-spacing:-0.02em">
+        <h2 class="font-display font-extrabold text-4xl md:text-5xl text-white leading-tight transition-colors" style="letter-spacing:-0.02em">
           Habitat Dynamics
         </h2>
-        <p class="mt-2 font-display font-medium text-lg italic text-savanna-600 dark:text-savanna-600 transition-colors">Hali ya miti na makazi</p>
-        <p class="mt-3 text-slate-600 dark:text-neutral-500 text-[15px] leading-relaxed max-w-2xl transition-colors">
+        <p class="mt-2 font-display font-medium text-lg italic text-[#FBB03A] transition-colors">Hali ya miti na makazi</p>
+        <p class="mt-3 text-white/90 text-[15px] leading-relaxed max-w-2xl transition-colors">
           Observe spatial shifts in woody cover, wetlands, and open plains. Select a year to view the corresponding satellite terrain mapping.
         </p>
       </div>
