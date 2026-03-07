@@ -1,18 +1,15 @@
 <template>
   <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
-    <!-- Layered background — offset gradients for naturalness -->
     <div class="absolute inset-0 pointer-events-none"
          :style="isDark
            ? 'background: radial-gradient(ellipse at 55% 55%, rgba(74,125,65,0.16) 0%, transparent 65%), radial-gradient(ellipse at 15% 15%, rgba(212,145,31,0.07) 0%, transparent 50%)'
            : 'background: radial-gradient(ellipse at 62% 48%, rgba(101,130,60,0.09) 0%, transparent 60%), radial-gradient(ellipse at 22% 18%, rgba(190,140,40,0.06) 0%, transparent 52%)'" />
-    <!-- Warm ambient blob — slightly asymmetric positions to feel hand-placed -->
     <div class="absolute top-28 left-[28%] w-72 h-72 rounded-full pointer-events-none"
          :style="'background: radial-gradient(circle, rgba(74,125,65,' + (isDark ? '0.12' : '0.07') + '), transparent 70%); filter: blur(52px); animation: pulse 7s ease-in-out infinite;'" />
     <div class="absolute bottom-24 right-[22%] w-80 h-80 rounded-full pointer-events-none"
          :style="'background: radial-gradient(circle, rgba(190,140,40,' + (isDark ? '0.08' : '0.05') + '), transparent 70%); filter: blur(64px); animation: pulse 8.5s ease-in-out 2.3s infinite;'" />
 
     <div class="relative z-10 text-center max-w-6xl mx-auto px-8 pt-16">
-      <!-- Badge -->
       <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8"
            style="background: rgba(74,125,65,0.1); border: 1px solid rgba(74,125,65,0.2);">
         <div class="w-1.5 h-1.5 rounded-full bg-forest-400 animate-pulse" />
@@ -21,7 +18,6 @@
         </span>
       </div>
 
-      <!-- Title -->
       <h1 class="font-display font-extrabold text-6xl md:text-7xl lg:text-8xl leading-[0.95] mb-5 transition-colors overflow-visible pb-2 select-none"
           :class="isDark ? 'text-white' : 'text-[#1a2a12]'">
         Amboseli<br />
@@ -34,7 +30,6 @@
         </span>
       </h1>
 
-      <!-- Subtitle -->
       <p class="font-display font-semibold text-xl transition-colors mb-4"
          :class="isDark ? 'text-savanna-400 italic' : 'text-[#3d6b1a]'">
         Amboseli Ecosystem Data Portal
@@ -46,7 +41,6 @@
         Monitoring pasture, habitat, water, and wildlife health — in real time.
       </p>
 
-      <!-- CTAs -->
       <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
         <button @click="router.push('/pasture')"
                 class="group flex items-center gap-2.5 px-7 py-3.5 rounded-2xl font-semibold text-[15px] text-white
@@ -56,7 +50,6 @@
           <ChevronDown class="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
         </button>
 
-        <!-- Secondary CTA -->
         <a href="https://earlywarning.shinyapps.io/One_Health_Indicators/"
            target="_blank" rel="noopener noreferrer"
            class="flex items-center gap-2 px-7 py-3.5 rounded-xl text-[14px] font-medium

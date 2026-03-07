@@ -14,13 +14,10 @@ const route = useRoute()
 const activeSection = ref('')
 provide('activeSection', activeSection)
 
-// Provide auth state to all child components
 const { user, signOut, loading } = useAuth()
 provide('user', user)
 provide('signOut', signOut)
 provide('authLoading', loading)
-
-// Sync route with activeSection for sidebar highlighting
 watch(
   () => route.path,
   (newPath) => {
@@ -30,7 +27,6 @@ watch(
   { immediate: true }
 )
 
-// Dark mode state management
 const isDark = ref(true)
 
 const toggleTheme = () => {

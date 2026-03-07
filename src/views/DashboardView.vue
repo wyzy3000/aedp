@@ -7,7 +7,6 @@
 
     <div class="relative z-10 max-w-[1240px] mx-auto px-6 lg:px-12 py-12">
 
-      <!-- Header -->
       <div class="mb-10 fade-up">
         <div class="flex items-center gap-2 mb-3">
           <div class="w-1 h-8 rounded-full bg-[#FBB03A]" />
@@ -19,7 +18,6 @@
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-        <!-- ─ LEFT: Post / Edit Form ──────────────────────── -->
         <div class="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-7 fade-up">
           <div class="flex items-center gap-2.5 mb-6">
             <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: rgba(251,176,58,0.15);">
@@ -37,7 +35,6 @@
           </div>
 
           <form @submit.prevent="editingEntry ? updateDiary() : submitDiary()" class="space-y-5">
-            <!-- Location -->
             <div>
               <label class="block text-xs font-semibold uppercase tracking-wider text-white/50 mb-2">📍 Location</label>
               <input v-model="form.location" type="text" required
@@ -45,14 +42,12 @@
                      class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:ring-2 focus:ring-[#FBB03A]/50 focus:border-[#FBB03A] outline-none transition-all" />
             </div>
 
-            <!-- Date -->
             <div>
               <label class="block text-xs font-semibold uppercase tracking-wider text-white/50 mb-2">📅 Date of Observation</label>
               <input v-model="form.date" type="date" required
                      class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:ring-2 focus:ring-[#FBB03A]/50 focus:border-[#FBB03A] outline-none transition-all" />
             </div>
 
-            <!-- Content -->
             <div>
               <label class="block text-xs font-semibold uppercase tracking-wider text-white/50 mb-2">📝 Field Observation</label>
               <textarea v-model="form.content" required rows="4"
@@ -61,7 +56,6 @@
               <p class="text-right text-[10px] text-white/25 mt-1">{{ form.content.length }} / 2000</p>
             </div>
 
-            <!-- Sentiment Slider -->
             <div>
               <label class="block text-xs font-semibold uppercase tracking-wider text-white/50 mb-2">
                 🌡 Sentiment — <span :style="{ color: sentimentColor }">{{ sentimentLabel }}</span> ({{ form.sentiment }}/10)
@@ -79,7 +73,6 @@
               </div>
             </div>
 
-            <!-- Error / Success -->
             <div v-if="submitError" class="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">{{ submitError }}</div>
             <div v-if="submitSuccess" class="p-3 rounded-lg bg-green-500/10 border border-green-500/20 text-green-400 text-sm flex items-center gap-2">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
@@ -94,7 +87,6 @@
           </form>
         </div>
 
-        <!-- ─ RIGHT: My Submissions ───────────────────────── -->
         <div class="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-7 fade-up">
           <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-2.5">
@@ -108,12 +100,10 @@
             <span class="text-xs text-white/40 bg-white/5 px-2.5 py-1 rounded-full border border-white/10">{{ myEntries.length }} entries</span>
           </div>
 
-          <!-- Loading -->
           <div v-if="loadingEntries" class="space-y-3">
             <div v-for="i in 3" :key="i" class="h-20 rounded-xl bg-white/5 animate-pulse" />
           </div>
 
-          <!-- Empty -->
           <div v-else-if="!myEntries.length" class="flex flex-col items-center justify-center py-16 text-center">
             <div class="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center mb-4">
               <svg class="w-7 h-7 text-white/20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -124,12 +114,10 @@
             <p class="text-white/25 text-xs mt-1">Submit your first diary entry on the left!</p>
           </div>
 
-          <!-- Entries list -->
           <div v-else class="space-y-3 max-h-[520px] overflow-y-auto pr-1">
             <div v-for="entry in myEntries" :key="entry.id"
                  class="rounded-xl border border-white/8 bg-white/[0.03] p-4 hover:bg-white/[0.06] transition-colors group">
 
-              <!-- Top row: location, date, sentiment -->
               <div class="flex items-start justify-between gap-3 mb-2">
                 <div class="flex items-center gap-2 flex-wrap">
                   <span class="text-xs font-medium text-white/60 bg-white/5 px-2 py-0.5 rounded-full border border-white/10">
@@ -145,16 +133,13 @@
                 </div>
               </div>
 
-              <!-- Content preview -->
               <p class="text-sm text-white/70 leading-relaxed line-clamp-2 mb-3">{{ entry.content }}</p>
 
-              <!-- Sentiment bar -->
               <div class="h-1 bg-white/5 rounded-full overflow-hidden mb-3">
                 <div class="h-full rounded-full transition-all duration-500"
                      :style="{ width: (entry.sentiment * 10) + '%', background: getSentimentColor(entry.sentiment) }" />
               </div>
 
-              <!-- Action buttons: Preview | Edit | Delete -->
               <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                 <button @click="openPreview(entry)"
                         class="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-white/60 hover:text-white hover:bg-white/10 transition-all border border-white/5">
@@ -178,7 +163,6 @@
       </div>
     </div>
 
-    <!-- ─── Preview Modal ──────────────────────────────────── -->
     <Transition name="modal">
       <div v-if="previewEntry" class="fixed inset-0 z-50 flex items-center justify-center p-4" @click.self="previewEntry = null">
         <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" @click="previewEntry = null" />
@@ -215,7 +199,6 @@
       </div>
     </Transition>
 
-    <!-- ─── Delete Confirm Modal ───────────────────────────── -->
     <Transition name="modal">
       <div v-if="deleteTarget" class="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" @click="deleteTarget = null" />
@@ -248,21 +231,18 @@ const user   = inject('user')
 const isDark = inject('isDark')
 const today  = new Date().toISOString().split('T')[0]
 
-// ─── Form state ──────────────────────────────────────────────
 const form = ref({ location: '', date: today, content: '', sentiment: 5 })
 const submitting   = ref(false)
 const submitError  = ref('')
 const submitSuccess = ref(false)
-const editingEntry = ref(null)   // holds entry being edited
+const editingEntry = ref(null)
 
-// ─── Entries state ───────────────────────────────────────────
 const myEntries     = ref([])
 const loadingEntries = ref(true)
 const previewEntry  = ref(null)
 const deleteTarget  = ref(null)
 const deleting      = ref(false)
 
-// ─── Sentiment helpers ───────────────────────────────────────
 const sentimentColor = computed(() => getSentimentColor(form.value.sentiment))
 
 function getSentimentColor(val) {
@@ -292,7 +272,6 @@ const sentimentDescription = computed(() => {
 
 let subscription = null
 
-// ─── Fetch my entries ────────────────────────────────────────
 const fetchMyEntries = async () => {
   if (!supabase || !user.value) return
   loadingEntries.value = true
@@ -316,7 +295,6 @@ const setupRealtime = () => {
       table: 'diaries',
       filter: `user_id=eq.${user.value.id}` 
     }, (payload) => {
-      // Handle events in-place without triggering a loading state
       if (payload.eventType === 'INSERT') {
         myEntries.value.unshift(payload.new)
       } else if (payload.eventType === 'UPDATE') {
@@ -340,7 +318,6 @@ onUnmounted(() => {
   }
 })
 
-// ─── Submit new entry ────────────────────────────────────────
 const submitDiary = async () => {
   if (!supabase || !user.value) { submitError.value = 'You must be logged in to post.'; return }
   const safeLocation = sanitizeText(form.value.location, 100)
@@ -371,7 +348,6 @@ const submitDiary = async () => {
   }
 }
 
-// ─── Edit entry ──────────────────────────────────────────────
 const startEdit = (entry) => {
   editingEntry.value = entry
   form.value = {
@@ -420,10 +396,8 @@ const updateDiary = async () => {
   }
 }
 
-// ─── Preview ─────────────────────────────────────────────────
 const openPreview = (entry) => { previewEntry.value = entry }
 
-// ─── Delete ──────────────────────────────────────────────────
 const confirmDelete = (entry) => { deleteTarget.value = entry }
 
 const deleteEntry = async () => {

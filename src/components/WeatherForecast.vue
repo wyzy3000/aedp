@@ -7,8 +7,6 @@
          style="background: radial-gradient(ellipse at 25% 40%, rgba(59,130,246,0.07) 0%, transparent 55%)" />
 
     <div class="max-w-[1240px] mx-auto px-8 lg:px-12 w-full relative z-10">
-
-      <!-- Header -->
       <div class="mb-10 fade-up" ref="headerRef">
         <div class="flex items-center gap-2 mb-3">
           <div class="w-1 h-8 rounded-full bg-blue-500" />
@@ -24,7 +22,6 @@
         </p>
       </div>
 
-      <!-- ── Metric Cards ───────────────────────────────────── -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8 fade-up" ref="cardsRef">
 
         <template v-if="isLoading">
@@ -91,10 +88,8 @@
         </div>
       </div>
 
-      <!-- ── Embedded Open-Meteo Chart Panel ──────────────────── -->
       <div class="rounded-2xl border border-black/5 dark:border-white/8 overflow-hidden mb-8 fade-up bg-white/80 dark:bg-[#080c16]/90 transition-colors" ref="chartRef">
 
-        <!-- Chart header tabs -->
         <div class="flex items-center justify-between px-6 py-4 border-b border-black/5 dark:border-white/5 transition-colors">
           <div class="flex items-center gap-1">
             <button v-for="tab in chartTabs" :key="tab.key"
@@ -112,17 +107,14 @@
           </div>
         </div>
 
-        <!-- Chart Area -->
         <div class="px-6 pt-4 pb-2">
           <div v-if="activeTab === 'temp'" class="relative" style="height: 140px;">
-            <!-- Y-axis labels -->
             <div class="absolute left-0 top-0 bottom-6 flex flex-col justify-between text-[10px] text-slate-400 dark:text-neutral-600 pr-2">
               <span>{{ tempMax }}°</span>
               <span>{{ Math.round((tempMax + tempMin) / 2) }}°</span>
               <span>{{ tempMin }}°</span>
             </div>
 
-            <!-- SVG line chart -->
             <svg class="absolute inset-0 w-full h-full pl-8" viewBox="0 0 750 130" preserveAspectRatio="none"
                  style="padding-left: 28px;">
               <defs>
@@ -136,7 +128,6 @@
                     stroke-linecap="round" stroke-linejoin="round" />
             </svg>
 
-            <!-- X-axis time labels -->
             <div class="absolute bottom-0 left-8 right-0 flex justify-between text-[10px] text-slate-400 dark:text-neutral-600">
               <span>6h ago</span><span>3h ago</span><span>Now</span><span>+6h</span><span>+12h</span><span>+18h</span><span>+24h</span>
             </div>
@@ -185,7 +176,6 @@
           </div>
         </div>
 
-        <!-- Open-Meteo credit footer -->
         <div class="px-6 py-3 border-t border-black/5 dark:border-white/5 flex items-center justify-between transition-colors">
           <p class="text-[11px] text-slate-500 dark:text-neutral-600 transition-colors">
             Data refreshed on component mount · Amboseli, Kenya
@@ -199,7 +189,6 @@
         </div>
       </div>
 
-      <!-- ── 7-Day Outlook Strip ──────────────────────────────── -->
       <div v-if="!isLoading && !weatherError" class="rounded-2xl border border-black/5 dark:border-white/8 overflow-hidden mb-8 fade-up bg-white/80 dark:bg-[#080c16]/85 transition-colors" ref="outlookRef">
         <div class="px-6 py-4 border-b border-black/5 dark:border-white/5 transition-colors">
           <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-500 transition-colors">
@@ -261,7 +250,6 @@ const fetchWeather = async () => {
   }
 }
 
-// ── Hourly data helpers ────────────────────────────────────────────────────────
 const nowIndex = computed(() => {
   if (!weatherData.value?.hourly?.time) return 0
   const nowStr = new Date().toISOString().slice(0, 13) // yyyy-mm-ddThh
@@ -269,13 +257,11 @@ const nowIndex = computed(() => {
   return ind !== -1 ? ind : 0
 })
 
-// Extract previous 6 hrs plus future 14 hrs
 const hourlyTemps = computed(() => weatherData.value?.hourly?.temperature_2m?.slice(Math.max(0, nowIndex.value - 6), nowIndex.value + 18) ?? [])
 const rainProbs   = computed(() => weatherData.value?.hourly?.precipitation_probability?.slice(Math.max(0, nowIndex.value - 6), nowIndex.value + 18) ?? [])
 
 const rainProbs20 = computed(() => hourlyTemps.value.slice(0, 20).map((_, i) => rainProbs.value[i] ?? 0))
 const rainProb    = computed(() => {
-  // next 6 hours rain prob average
   const arr = weatherData.value?.hourly?.precipitation_probability?.slice(nowIndex.value, nowIndex.value + 6) ?? []
   return arr.length ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length) : '--'
 })

@@ -6,7 +6,6 @@
       <p class="text-stone-400 text-sm">Manage your security credentials and view your system status.</p>
     </div>
 
-    <!-- Live Date and Time -->
     <div class="bg-[#1C1C1E] border border-white/5 shadow-2xl rounded-2xl p-6 mb-6">
       <h2 class="text-sm font-semibold text-stone-300 uppercase tracking-widest mb-4 flex items-center gap-2">
         <Clock class="w-4 h-4 text-[#FBB03A]" /> 
@@ -20,7 +19,6 @@
       </div>
     </div>
 
-    <!-- Account Details (Read Only) -->
     <div class="bg-[#1C1C1E] border border-white/5 shadow-2xl rounded-2xl p-6 mb-6">
       <h2 class="text-sm font-semibold text-stone-300 uppercase tracking-widest mb-4 flex items-center gap-2">
         <UserCircle class="w-4 h-4 text-[#FBB03A]" /> 
@@ -53,7 +51,6 @@
       </div>
     </div>
 
-    <!-- Security: Change Password -->
     <div class="bg-[#1C1C1E] border border-white/5 shadow-2xl rounded-2xl p-6">
       <h2 class="text-sm font-semibold text-stone-300 uppercase tracking-widest mb-4 flex items-center gap-2">
         <ShieldCheck class="w-4 h-4 text-[#FBB03A]" /> 
@@ -111,7 +108,6 @@
       </form>
     </div>
 
-    <!-- User Management (Admins Only) -->
     <div v-if="userProfile?.role === 'Admin'" class="bg-[#1C1C1E] border border-[#FBB03A]/20 shadow-2xl rounded-2xl p-6 mt-6">
       <h2 class="text-sm font-semibold text-[#FBB03A] uppercase tracking-widest mb-4 flex items-center gap-2">
         <Users class="w-4 h-4" /> 
@@ -149,7 +145,6 @@
         </table>
       </div>
 
-      <!-- Add New User (Admin) -->
       <div class="mt-6 pt-6 border-t border-white/5">
         <h3 class="text-sm font-semibold text-stone-300 uppercase tracking-widest mb-4 flex items-center gap-2">
           <UserPlus class="w-4 h-4 text-[#FBB03A]" />
@@ -185,7 +180,6 @@ const allUsers = ref([])
 const loadingUsers = ref(false)
 const updatingRole = ref(null)
 
-// ─── Live Clock Logic ─────────────────────────────────────────
 const currentTime = ref(new Date())
 let timer = null
 
@@ -207,7 +201,6 @@ onMounted(async () => {
   timer = setInterval(updateClock, 1000)
 
   if (user.value) {
-    // Fetch current user's profile to check role
     const { data } = await supabase.from('profiles').select('*').eq('id', user.value.id).single()
     userProfile.value = data
 
@@ -234,7 +227,6 @@ const updateRole = async (userId, newRole) => {
   }
 }
 
-// ─── Add User Logic (Admin only) ─────────────────────────────
 const newUserEmail    = ref('')
 const newUserPassword = ref('')
 const addingUser      = ref(false)
@@ -272,7 +264,6 @@ onUnmounted(() => {
   if (timer) clearInterval(timer)
 })
 
-// ─── Password Update Logic ────────────────────────────────────
 const passwordForm = ref({
   newPassword: '',
   confirmPassword: ''

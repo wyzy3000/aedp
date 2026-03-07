@@ -7,77 +7,113 @@
          style="background: radial-gradient(ellipse at 25% 40%, rgba(59,130,246,0.07) 0%, transparent 55%)" />
 
     <div class="max-w-[1240px] mx-auto px-8 lg:px-12 w-full relative z-10">
-      <!-- Header -->
-      <div class="mb-12 fade-up text-center" ref="headerRef">
-        <span class="section-subtitle text-white/70">Module 07</span>
-        <h2 class="section-heading mt-2 text-center text-white transition-colors">
+      <div class="mb-10 fade-up" ref="headerRef">
+        <div class="flex items-center gap-2 mb-3">
+          <div class="w-1 h-8 rounded-full transition-colors" style="background-color: #FBB03A;" />
+          <span class="text-xs font-semibold uppercase tracking-[0.2em] transition-colors" style="color: white;">Module 07 · One Health</span>
+        </div>
+        <h2 class="font-display font-extrabold text-4xl md:text-5xl text-white leading-tight transition-colors" style="letter-spacing:-0.02em">
           Ecosystem One Health Indicators
         </h2>
-        <p class="mt-2 font-display font-medium text-xl text-[#FBB03A] italic text-center transition-colors">
-          Biotisho · Eseriani · Eramatare
-        </p>
-        <p class="mt-2 text-xs text-white/60 uppercase tracking-widest text-center transition-colors">
-          Local Community Perceptions
-        </p>
-        <p class="mt-4 text-white/90 text-base max-w-2xl leading-relaxed text-center mx-auto transition-colors">
-          Integrating human, animal, and ecosystem health into a unified early-warning
-          dashboard, grounded in community perceptions and scientific monitoring.
+       
+        <p class="mt-3 text-white text-[15px] leading-relaxed max-w-2xl transition-colors" style="color: white;">
+          Interactive Household Research Dissemination Explorer.
         </p>
       </div>
 
-      <!-- CTA Card -->
-      <div class="max-w-4xl mx-auto fade-up" ref="ctaRef">
-        <div class="relative overflow-hidden rounded-3xl border border-forest-600/20 shadow-xl transition-colors"
-             :style="isDark ? 'background: linear-gradient(135deg, rgba(74,125,65,0.08) 0%, rgba(26,56,30,0.2) 50%, rgba(74,125,65,0.05) 100%)' : 'background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(220,252,231,0.6) 50%, rgba(255,255,255,0.95) 100%)'">
-          <!-- Glow effect -->
-          <div class="absolute inset-0 pointer-events-none transition-colors"
-               :style="'background: radial-gradient(ellipse at 30% 40%, rgba(74,125,65,' + (isDark ? '0.15' : '0.05') + ') 0%, transparent 60%)'" />
+      <div class="flex flex-col lg:flex-row gap-8 fade-up" ref="mapSectionRef">
+        
+        <div class="flex-1 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm overflow-hidden shadow-2xl relative min-h-[600px] lg:h-[700px] flex flex-col">
+          <div v-if="loadingData" class="absolute inset-0 z-[400] bg-black/50 backdrop-blur-sm flex flex-col items-center justify-center">
+            <div class="w-10 h-10 border-4 border-forest-500/30 border-t-forest-500 rounded-full animate-spin mb-4" />
+            <span class="text-white text-sm font-medium">Loading Map Data...</span>
+          </div>
 
-          <div class="relative p-10 md:p-14">
-            <!-- Ecosystem icons row -->
-            <div class="flex justify-center gap-6 mb-8">
-              <div v-for="icon in ecosystemIcons" :key="icon.label"
-                   class="flex flex-col items-center gap-2">
-                <div class="w-14 h-14 rounded-2xl border flex items-center justify-center transition-colors bg-white/50 dark:bg-transparent"
-                     :style="{ background: isDark ? icon.bg : undefined, borderColor: isDark ? icon.borderColor : (icon.borderColor.replace('0.2)', '0.1)')) }">
-                  <component :is="icon.component" class="w-7 h-7 transition-colors" :style="{ color: isDark ? icon.color : icon.colorDarker || icon.color }" />
-                </div>
-                <span class="text-[10px] text-slate-500 dark:text-neutral-500 uppercase tracking-wider transition-colors">{{ icon.label }}</span>
-              </div>
+          <div id="public-onehealth-map" class="flex-1 w-full bg-[#e5e3df] z-0"></div>
+
+          <div class="bg-white/5 border-t border-white/10 px-4 py-3 flex items-center justify-between z-10">
+            <div class="flex items-center gap-4 hidden sm:flex">
+              <span class="flex items-center gap-1.5 text-xs text-white/50">
+                <span class="w-3 h-3 rounded-full bg-blue-600 block"></span> Observation Point
+              </span>
+              <span class="flex items-center gap-1.5 text-xs text-white/50">
+                <span class="w-3 h-3 rounded-full bg-red-600 block"></span> Selected
+              </span>
+            </div>
+            <span class="text-[10px] text-white/30 truncate">
+              Powered by AEDP Community Science
+            </span>
+          </div>
+        </div>
+
+        <div class="w-full lg:w-[380px] flex-shrink-0">
+          <div class="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-6 lg:p-8 min-h-[400px] lg:h-[700px] shadow-2xl lg:sticky lg:top-8 overflow-y-auto custom-scroll relative">
+            
+            <div v-if="!selectedPoint && !loadingData" class="flex flex-col items-center justify-center py-12 text-center h-full opacity-60">
+               <span class="material-symbols-outlined text-5xl text-white/30 mb-4 animate-bounce">touch_app</span>
+               <p class="text-white/70 text-sm max-w-[200px]">Click on any blue marker on the map to view data collected from that location.</p>
             </div>
 
-            <!-- Heading -->
-            <h3 class="text-center font-display font-bold text-2xl md:text-3xl text-slate-900 dark:text-white mb-4 transition-colors">
-              {{ lang === 'en' ? 'Explore the One Health Dashboard' : 'Angalia Dashibodi ya Afya Moja' }}
-            </h3>
-            <p class="text-center text-slate-600 dark:text-neutral-400 text-sm max-w-xl mx-auto mb-8 leading-relaxed transition-colors">
-              {{ lang === 'en'
-                ? 'An interactive Shiny dashboard displaying integrated indicators for human wellbeing, livestock health, wildlife status, and environmental conditions across Amboseli.'
-                : 'Dashibodi ya Shiny inayoonyesha viashiria vya afya ya binadamu, mifugo, wanyamapori, na mazingira katika Amboseli.'
-              }}
-            </p>
+            <div v-if="selectedPoint" class="space-y-5 animate-fade-in pb-16">
+               <div class="pb-4 border-b border-white/10">
+                 <div class="flex items-start justify-between">
+                   <div>
+                     <h4 class="text-lg font-bold" style="color: #FBB03A;">{{ selectedPoint.location_name }}</h4>
+                     <p class="text-[10px] text-white/40 uppercase tracking-widest mt-1">
+                       Lat: {{ selectedPoint.latitude.toFixed(4) }} | Lng: {{ selectedPoint.longitude.toFixed(4) }}
+                     </p>
+                   </div>
+                   <span v-if="selectedPoint.point_label" class="text-xs font-semibold text-forest-400 bg-forest-900/30 px-2 py-1 rounded-full border border-forest-500/30">
+                     {{ selectedPoint.point_label }}
+                   </span>
+                 </div>
+                 <p class="text-xs text-white/50 mt-3 flex items-center gap-1">
+                  
+                   Recorded on: {{ new Date(selectedPoint.created_at).toLocaleDateString() }}
+                 </p>
+               </div>
 
-            <!-- CTA Button -->
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <a href="https://earlywarning.shinyapps.io/One_Health_Indicators/"
-                 target="_blank" rel="noopener noreferrer"
-                 class="group relative inline-flex items-center gap-3 px-8 py-4 rounded-2xl font-semibold text-base
-                        text-white overflow-hidden transition-all duration-300 hover:scale-105
-                        hover:shadow-2xl hover:shadow-forest-500/30"
-                 style="background: linear-gradient(135deg, #376332 0%, #4a7d41 50%, #376332 100%)">
-                <span class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                      style="background: linear-gradient(135deg, #4a7d41 0%, #5c9952 50%, #4a7d41 100%)" />
-                <ExternalLink class="w-5 h-5 relative z-10" />
-                <span class="relative z-10">
-                  {{ lang === 'en' ? 'Launch One Health Dashboard' : 'Fungua Dashibodi ya Afya Moja' }}
-                </span>
-                <ArrowRight class="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform duration-300" />
-              </a>
-            </div>
+               <div class="space-y-4">
+                 <div class="info-group">
+                   <label class="info-label">Main economic activity</label>
+                   <p class="info-val">{{ selectedPoint.economic_activity }}</p>
+                 </div>
+                 <div class="info-group">
+                   <label class="info-label text-orange-400">Livestock diseases in area</label>
+                   <p class="info-val">{{ selectedPoint.livestock_diseases }}</p>
+                 </div>
+                 <div class="info-group">
+                   <label class="info-label text-red-400">Human diseases mentioned</label>
+                   <p class="info-val">{{ selectedPoint.human_diseases }}</p>
+                 </div>
+                 <div class="info-group">
+                   <label class="info-label text-blue-400">Wildlife trends</label>
+                   <p class="info-val">
+                     <span class="inline-flex items-center gap-1 bg-white/5 px-2 py-0.5 rounded border border-white/10"
+                           :class="{'text-green-400': selectedPoint.wildlife_trends === 'Increased', 'text-red-400': selectedPoint.wildlife_trends === 'Decreased'}">
+                       {{ selectedPoint.wildlife_trends }}
+                     </span>
+                   </p>
+                 </div>
+                 <div class="info-group">
+                   <label class="info-label text-cyan-400">Water quality</label>
+                   <p class="info-val">{{ selectedPoint.water_quality }}</p>
+                 </div>
+                 <div class="info-group">
+                   <label class="info-label">Drought preparedness</label>
+                   <p class="info-val">{{ selectedPoint.drought_preparedness }}</p>
+                 </div>
+                 <div class="info-group">
+                   <label class="info-label">Major life stressors</label>
+                   <p class="info-val">{{ selectedPoint.major_stressors }}</p>
+                 </div>
+                 <div class="info-group">
+                   <label class="info-label">Response to extreme climate</label>
+                   <p class="info-val">{{ selectedPoint.extreme_climate_response }}</p>
+                 </div>
+               </div>
 
-            <!-- Tags -->
-            <div class="flex flex-wrap justify-center gap-2 mt-8">
-              <span v-for="tag in tags" :key="tag" class="tag-pill">{{ tag }}</span>
+              
             </div>
           </div>
         </div>
@@ -87,30 +123,158 @@
 </template>
 
 <script setup>
-import { ref, inject, onMounted } from 'vue'
-import { ExternalLink, ArrowRight, Activity, Heart, Bird, Leaf } from 'lucide-vue-next'
+import { ref, inject, onMounted, onUnmounted } from 'vue'
+import { supabase } from '../supabase'
+import L from 'leaflet'
+import 'leaflet/dist/leaflet.css'
 
 const lang = inject('lang')
 const isDark = inject('isDark')
 const headerRef = ref(null)
-const ctaRef = ref(null)
+const mapSectionRef = ref(null)
 
-const ecosystemIcons = [
-  { label: 'Human',     component: Heart,     color: '#ef4444', colorDarker: '#dc2626', bg: 'rgba(239,68,68,0.1)',   borderColor: 'rgba(239,68,68,0.2)' },
-  { label: 'Livestock', component: Activity,  color: '#f59e0b', colorDarker: '#d97706', bg: 'rgba(245,158,11,0.1)',  borderColor: 'rgba(245,158,11,0.2)' },
-  { label: 'Wildlife',  component: Bird,      color: '#3b82f6', colorDarker: '#2563eb', bg: 'rgba(59,130,246,0.1)',  borderColor: 'rgba(59,130,246,0.2)' },
-  { label: 'Ecosystem', component: Leaf,      color: '#4a7d41', colorDarker: '#166534', bg: 'rgba(74,125,65,0.15)',  borderColor: 'rgba(74,125,65,0.3)' },
-]
+const loadingData = ref(true)
+const mapPoints = ref([])
+const selectedPoint = ref(null)
 
-const tags = [
-  'Shiny Dashboard', 'R/Tidyverse', 'Community Science',
-  'ILRI', 'Early Warning', 'One Health'
-]
+let map = null
+const markersLayerGroup = L.layerGroup()
+let currentSelectedMarker = null
+
+const defaultIcon = L.icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+})
+
+const selectedIcon = L.icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+})
+
+const fetchMapData = async () => {
+  loadingData.value = true
+  try {
+    if (supabase) {
+      const { data, error } = await supabase
+        .from('one_health_data')
+        .select('*')
+        .order('created_at', { ascending: false })
+        
+      if (!error && data) {
+        mapPoints.value = data
+        plotMarkers()
+      }
+    }
+  } catch (err) {
+    console.error('Error fetching map data:', err)
+  } finally {
+    loadingData.value = false
+  }
+}
+
+const plotMarkers = () => {
+  markersLayerGroup.clearLayers()
+  let point1Marker = null
+
+  mapPoints.value.forEach((point, index) => {
+    const marker = L.marker([point.latitude, point.longitude], { icon: defaultIcon })
+    
+    const label = point.point_label || `Point ${point.point_number || '?'}`;
+    marker.bindPopup(`<b>${point.location_name}</b><br/><span style="font-size: 10px; color: rgba(255,255,255,0.7);">${label}</span>`)
+    
+    marker.on('click', () => {
+      // Revert previous marker color
+      if (currentSelectedMarker) {
+        currentSelectedMarker.setIcon(defaultIcon)
+      }
+      marker.setIcon(selectedIcon)
+      currentSelectedMarker = marker
+      
+      selectedPoint.value = point
+      
+      map.panTo([point.latitude, point.longitude], { animate: true, duration: 0.5 })
+    })
+    
+    if (index === 0) {
+      point1Marker = marker
+    }
+
+    markersLayerGroup.addLayer(marker)
+  })
+
+  if (point1Marker) {
+    point1Marker.fire('click')
+  }
+}
 
 onMounted(() => {
+  map = L.map('public-onehealth-map', {
+    zoomControl: true,
+    scrollWheelZoom: false
+  }).setView([-2.6526, 37.2606], 9)
+  
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+    maxZoom: 18,
+  }).addTo(map)
+  
+  markersLayerGroup.addTo(map)
+
+  fetchMapData()
+
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible') })
   }, { threshold: 0.1 })
-  ;[headerRef.value, ctaRef.value].forEach(el => el && observer.observe(el))
+  ;[headerRef.value, mapSectionRef.value].forEach(el => el && observer.observe(el))
+  
+  // Custom scrollbar css
+  const style = document.createElement('style')
+  style.textContent = `
+    .custom-scroll::-webkit-scrollbar { width: 4px; }
+    .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+    
+    .leaflet-popup-content-wrapper { background: #0A4570; color: #fff; border-radius: 12px; }
+    .leaflet-popup-tip { background: #0A4570; }
+  `
+  document.head.appendChild(style)
+})
+
+onUnmounted(() => {
+  if (map) { map.remove() }
 })
 </script>
+
+<style scoped>
+.fade-up { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out both;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateX(10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.info-group {
+  @apply flex flex-col gap-1;
+}
+.info-label {
+  @apply text-[11px] font-semibold uppercase tracking-wider text-white/50;
+}
+.info-val {
+  @apply text-sm text-white/90 leading-relaxed max-w-sm;
+}
+</style>

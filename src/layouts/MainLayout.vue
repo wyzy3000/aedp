@@ -1,23 +1,7 @@
 <template>
   <div class="flex min-h-screen">
 
-    <!-- ─── Global Top-Right Auth Bar (logged in) ───────────── -->
-    <div v-if="!authLoading && user"
-         class="fixed top-4 right-6 z-[200] flex items-center gap-2.5">
-      <!-- My Dashboard button -->
-      <button @click="router.push('/dashboard')"
-        class="group flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold tracking-wide text-white
-               bg-gradient-to-r from-[#FBB03A] to-[#f59e0b]
-               shadow-md
-               border border-white/20
-               hover:brightness-110
-               hover:-translate-y-0.5
-               active:translate-y-0
-               transition-all duration-200 ease-out">
-        <LayoutDashboard class="w-3.5 h-3.5 flex-shrink-0" />
-        <span>My Dashboard</span>
-      </button>
-    </div>
+
 
     <!-- ─── Left Sidebar ─────────────────────────────────────── -->
     <aside
@@ -93,11 +77,22 @@
           </div>
 
           <button @click="router.push('/dashboard')"
-            class="sidebar-link group w-full active"
+            class="sidebar-link group w-full"
+            :class="route.path === '/dashboard' ? 'active' : ''"
             :title="collapsed ? 'My Diaries' : ''">
             <BookOpen class="sidebar-icon" />
             <Transition name="fade-side">
               <span v-if="!collapsed" class="sidebar-label">My Diaries</span>
+            </Transition>
+          </button>
+          
+          <button @click="router.push('/dashboard/one-health')"
+            class="sidebar-link group w-full"
+            :class="route.path === '/dashboard/one-health' ? 'active' : ''"
+            :title="collapsed ? 'One Health Map' : ''">
+            <Heart class="sidebar-icon" />
+            <Transition name="fade-side">
+              <span v-if="!collapsed" class="sidebar-label">One Health Map</span>
             </Transition>
           </button>
           
@@ -129,6 +124,15 @@
 
         <!-- Sign Out — shown when logged in, on all pages -->
         <template v-if="!authLoading && user">
+          <!-- My Dashboard Button in Sidebar -->
+          <button v-if="!isDashboard" @click="router.push('/dashboard')"
+            class="sidebar-link group w-full border-l-2 border-[#FBB03A]/60 hover:border-[#FBB03A] mb-1 text-[#FBB03A]"
+            :title="collapsed ? 'My Dashboard' : ''">
+            <LayoutDashboard class="sidebar-icon text-[#FBB03A]" />
+            <Transition name="fade-side">
+              <span v-if="!collapsed" class="sidebar-label text-[#FBB03A]">My Dashboard</span>
+            </Transition>
+          </button>
           <button @click="handleSignOut"
             class="sidebar-link group w-full border-l-2 border-red-400/40 hover:border-red-500 mb-1 text-red-500"
             :title="collapsed ? 'Sign Out' : ''">
@@ -174,11 +178,10 @@
 
       <!-- Footer -->
       <footer class="border-t border-stone-100 dark:border-white/5 py-7 transition-colors">
-        <div class="max-w-5xl mx-auto px-8 flex flex-col md:flex-row items-center justify-between gap-3">
-          <div class="flex items-center gap-2 text-stone-400 dark:text-neutral-600 text-sm transition-colors">
-            <span>Amboseli Ecosystem Data Portal (AEDP)</span>
+        <div class="max-w-5xl mx-auto px-8 flex justify-center text-center">
+          <div class="text-white text-sm font-medium transition-colors">
+            Amboseli Ecosystem Data Portal (AEDP)
           </div>
-          <div class="text-stone-400 dark:text-neutral-700 text-xs transition-colors">Powered by Open-Meteo · ILRI · Community Science</div>
         </div>
       </footer>
     </main>
@@ -217,8 +220,6 @@ const navLinks = [
   { id: 'habitat',   en: 'Habitat',      sw: 'Makazi',      icon: Trees },
   { id: 'diaries',   en: 'Diaries',      sw: 'Maoni',       icon: BookOpen },
   { id: 'weather',   en: 'Weather',      sw: 'Hali ya Anga', icon: Cloud },
-  { id: 'outlook',   en: 'Outlook',      sw: 'Taarifa',     icon: BarChart2 },
-  { id: 'drought',   en: 'Drought',      sw: 'Kiangazi',    icon: AlertTriangle },
   { id: 'onehealth', en: 'One Health',   sw: 'Afya Moja',   icon: Heart },
 ]
 

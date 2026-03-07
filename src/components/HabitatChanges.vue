@@ -7,7 +7,6 @@
          style="background: radial-gradient(ellipse at 25% 40%, rgba(59,130,246,0.07) 0%, transparent 55%)" />
 
     <div class="max-w-[1240px] mx-auto px-8 lg:px-12 w-full relative z-10">
-      <!-- Header -->
       <div class="mb-10 fade-up" ref="headerRef">
         <div class="flex items-center gap-2 mb-3">
           <div class="w-1 h-8 rounded-full bg-savanna-500" />
@@ -22,7 +21,6 @@
         </p>
       </div>
 
-      <!-- Year Selector Row -->
       <div class="flex flex-wrap gap-2 mb-8 fade-up" ref="selectorRef">
         <button
           v-for="yd in habitatDataSet" :key="yd.year"
@@ -33,11 +31,9 @@
         </button>
       </div>
 
-      <!-- Visual: Habitat Map Viewer -->
       <div class="glass-card mb-8 fade-up bg-white/80 dark:bg-[#0a160c]/50 transition-colors" ref="mapRef" style="border-radius:16px;">
         <div class="relative w-full bg-slate-100 dark:bg-black transition-colors" style="height:420px; border-radius:12px; overflow:hidden;">
           
-          <!-- Map Images stacked on top of each other, active one fades in -->
           <div v-for="yd in habitatDataSet" :key="yd.year"
                class="absolute transition-opacity duration-700 ease-in-out"
                style="top:0; left:0; right:0; bottom:0; height:420px; width:100%;"
@@ -47,13 +43,11 @@
                  :alt="`Amboseli Basin map ${yd.year}`" />
           </div>
 
-          <!-- Year badge overlay -->
           <div class="absolute top-3 right-3 glass-card px-3 py-1.5 text-xs text-slate-800 dark:text-neutral-300 font-semibold border border-black/5 dark:border-white/10 shadow-lg transition-colors" style="z-index:10;">
             Displaying: {{ selectedYear }}
           </div>
         </div>
 
-        <!-- Stats row (Context updates based on year) -->
         <div class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-black/5 dark:divide-white/5 border-t border-black/5 dark:border-white/5 transition-colors">
           <div class="px-6 py-4 text-center">
             <p class="text-[13px] text-slate-600 dark:text-neutral-400 mb-1 leading-relaxed transition-colors">
@@ -61,12 +55,10 @@
             </p>
           </div>
           <div class="px-6 py-4 flex flex-col items-center justify-center">
-            <!-- Ensure trendColor isn't completely washed out in light mode via computed state, or keep simple -->
             <p class="text-2xl font-display font-bold transition-colors" :class="isDark ? currentYearData.trendColor : 'text-slate-500'">{{ currentYearData.trendValue }}</p>
             <p class="text-xs text-slate-500 dark:text-neutral-500 mt-1 uppercase tracking-widest transition-colors">{{ currentYearData.trendLabel }}</p>
           </div>
           <div class="px-6 py-4 flex flex-col justify-center">
-             <!-- Audio Button utilizing real HTML5 Audio -->
              <div class="flex flex-col gap-2">
                 <button @click="toggleAudio" :class="['audio-btn border border-black/10 dark:border-white/10 w-full justify-center', isPlaying ? 'playing bg-savanna-900/40 text-savanna-400 border-savanna-500/50' : '']">
                   <div class="waveform" :class="{ active: isPlaying }">
@@ -116,7 +108,6 @@ const habitatDataSet = yearsList.map(y => ({
 const currentYearData = computed(() => habitatDataSet.find(d => d.year === selectedYear.value) || habitatDataSet[0])
 const selectedYearIndex = computed(() => habitatDataSet.findIndex(d => d.year === selectedYear.value))
 
-// Audio Logic
 const audioElement = ref(null)
 const isPlaying = ref(false)
 

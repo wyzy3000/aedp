@@ -7,8 +7,6 @@
          style="background: radial-gradient(ellipse at 25% 40%, rgba(59,130,246,0.07) 0%, transparent 55%)" />
 
     <div class="max-w-[1240px] mx-auto px-8 lg:px-12 w-full relative z-10">
-
-      <!-- Header -->
       <div class="mb-10 fade-up" ref="headerRef">
         <div class="flex items-center gap-2 mb-3">
           <div class="w-1 h-8 rounded-full" :style="{ background: selectedYearData.lineColor }" />
@@ -25,7 +23,6 @@
         </p>
       </div>
 
-      <!-- Year Selector Row -->
       <div class="flex flex-wrap gap-2 mb-8 fade-up" ref="selectorRef">
         <button
           v-for="yd in yearDataSet" :key="yd.year"
@@ -36,7 +33,6 @@
         </button>
       </div>
 
-      <!-- NDVI Chart Card -->
       <div class="rounded-2xl border border-black/5 dark:border-white/8 overflow-hidden mb-8 fade-up bg-white/80 dark:bg-[#0a160c]/80 backdrop-blur-md transition-colors" ref="chartRef">
         <div class="flex items-center justify-between px-6 py-4 border-b border-black/5 dark:border-white/5 transition-colors">
           <div class="flex items-center gap-2.5">
@@ -50,7 +46,6 @@
           </div>
         </div>
 
-        <!-- SVG Chart -->
         <div class="relative w-full" style="height: 220px;">
           <svg class="absolute inset-0 w-full h-full" viewBox="0 0 1000 220" preserveAspectRatio="none">
             <defs>
@@ -60,24 +55,19 @@
               </linearGradient>
             </defs>
 
-            <!-- Grid lines -->
             <line v-for="y in [45, 90, 135, 180]" :key="y" :x1="0" :y1="y" :x2="1000" :y2="y"
                   stroke="currentColor" stroke-width="1" class="text-black/5 dark:text-white/5 transition-colors" />
 
-            <!-- Area fill -->
             <path :d="areaPath" fill="url(#areaFill)" class="transition-all duration-700" />
-            <!-- Trend line -->
             <path :d="linePath" fill="none" :stroke="selectedYearData.lineColor"
                   stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
                   class="transition-all duration-700" />
 
-            <!-- Year dot highlights -->
             <g v-for="(yd, i) in yearDataSet" :key="yd.year">
               <circle :cx="yearX(i)" :cy="ndviY(yd.ndvi)" r="4.5"
                       :fill="yd.lineColor"
                       class="cursor-pointer transition-all duration-300"
                       @click="selectedYear = yd.year" />
-              <!-- Year label -->
               <text :x="yearX(i)" y="210" :fill="yd.year === selectedYear ? yd.lineColor : (isDark ? '#4b5563' : '#94a3b8')"
                     font-size="11" text-anchor="middle" font-family="Inter, sans-serif"
                     class="cursor-pointer" font-weight="500"
@@ -86,7 +76,6 @@
               </text>
             </g>
 
-            <!-- Selected year vertical indicator line -->
             <line :x1="yearX(selectedYearIndex)" y1="0"
                   :x2="yearX(selectedYearIndex)" y2="190"
                   :stroke="selectedYearData.lineColor" stroke-width="1"
@@ -94,7 +83,6 @@
           </svg>
         </div>
 
-        <!-- NDVI Condition bar -->
         <div class="px-6 py-3 border-t border-black/5 dark:border-white/5 flex items-center gap-4 transition-colors">
           <span class="text-xs text-slate-500 dark:text-neutral-600 transition-colors">Pasture Condition:</span>
           <div class="flex-1 h-1.5 bg-black/5 dark:bg-white/5 rounded-full overflow-hidden transition-colors">
@@ -107,7 +95,6 @@
         </div>
       </div>
 
-      <!-- Animated Grass Viewport -->
       <div class="rounded-2xl border border-black/5 dark:border-white/8 overflow-hidden mb-8 fade-up bg-slate-100 dark:bg-[#08120a]/90 transition-colors" ref="grassRef">
         <div class="flex items-center justify-between px-6 py-3 border-b border-black/5 dark:border-white/5 transition-colors">
           <span class="text-[11px] uppercase tracking-widest text-slate-500 dark:text-neutral-600 font-semibold transition-colors">Live Condition Preview · {{ selectedYear }}</span>
@@ -117,13 +104,10 @@
         </div>
 
         <div class="relative overflow-hidden" style="height: 180px;">
-          <!-- Sky overlay removed per user request to boost grass visibility -->
 
-          <!-- Soil strip -->
           <div class="absolute bottom-0 left-0 right-0 h-6 transition-colors duration-700"
                :style="{ background: isDark ? selectedYearData.soilColor : selectedYearData.lineColor + '20' }" />
 
-          <!-- Animated grass blades -->
           <div class="absolute bottom-6 left-0 right-0 flex items-end justify-around px-1" style="height: 120px;">
             <svg
               v-for="(blade, idx) in grassBlades" :key="idx"
@@ -146,7 +130,6 @@
         </div>
       </div>
 
-      <!-- Audio narration -->
       <div class="flex flex-wrap items-center gap-4 fade-up" ref="audioRef">
         <button @click="toggleAudio" :class="['audio-btn', isPlaying ? 'playing' : '']">
           <div class="waveform" :class="{ active: isPlaying }">
@@ -180,7 +163,6 @@ const grassRef = ref(null)
 const audioRef = ref(null)
 const audioElement = ref(null)
 
-// ── Per-year ecological profile ───────────────────────────────────────────────
 const yearDataSet = [
   {
     year: 2018, ndvi: 0.55, label: 'Good',
@@ -243,9 +225,8 @@ const yearDataSet = [
 const selectedYearData = computed(() => yearDataSet.find(d => d.year === selectedYear.value) || yearDataSet[0])
 const selectedYearIndex = computed(() => yearDataSet.findIndex(d => d.year === selectedYear.value))
 
-// ── Chart coordinate helpers ──────────────────────────────────────────────────
 const yearX = (i) => 100 + i * ((1000 - 200) / (yearDataSet.length - 1))
-const ndviY = (v) => 180 - v * 150   // maps 0→180, 1→30
+const ndviY = (v) => 180 - v * 150
 
 const linePath = computed(() => {
   const pts = yearDataSet.map((d, i) => `${yearX(i)},${ndviY(d.ndvi)}`)
@@ -256,7 +237,6 @@ const areaPath = computed(() => {
   return 'M ' + pts.join(' L ') + ` L ${yearX(yearDataSet.length - 1)},220 L ${yearX(0)},220 Z`
 })
 
-// ── Grass blades (static geometry, reactive colour) ───────────────────────────
 const grassBlades = Array.from({ length: 280 }, (_, i) => ({
   h: 30 + Math.random() * 100,
   w: 6 + Math.random() * 6,
@@ -270,7 +250,6 @@ const interpolateGrassColor = (baseHex, idx) => {
   return baseHex + alphas[idx % alphas.length]
 }
 
-// ── Audio toggle ──────────────────────────────────────────────────────────────
 const toggleAudio = async () => {
   if (!audioElement.value) return
   
@@ -289,7 +268,6 @@ const toggleAudio = async () => {
   }
 }
 
-// ── Scroll-reveal ─────────────────────────────────────────────────────────────
 onMounted(() => {
   const io = new IntersectionObserver(
     (entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible') }),

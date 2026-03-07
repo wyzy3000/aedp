@@ -7,23 +7,42 @@
          style="background: radial-gradient(ellipse at 25% 40%, rgba(59,130,246,0.07) 0%, transparent 55%)" />
 
     <div class="max-w-[1240px] mx-auto px-8 lg:px-12 w-full relative z-10">
-      <!-- Header -->
       <div class="mb-10 fade-up" ref="headerRef">
         <div class="flex items-center gap-2 mb-3">
-          <div class="w-1 h-8 rounded-full bg-forest-500" />
-          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-white/70 transition-colors">Module 03 · Diaries</span>
+          <div class="w-1 h-8 rounded-full transition-colors" style="background-color: #FBB03A;" />
+          <span class="text-xs font-semibold uppercase tracking-[0.2em] transition-colors" style="color: #FBB03A;">Module 03 · Diaries</span>
         </div>
         <h2 class="font-display font-extrabold text-4xl md:text-5xl text-white leading-tight transition-colors" style="letter-spacing:-0.02em">
           Local Community Environmental Diaries
         </h2>
-        <p class="mt-2 font-display font-medium text-lg italic text-[#FBB03A] transition-colors">Maoni ya wenyeji</p>
-        <p class="mt-3 text-white/90 text-[15px] leading-relaxed max-w-2xl transition-colors">
+        <p class="mt-2 font-display font-medium text-lg italic transition-colors" style="color: #FBB03A;">Maoni ya wenyeji</p>
+        <p class="mt-3 text-white text-[15px] leading-relaxed max-w-2xl transition-colors">
           First-hand seasonal observations from pastoralist and farming communities
           across the Amboseli ecosystem, recorded as structured field notes.
         </p>
+
+        <div class="mt-8 flex flex-col sm:flex-row gap-4">
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-semibold uppercase tracking-wider text-white">Location</label>
+            <select v-model="filterLocation" @change="applyFilters"
+                    class="bg-white/10 border border-white/20 text-white text-sm rounded-xl focus:ring-[#FBB03A] focus:border-[#FBB03A] block w-full sm:w-48 p-2.5 outline-none transition-all [&>option]:bg-slate-800 [&>option]:text-white">
+              <option value="">All Locations</option>
+              <option v-for="loc in uniqueLocations" :key="loc" :value="loc">{{ loc }}</option>
+            </select>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-semibold uppercase tracking-wider text-white">Date</label>
+            <select v-model="filterDate" @change="applyFilters"
+                    class="bg-white/10 border border-white/20 text-white text-sm rounded-xl focus:ring-[#FBB03A] focus:border-[#FBB03A] block w-full sm:w-48 p-2.5 outline-none transition-all [&>option]:bg-slate-800 [&>option]:text-white">
+              <option value="all">All Time</option>
+              <option value="7">Last 7 Days</option>
+              <option value="30">Last 30 Days</option>
+              <option value="90">Last 3 Months</option>
+            </select>
+          </div>
+        </div>
       </div>
 
-      <!-- Loading skeleton -->
       <div v-if="loading" class="columns-1 sm:columns-2 lg:columns-3 gap-5 space-y-5">
         <div v-for="i in 6" :key="i" class="break-inside-avoid glass-card p-5 animate-pulse">
           <div class="flex gap-2 mb-3">
@@ -39,36 +58,32 @@
         </div>
       </div>
 
-      <!-- Error state -->
       <div v-else-if="fetchError" class="flex flex-col items-center justify-center py-16 text-center">
         <p class="text-red-400 text-sm mb-3">{{ fetchError }}</p>
-        <button @click="fetchDiaries" class="text-xs text-white/50 hover:text-white border border-white/10 px-4 py-2 rounded-lg transition-colors">Try Again</button>
+        <button @click="applyFilters" class="text-xs text-white/50 hover:text-white border border-white/10 px-4 py-2 rounded-lg transition-colors">Try Again</button>
       </div>
 
-      <!-- Empty state — no entries yet -->
       <div v-else-if="diariesData.length === 0"
            class="flex flex-col items-center justify-center py-24 text-center animate-fade-in">
-        <div class="w-20 h-20 rounded-3xl flex items-center justify-center mb-6"
-             style="background: rgba(251,176,58,0.08); border: 1px solid rgba(251,176,58,0.15);">
-          <BookOpen class="w-9 h-9 text-[#FBB03A]/60" />
+        <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-6"
+             style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+          <span class="material-symbols-outlined text-white/40" style="font-size: 32px;">inbox</span>
         </div>
-        <h3 class="font-display font-bold text-2xl text-white mb-2">No diary entries yet</h3>
+        <h3 class="font-display font-medium text-xl text-white mb-2">No observations found</h3>
         <p class="text-white/50 text-sm max-w-sm leading-relaxed mb-6">
-          Be the first community member to document what you're observing in the Amboseli ecosystem.
+          There are currently no diary entries matching your selected location or date.
         </p>
-        <router-link to="/dashboard"
-          class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#FBB03A] hover:bg-[#e09e34] text-white font-semibold text-sm transition-all duration-300 shadow-lg shadow-[#FBB03A]/20">
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
-          {{ lang === 'en' ? 'Post the First Entry' : 'Andika Ingizo la Kwanza' }}
-        </router-link>
+        <button v-if="filterLocation !== '' || filterDate !== 'all'" @click="resetFilters"
+          class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium text-sm transition-all duration-300">
+          <span class="material-symbols-outlined" style="font-size: 18px;">refresh</span>
+          Clear Filters
+        </button>
       </div>
 
-      <!-- Diary cards grid — live data -->
       <div v-else class="columns-1 sm:columns-2 lg:columns-3 gap-5 space-y-5 animate-fade-in" ref="gridRef">
         <div v-for="entry in diariesData" :key="entry.id"
              class="break-inside-avoid glass-card p-5 hover:border-forest-600/40 hover:bg-black/5 dark:hover:bg-white/[0.06] transition-all duration-300 group">
 
-          <!-- Header row -->
           <div class="flex items-start justify-between gap-3 mb-3">
             <div class="flex-1">
               <div class="flex items-center gap-2 flex-wrap">
@@ -84,12 +99,10 @@
             </div>
           </div>
 
-          <!-- Observation text -->
           <p class="text-sm text-slate-600 dark:text-neutral-300 leading-relaxed group-hover:text-slate-900 dark:group-hover:text-neutral-200 transition-colors">
             {{ entry.observation }}
           </p>
 
-          <!-- Sentiment bar -->
           <div class="mt-4 flex items-center gap-2">
             <span class="text-[10px] text-slate-500 dark:text-neutral-600 uppercase tracking-wider transition-colors">Sentiment</span>
             <div class="flex-1 h-1 bg-black/10 dark:bg-white/5 rounded-full overflow-hidden transition-colors">
@@ -105,13 +118,16 @@
         </div>
       </div>
 
-      <!-- Post a diary CTA (shown when entries exist) -->
-      <div v-if="!loading && diariesData.length > 0" class="mt-10 text-center animate-fade-in" ref="btnRef">
-        <router-link to="/dashboard"
-          class="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-[#FBB03A]/30 text-[#FBB03A] hover:bg-[#FBB03A]/10 text-sm font-medium transition-all duration-300">
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-          {{ lang === 'en' ? 'Add Your Observation' : 'Ongeza Uchunguzi Wako' }}
-        </router-link>
+      <div v-if="diariesData.length > 0 && hasMore" class="mt-10 text-center animate-fade-in" ref="btnRef">
+        <button @click="loadMore"
+          class="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl border border-white/20 text-white hover:bg-white/10 hover:border-white/40 text-sm font-medium transition-all duration-300 shadow-lg shadow-black/20">
+          <span v-if="isLoadingMore" class="material-symbols-outlined animate-spin" style="font-size: 18px;">progress_activity</span>
+          <span v-else class="material-symbols-outlined" style="font-size: 18px;">expand_more</span>
+          {{ lang === 'en' ? 'Load More Observations' : 'Pakia Uchunguzi Zaidi' }}
+        </button>
+      </div>
+      <div v-else-if="diariesData.length > 0 && !hasMore" class="mt-10 text-center animate-fade-in">
+        <p class="text-white/40 text-xs uppercase tracking-wider">No more entries to load</p>
       </div>
     </div>
   </section>
@@ -131,23 +147,63 @@ const loading = ref(true)
 const fetchError = ref('')
 const diariesData = ref([])
 
-const fetchDiaries = async () => {
-  loading.value = true
+const filterLocation = ref('')
+const filterDate = ref('all')
+const uniqueLocations = ref([])
+const limit = ref(6) // Load 6 at a time
+const isLoadingMore = ref(false)
+const hasMore = ref(true)
+
+const loadUniqueLocations = async () => {
+  if (!supabase) return
+  const { data } = await supabase.from('diaries').select('location').limit(700)
+  if (data) {
+    const locs = data.map(d => d.location).filter(Boolean)
+    uniqueLocations.value = [...new Set(locs)].sort()
+  }
+}
+
+const buildQuery = () => {
+  let query = supabase
+    .from('diaries')
+    .select('id, location, date, content, sentiment', { count: 'exact' })
+
+  if (filterLocation.value) {
+    query = query.eq('location', filterLocation.value)
+  }
+
+  if (filterDate.value && filterDate.value !== 'all') {
+    const days = parseInt(filterDate.value)
+    const cutoffDate = new Date()
+    cutoffDate.setDate(cutoffDate.getDate() - days)
+    query = query.gte('date', cutoffDate.toISOString())
+  }
+
+  return query.order('created_at', { ascending: false })
+}
+
+const fetchDiaries = async (isLoadMore = false) => {
+  if (!isLoadMore) {
+    loading.value = true
+    limit.value = 6
+    diariesData.value = []
+  } else {
+    isLoadingMore.value = true
+  }
   fetchError.value = ''
 
   if (!supabase) {
     loading.value = false
+    isLoadingMore.value = false
     fetchError.value = 'Database not configured'
     return
   }
 
-  const { data, error } = await supabase
-    .from('diaries')
-    .select('id, location, date, content, sentiment')
-    .order('created_at', { ascending: false })
-    .limit(12)
+  const query = buildQuery()
+  const { data, count, error } = await query.limit(limit.value)
 
   loading.value = false
+  isLoadingMore.value = false
 
   if (error) {
     console.error('CommunityDiaries fetch error:', error.code, error.message, error.details)
@@ -158,7 +214,6 @@ const fetchDiaries = async () => {
   console.log('CommunityDiaries fetched:', data?.length, 'entries', data)
 
   if (data && data.length > 0) {
-    // Map sentiment from 1–10 to a percentage (×10) for the bar width
     const mapped = data.map(row => ({
       id:          row.id,
       date:        row.date,
@@ -166,12 +221,27 @@ const fetchDiaries = async () => {
       observation: row.content,
       sentiment:   row.sentiment * 10,
     }))
-    console.log('Mapped diariesData length:', mapped.length)
     diariesData.value = mapped
+    hasMore.value = mapped.length < count
   } else {
-    console.log('No data found, setting empty array')
     diariesData.value = []
+    hasMore.value = false
   }
+}
+
+const applyFilters = () => {
+  fetchDiaries(false)
+}
+
+const resetFilters = () => {
+  filterLocation.value = ''
+  filterDate.value = 'all'
+  fetchDiaries(false)
+}
+
+const loadMore = () => {
+  limit.value += 6
+  fetchDiaries(true)
 }
 
 let subscription = null
@@ -186,7 +256,6 @@ const setupRealtime = () => {
       schema: 'public', 
       table: 'diaries'
     }, (payload) => {
-      // Map sentiment to match component state (x10)
       const mapPayload = (row) => ({
         id:          row.id,
         date:        row.date,
@@ -196,11 +265,22 @@ const setupRealtime = () => {
       })
 
       if (payload.eventType === 'INSERT') {
-        diariesData.value.unshift(mapPayload(payload.new))
-        
-        // Ensure we don't exceed 12 items on the public page to keep it tidy
-        if (diariesData.value.length > 12) {
-          diariesData.value.pop()
+        const itemDate = new Date(payload.new.date)
+        const isLocMatch = filterLocation.value === '' || payload.new.location === filterLocation.value
+        let isDateMatch = true
+        if (filterDate.value !== 'all') {
+          const days = parseInt(filterDate.value)
+          const cutoffDate = new Date()
+          cutoffDate.setDate(cutoffDate.getDate() - days)
+          isDateMatch = itemDate >= cutoffDate
+        }
+
+        if (isLocMatch && isDateMatch) {
+          diariesData.value.unshift(mapPayload(payload.new))
+          if (diariesData.value.length > limit.value) {
+            diariesData.value.pop()
+            hasMore.value = true
+          }
         }
       } else if (payload.eventType === 'UPDATE') {
         const idx = diariesData.value.findIndex(e => e.id === payload.new.id)
@@ -213,6 +293,7 @@ const setupRealtime = () => {
 }
 
 onMounted(() => {
+  loadUniqueLocations()
   fetchDiaries()
   setupRealtime()
   

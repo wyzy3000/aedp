@@ -9,6 +9,7 @@ import DroughtStory from '../components/DroughtStory.vue'
 import OneHealth from '../components/OneHealth.vue'
 import AuthView from '../views/AuthView.vue'
 import DashboardView from '../views/DashboardView.vue'
+import DashboardOneHealth from '../views/DashboardOneHealth.vue'
 import SettingsView from '../views/SettingsView.vue'
 import { supabase } from '../supabase'
 
@@ -23,6 +24,7 @@ const routes = [
     { path: '/onehealth', component: OneHealth },
     { path: '/login', component: AuthView, props: { mode: 'login' } },
     { path: '/dashboard', component: DashboardView, meta: { requiresAuth: true } },
+    { path: '/dashboard/one-health', component: DashboardOneHealth, meta: { requiresAuth: true } },
     { path: '/dashboard/settings', component: SettingsView, meta: { requiresAuth: true } }
 ]
 

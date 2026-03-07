@@ -1,13 +1,11 @@
 <template>
   <section class="relative min-h-screen flex items-center justify-center p-6 overflow-hidden">
-    <!-- Background -->
     <div class="absolute inset-0 pointer-events-none transition-colors duration-700"
          :class="isDark ? 'bg-[#050e07]' : 'bg-slate-50'"
          :style="isDark ? 'background: linear-gradient(180deg, #050e07 0%, #060d1a 50%, #050e07 100%)' : 'background: linear-gradient(180deg, #f8fafc 0%, #eff6ff 50%, #f8fafc 100%)'" />
     <div class="absolute inset-0 pointer-events-none"
          style="background: radial-gradient(ellipse at 50% 50%, rgba(59,130,246,0.12) 0%, transparent 60%)" />
 
-    <!-- Form Container -->
     <div class="relative z-10 w-full max-w-md">
       <div class="rounded-2xl border border-black/5 dark:border-white/8 overflow-hidden bg-white/80 dark:bg-[#0a160c]/80 backdrop-blur-md shadow-2xl p-8 fade-up">
 
@@ -23,7 +21,6 @@
           <p class="text-slate-500 dark:text-neutral-400 text-sm">Sign in to access your dashboard</p>
         </div>
 
-        <!-- Rate Limit Lockout Banner -->
         <div v-if="isLocked" class="mb-5 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-center">
           <div class="text-2xl mb-1">🔒</div>
           <p class="text-red-400 font-semibold text-sm">Too many attempts</p>
@@ -32,7 +29,6 @@
 
         <form v-else @submit.prevent="handleSubmit" class="space-y-4" novalidate>
 
-          <!-- Email -->
           <div>
             <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400 mb-2">
               Email Address
@@ -46,7 +42,6 @@
             </p>
           </div>
 
-          <!-- Password -->
           <div>
             <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400 mb-2">
               Password
@@ -57,7 +52,6 @@
                      :class="['w-full px-4 py-3 pr-10 rounded-xl bg-white dark:bg-black/20 border text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-600 focus:ring-2 outline-none transition-all',
                               fieldErrors.password ? 'border-red-400 focus:ring-red-400/30' : 'border-slate-200 dark:border-white/10 focus:ring-[#FBB03A]/50 focus:border-[#FBB03A]']"
                      placeholder="••••••••" maxlength="128" />
-              <!-- Toggle visibility -->
               <button type="button" @click="showPassword = !showPassword"
                       class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-neutral-300 transition-colors">
                 <svg v-if="!showPassword" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
@@ -69,17 +63,14 @@
             </p>
           </div>
 
-          <!-- Attempt counter warning -->
           <div v-if="attemptWarning" class="p-3 rounded-lg bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs text-center">
             {{ attemptWarning }}
           </div>
 
-          <!-- Server / Auth Error -->
           <div v-if="errorMsg" class="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center font-medium">
             {{ errorMsg }}
           </div>
 
-          <!-- Submit -->
           <button type="submit" :disabled="loading"
                   class="w-full py-3.5 rounded-xl font-semibold text-white transition-all duration-300
                          bg-[#FBB03A] hover:bg-[#e09e34] shadow-lg shadow-[#FBB03A]/25
@@ -112,7 +103,6 @@ const loading      = ref(false)
 const errorMsg     = ref('')
 const fieldErrors  = ref({ email: '', password: '' })
 
-// ── Rate limiter: 5 attempts per 10 minutes ───────────────────────────
 const limiter      = createRateLimiter(5, 10 * 60 * 1000)
 const isLocked     = ref(false)
 const lockCountdown = ref(0)
@@ -132,12 +122,10 @@ function startCountdown() {
 onBeforeUnmount(() => clearInterval(countdownTimer))
 
 const attemptWarning = computed(() => {
-  // Warn user as they approach the limit
   const remaining = limiter.isLocked() ? 0 : null
-  return null  // we only show the full lock banner; this could be expanded
+  return null
 })
 
-// ── Password strength meter ───────────────────────────────────────────
 const passwordStrength = computed(() => {
   const pw = password.value
   let score = 0
@@ -163,7 +151,6 @@ const strengthLabel = computed(() => {
   return l[passwordStrength.value - 1] || ''
 })
 
-// ── Navigation ────────────────────────────────────────────────────────
 const toggleMode = () => {
   fieldErrors.value = { email: '', password: '' }
   errorMsg.value = ''
@@ -171,9 +158,7 @@ const toggleMode = () => {
   else router.push('/login')
 }
 
-// ── Form submission ───────────────────────────────────────────────────
 const handleSubmit = async () => {
-  // 1. Check rate limit first
   if (isLocked.value) return
   if (!limiter.allow()) {
     lockCountdown.value = limiter.secondsRemaining()
@@ -181,7 +166,6 @@ const handleSubmit = async () => {
     return
   }
 
-  // 2. Client-side validation (before hitting network)
   fieldErrors.value = { email: '', password: '' }
   errorMsg.value    = ''
 
@@ -199,7 +183,6 @@ const handleSubmit = async () => {
     }
   }
 
-  // 3. Submit to Supabase
   loading.value = true
   try {
     const { error } = await supabase.auth.signInWithPassword({
