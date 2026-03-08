@@ -298,25 +298,25 @@ onMounted(() => {
 }
 
 .year-btn:hover {
-  background: #f97316;
-  border-color: #f97316;
+  /* background: #f97316; */
+  /* border-color: #f97316; */
   color: #ffffff;
 }
 :global(.dark) .year-btn:hover {
-  background: #f97316;
-  border-color: #f97316;
+  /* background: #f97316; */
+  /* border-color: #f97316; */
   color: #ffffff;
 }
 
 .year-btn.selected {
   font-weight: 700;
-  border-color: #f97316;
+  /* border-color: #f97316; */
   color: #ffffff;
-  background: #f97316;
+  /* background: #f97316; */
 }
 :global(.dark) .year-btn.selected {
-  border-color: #f97316;
+  /* border-color: #f97316; */
   color: #ffffff;
-  background: #f97316;
+  /* background: #f97316; */
 }
 </style>

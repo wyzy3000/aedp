@@ -174,6 +174,7 @@
               </p>
             </div>
           </div>
+
         </div>
 
         <div class="px-6 py-3 border-t border-black/5 dark:border-white/5 flex items-center justify-between transition-colors">
@@ -239,7 +240,7 @@ const chartTabs = [
 
 const fetchWeather = async () => {
   try {
-    const url = 'https://api.open-meteo.com/v1/forecast?latitude=-2.64&longitude=37.25&current=temperature_2m,wind_speed_10m,precipitation&hourly=temperature_2m,precipitation_probability&past_days=2&forecast_days=3'
+    const url = 'https://api.open-meteo.com/v1/forecast?latitude=-2.64&longitude=37.25&current=temperature_2m,wind_speed_10m,precipitation&hourly=temperature_2m,precipitation_probability,wind_speed_10m&forecast_days=3'
     const res = await fetch(url)
     weatherData.value = await res.json()
   } catch (e) {
@@ -257,11 +258,19 @@ const nowIndex = computed(() => {
   return ind !== -1 ? ind : 0
 })
 
-const hourlyTemps = computed(() => weatherData.value?.hourly?.temperature_2m?.slice(Math.max(0, nowIndex.value - 6), nowIndex.value + 18) ?? [])
-const rainProbs   = computed(() => weatherData.value?.hourly?.precipitation_probability?.slice(Math.max(0, nowIndex.value - 6), nowIndex.value + 18) ?? [])
+const hourlyTemps = computed(() => {
+  return weatherData.value?.hourly?.temperature_2m?.slice(Math.max(0, nowIndex.value - 6), nowIndex.value + 18) ?? []
+})
 
-const rainProbs20 = computed(() => hourlyTemps.value.slice(0, 20).map((_, i) => rainProbs.value[i] ?? 0))
-const rainProb    = computed(() => {
+const rainProbs = computed(() => {
+  return weatherData.value?.hourly?.precipitation_probability?.slice(Math.max(0, nowIndex.value - 6), nowIndex.value + 18) ?? []
+})
+
+const rainProbs20 = computed(() => {
+  return rainProbs.value.slice(0, 20)
+})
+
+const rainProb = computed(() => {
   const arr = weatherData.value?.hourly?.precipitation_probability?.slice(nowIndex.value, nowIndex.value + 6) ?? []
   return arr.length ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length) : '--'
 })

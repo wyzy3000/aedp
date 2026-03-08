@@ -143,13 +143,13 @@ onMounted(() => {
   transition: all 0.25s ease;
 }
 .year-btn:hover {
-  background: #f97316;
-  border-color: #f97316;
+  /* background: #f97316; */
+  /* border-color: #f97316; */
   color: #ffffff;
 }
 :global(.dark) .year-btn:hover {
-  background: #f97316;
-  border-color: #f97316;
+  /* background: #f97316; */
+  /* border-color: #f97316; */
   color: #ffffff;
 }
 .waveform {

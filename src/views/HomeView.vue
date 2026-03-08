@@ -10,11 +10,9 @@
          :style="'background: radial-gradient(circle, rgba(190,140,40,' + (isDark ? '0.08' : '0.05') + '), transparent 70%); filter: blur(64px); animation: pulse 8.5s ease-in-out 2.3s infinite;'" />
 
     <div class="relative z-10 text-center max-w-6xl mx-auto px-8 pt-16">
-      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8"
-           style="background: rgba(74,125,65,0.1); border: 1px solid rgba(74,125,65,0.2);">
-        <div class="w-1.5 h-1.5 rounded-full bg-forest-400 animate-pulse" />
-        <span class="text-xs font-semibold uppercase tracking-[0.2em] text-forest-400">
-          Ecosystem Early Warning System
+      <div class="inline-flex items-center gap-2 mb-8">
+        <span class="text-xs font-semibold uppercase tracking-[0.2em] text-white">
+          {{ lang === 'en' ? 'Ecosystem Early Warning System' : 'Mfumo wa Onyo la Mapema wa Ikolojia' }}
         </span>
       </div>
 
@@ -26,19 +24,16 @@
             ? 'background: linear-gradient(135deg, #4a9e3a 0%, #8fd47c 45%, #e9c160 85%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;'
             : 'background: linear-gradient(135deg, #2d6b20 0%, #4a9e3a 45%, #c48a1a 88%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;'"
         >
-          Data Portal
+          {{ lang === 'en' ? 'Data Portal' : 'Tovuti ya Takwimu' }}
         </span>
       </h1>
 
-      <p class="font-display font-semibold text-xl transition-colors mb-4"
-         :class="isDark ? 'text-savanna-400 italic' : 'text-[#3d6b1a]'">
-        Amboseli Ecosystem Data Portal
-      </p>
 
-      <p class="text-[16px] max-w-lg mx-auto leading-relaxed mb-10 transition-colors"
-         :class="isDark ? 'text-neutral-400 font-light' : 'text-[#4a4230] font-normal'">
-        A community-driven decision support interface for the Amboseli Basin.
-        Monitoring pasture, habitat, water, and wildlife health — in real time.
+      <p class="text-[16px] max-w-lg mx-auto leading-relaxed mb-10 transition-colors text-white font-light">
+        {{ lang === 'en' 
+          ? 'A community-driven decision support interface for the Amboseli Basin. Monitoring pasture, habitat, water, and wildlife health — in real time.' 
+          : 'Kiolesura cha usaidizi wa maamuzi kinachoendeshwa na jamii kwa Bonde la Amboseli. Kufuatilia malisho, mazingira, maji, na afya ya wanyamapori — kwa wakati halisi.' 
+        }}
       </p>
 
       <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -46,20 +41,19 @@
                 class="group flex items-center gap-2.5 px-7 py-3.5 rounded-2xl font-semibold text-[15px] text-white
                        transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:shadow-forest-500/25"
                 style="background: linear-gradient(135deg, #376332, #4a9e3a)">
-          <span>Explore the Data</span>
+          <span>{{ lang === 'en' ? 'Explore the Data' : 'Chunguza Takwimu' }}</span>
           <ChevronDown class="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
         </button>
 
-        <a href="https://earlywarning.shinyapps.io/One_Health_Indicators/"
-           target="_blank" rel="noopener noreferrer"
-           class="flex items-center gap-2 px-7 py-3.5 rounded-xl text-[14px] font-medium
-                  transition-all duration-300 border"
-           :class="isDark
-             ? 'text-neutral-300 hover:text-white hover:bg-white/8 border-white/10'
-             : 'text-[#3d5a1a] hover:text-[#1a2a12] hover:bg-[#3d7035]/8 border-[#3d7035]/20'">
-          <ExternalLink class="w-4 h-4" />
-          One Health Dashboard
-        </a>
+        <button @click="router.push('/onehealth')"
+                class="flex items-center gap-2 px-7 py-3.5 rounded-xl text-[14px] font-medium
+                       transition-all duration-300 border"
+                :class="isDark
+                  ? 'text-neutral-300 hover:text-white hover:bg-white/8 border-white/10'
+                  : 'text-[#3d5a1a] hover:text-[#1a2a12] hover:bg-[#3d7035]/8 border-[#3d7035]/20'">
+          <Activity class="w-4 h-4" />
+          {{ lang === 'en' ? 'One Health Dashboard' : 'Dashibodi ya Afya Moja' }}
+        </button>
       </div>
     </div>
   </section>
@@ -68,8 +62,9 @@
 <script setup>
 import { inject } from 'vue'
 import { useRouter } from 'vue-router'
-import { ChevronDown, ExternalLink } from 'lucide-vue-next'
+import { ChevronDown, Activity } from 'lucide-vue-next'
 
 const isDark = inject('isDark')
+const lang = inject('lang')
 const router = useRouter()
 </script>

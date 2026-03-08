@@ -6,8 +6,8 @@
     <!-- ─── Left Sidebar ─────────────────────────────────────── -->
     <aside
       class="fixed left-0 top-0 h-screen z-50 flex flex-col transition-[width] duration-300
-             border-r bg-white dark:bg-white
-             border-stone-200 dark:border-stone-200
+             border-r bg-slate-50 dark:bg-[#050e07]/80
+             border-black/5 dark:border-white/5
              shadow-[2px_0_12px_rgba(0,0,0,0.06)]
              backdrop-blur-sm"
       :class="collapsed ? 'w-[68px]' : 'w-64'"
@@ -113,11 +113,11 @@
         
         <template v-if="!authLoading && !isDashboard && !user">
           <button @click="router.push('/login')"
-            class="sidebar-link group w-full border-l-2 border-[#FBB03A]/60 hover:border-[#FBB03A] mb-1"
-            :title="collapsed ? 'Login / Sign Up' : ''">
-            <UserCircle class="sidebar-icon text-[#FBB03A]" />
+            class="premium-orange-button w-full mb-1"
+            :title="collapsed ? 'Login' : ''">
+            <UserCircle class="w-5 h-5 flex-shrink-0" />
             <Transition name="fade-side">
-              <span v-if="!collapsed" class="sidebar-label text-[#FBB03A]">Login / Sign Up</span>
+              <span v-if="!collapsed" class="font-bold text-sm tracking-wide">Login</span>
             </Transition>
           </button>
         </template>
@@ -289,6 +289,34 @@ const scrollTo = (id) => {
   letter-spacing: 0.01em;
   white-space: nowrap;
   line-height: 1.2;
+}
+
+/* Premium Orange Button */
+.premium-orange-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #FBB03A;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px -1px rgba(251, 176, 58, 0.2), 
+              0 2px 4px -1px rgba(251, 176, 58, 0.1);
+}
+
+.premium-orange-button:hover {
+  background: #f99e0b;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 15px -3px rgba(251, 176, 58, 0.3), 
+              0 4px 6px -2px rgba(251, 176, 58, 0.1);
+}
+
+.premium-orange-button:active {
+  transform: translateY(0);
 }
 
 /* Sidebar collapse transition */

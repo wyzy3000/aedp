@@ -10,13 +10,13 @@
       <div class="mb-10 fade-up" ref="headerRef">
         <div class="flex items-center gap-2 mb-3">
           <div class="w-1 h-8 rounded-full transition-colors" style="background-color: #FBB03A;" />
-          <span class="text-xs font-semibold uppercase tracking-[0.2em] transition-colors" style="color: #FBB03A;">Module 03 · Diaries</span>
+          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-white transition-colors">Module 03 · Diaries</span>
         </div>
         <h2 class="font-display font-extrabold text-4xl md:text-5xl text-white leading-tight transition-colors" style="letter-spacing:-0.02em">
           Local Community Environmental Diaries
         </h2>
         <p class="mt-2 font-display font-medium text-lg italic transition-colors" style="color: #FBB03A;">Maoni ya wenyeji</p>
-        <p class="mt-3 text-white text-[15px] leading-relaxed max-w-2xl transition-colors">
+        <p class="mt-3 text-white text-[15px] leading-relaxed max-w-2xl transition-colors opacity-100">
           First-hand seasonal observations from pastoralist and farming communities
           across the Amboseli ecosystem, recorded as structured field notes.
         </p>
