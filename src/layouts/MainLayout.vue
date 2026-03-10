@@ -35,6 +35,17 @@
             </Transition>
           </button>
 
+          <!-- About link -->
+          <button @click="scrollTo('about')"
+            class="sidebar-link group w-full"
+            :class="activeSection === 'about' ? 'active' : ''"
+            :title="collapsed ? 'About' : ''">
+            <Info class="sidebar-icon" />
+            <Transition name="fade-side">
+              <span v-if="!collapsed" class="sidebar-label">{{ lang === 'en' ? 'About' : 'Kuhusu' }}</span>
+            </Transition>
+          </button>
+
           <div v-if="!collapsed" class="mt-4 mb-2 px-2">
             <p class="text-[9px] text-stone-400 dark:text-neutral-600 uppercase tracking-widest font-semibold transition-colors">Modules</p>
           </div>
@@ -191,7 +202,7 @@
 <script setup>
 import { ref, inject, provide, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { Sun, Moon, Leaf, Globe, ChevronLeft, Home, Sprout, Trees, BookOpen, Cloud, BarChart2, AlertTriangle, Heart, LayoutDashboard, ArrowLeft, LogOut, UserCircle, Settings } from 'lucide-vue-next'
+import { Sun, Moon, Leaf, Globe, ChevronLeft, Home, Sprout, Trees, BookOpen, Cloud, BarChart2, AlertTriangle, Heart, LayoutDashboard, ArrowLeft, LogOut, UserCircle, Settings, Info } from 'lucide-vue-next'
 
 const router = useRouter()
 const route = useRoute()

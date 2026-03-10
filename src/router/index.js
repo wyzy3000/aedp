@@ -11,6 +11,7 @@ import AuthView from '../views/AuthView.vue'
 import DashboardView from '../views/DashboardView.vue'
 import DashboardOneHealth from '../views/DashboardOneHealth.vue'
 import SettingsView from '../views/SettingsView.vue'
+import AboutView from '../views/AboutView.vue'
 import { supabase } from '../supabase'
 
 const routes = [
@@ -25,7 +26,8 @@ const routes = [
     { path: '/login', component: AuthView, props: { mode: 'login' } },
     { path: '/dashboard', component: DashboardView, meta: { requiresAuth: true } },
     { path: '/dashboard/one-health', component: DashboardOneHealth, meta: { requiresAuth: true } },
-    { path: '/dashboard/settings', component: SettingsView, meta: { requiresAuth: true } }
+    { path: '/dashboard/settings', component: SettingsView, meta: { requiresAuth: true } },
+    { path: '/about', component: AboutView }
 ]
 
 const router = createRouter({
