@@ -187,8 +187,8 @@ const plotMarkers = () => {
   mapPoints.value.forEach((point, index) => {
     const marker = L.marker([point.latitude, point.longitude], { icon: defaultIcon })
     
-    const label = point.point_label || `Point ${point.point_number || '?'}`;
-    marker.bindPopup(`<b>${point.location_name.replace(/ area/i, '')}</b><br/><span style="font-size: 10px; color: rgba(255,255,255,0.7);">${label}</span>`)
+    const title = point.location_name.replace(/ area/i, '')
+    marker.bindPopup(`<b>${title}</b>`, { closeButton: false })
     
     marker.on('click', () => {
       // Revert previous marker color
@@ -210,6 +210,12 @@ const plotMarkers = () => {
     markersLayerGroup.addLayer(marker)
   })
 
+  // Auto-fit map to show all markers with padding so none are hidden behind others
+  if (mapPoints.value.length > 1) {
+    const bounds = L.latLngBounds(mapPoints.value.map(p => [p.latitude, p.longitude]))
+    map.fitBounds(bounds, { padding: [40, 40], maxZoom: 12 })
+  }
+
   if (point1Marker) {
     point1Marker.fire('click')
   }
@@ -219,7 +225,7 @@ onMounted(() => {
   map = L.map('public-onehealth-map', {
     zoomControl: true,
     scrollWheelZoom: false
-  }).setView([-2.6526, 37.2606], 9)
+  }).setView([-2.6526, 37.2606], 10)
   
   L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
