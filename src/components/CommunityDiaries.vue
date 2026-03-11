@@ -1,8 +1,8 @@
 <template>
   <section id="diaries" class="relative py-20 overflow-hidden">
     <div class="absolute inset-0 pointer-events-none transition-colors duration-700"
-         :class="isDark ? 'bg-[#050e07]' : 'bg-slate-50'"
-         :style="isDark ? 'background: linear-gradient(180deg, #050e07 0%, #060d1a 50%, #050e07 100%)' : 'background: linear-gradient(180deg, #f8fafc 0%, #eff6ff 50%, #f8fafc 100%)'" />
+         :class="themeStore.isDark ? 'bg-[#050e07]' : 'bg-slate-50'"
+         :style="themeStore.isDark ? 'background: linear-gradient(180deg, #050e07 0%, #060d1a 50%, #050e07 100%)' : 'background: linear-gradient(180deg, #f8fafc 0%, #eff6ff 50%, #f8fafc 100%)'" />
     <div class="absolute inset-0 pointer-events-none"
          style="background: radial-gradient(ellipse at 25% 40%, rgba(59,130,246,0.07) 0%, transparent 55%)" />
 
@@ -141,9 +141,10 @@
 import { ref, inject, onMounted, onUnmounted } from 'vue'
 import { MapPin, Calendar, BookOpen, ChevronDown } from 'lucide-vue-next'
 import { supabase } from '../supabase'
+import { useThemeStore } from '../stores/theme'
 
 const lang = inject('lang')
-const isDark = inject('isDark')
+const themeStore = useThemeStore()
 const headerRef = ref(null)
 const gridRef = ref(null)
 const btnRef = ref(null)
