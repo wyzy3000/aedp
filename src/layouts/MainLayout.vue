@@ -200,9 +200,10 @@
 </template>
 
 <script setup>
-import { ref, inject, provide, computed } from 'vue'
+import { ref, inject, provide, computed, watchEffect } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { Sun, Moon, Leaf, Globe, ChevronLeft, Home, Sprout, Trees, BookOpen, Cloud, BarChart2, AlertTriangle, Heart, LayoutDashboard, ArrowLeft, LogOut, UserCircle, Settings, Info } from 'lucide-vue-next'
+import { supabase } from '../supabase'
 
 const router = useRouter()
 const route = useRoute()
@@ -242,6 +243,16 @@ const scrollTo = (id) => {
   }
   window.scrollTo({ top: 0, behavior: 'instant' })
 }
+
+// Automatically activate user account when they first access the dashboard
+watchEffect(async () => {
+  if (user.value && isDashboard.value) {
+    const { data: profile } = await supabase.from('profiles').select('status').eq('id', user.value.id).single()
+    if (profile && profile.status === 'Pending') {
+      await supabase.from('profiles').update({ status: 'Activated' }).eq('id', user.value.id)
+    }
+  }
+})
 </script>
 
 <style scoped>
@@ -302,7 +313,7 @@ const scrollTo = (id) => {
   line-height: 1.2;
 }
 
-/* Premium Orange Button */
+/* Premium Login Button (visible in both light/dark sidebars) */
 .premium-orange-button {
   display: flex;
   align-items: center;
@@ -312,18 +323,14 @@ const scrollTo = (id) => {
   border-radius: 12px;
   background: #FBB03A;
   color: #ffffff;
-  border: none;
+  border: 1px solid rgba(0, 0, 0, 0.15);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 6px -1px rgba(251, 176, 58, 0.2), 
-              0 2px 4px -1px rgba(251, 176, 58, 0.1);
 }
 
 .premium-orange-button:hover {
-  background: #f99e0b;
+  background: #e09e34;
   transform: translateY(-1px);
-  box-shadow: 0 10px 15px -3px rgba(251, 176, 58, 0.3), 
-              0 4px 6px -2px rgba(251, 176, 58, 0.1);
 }
 
 .premium-orange-button:active {

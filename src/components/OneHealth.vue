@@ -58,7 +58,7 @@
                <div class="pb-4 border-b border-white/10">
                  <div class="flex items-start justify-between">
                    <div>
-                     <h4 class="text-lg font-bold" style="color: #FBB03A;">{{ selectedPoint.location_name }}</h4>
+                     <h4 class="text-lg font-bold text-white">{{ selectedPoint.location_name.replace(/ area/i, '') }}</h4>
                      <p class="text-[10px] text-white/40 uppercase tracking-widest mt-1">
                        Lat: {{ selectedPoint.latitude.toFixed(4) }} | Lng: {{ selectedPoint.longitude.toFixed(4) }}
                      </p>
@@ -143,20 +143,20 @@ let currentSelectedMarker = null
 
 const defaultIcon = L.icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
-  shadowSize: [41, 41]
+  shadowUrl: '',
+  shadowSize: [0, 0]
 })
 
 const selectedIcon = L.icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
-  shadowSize: [41, 41]
+  shadowUrl: '',
+  shadowSize: [0, 0]
 })
 
 const fetchMapData = async () => {
@@ -188,7 +188,7 @@ const plotMarkers = () => {
     const marker = L.marker([point.latitude, point.longitude], { icon: defaultIcon })
     
     const label = point.point_label || `Point ${point.point_number || '?'}`;
-    marker.bindPopup(`<b>${point.location_name}</b><br/><span style="font-size: 10px; color: rgba(255,255,255,0.7);">${label}</span>`)
+    marker.bindPopup(`<b>${point.location_name.replace(/ area/i, '')}</b><br/><span style="font-size: 10px; color: rgba(255,255,255,0.7);">${label}</span>`)
     
     marker.on('click', () => {
       // Revert previous marker color

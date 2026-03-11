@@ -73,7 +73,7 @@
 
           <button type="submit" :disabled="loading"
                   class="w-full py-3.5 rounded-xl font-semibold text-white transition-all duration-300
-                         bg-[#FBB03A] hover:bg-[#e09e34] shadow-lg shadow-[#FBB03A]/25
+                         bg-white/10 hover:bg-white/20 border border-white/20
                          disabled:opacity-70 disabled:cursor-not-allowed mt-2 flex justify-center items-center gap-2">
             <span v-if="loading" class="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
             Sign In

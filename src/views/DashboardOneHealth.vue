@@ -1,295 +1,232 @@
 <template>
-  <section class="relative min-h-screen overflow-hidden pb-20">
-    <div class="absolute inset-0 pointer-events-none"
+  <section class="relative min-h-screen overflow-hidden py-20">
+    <div class="absolute inset-0 pointer-events-none transition-colors duration-700"
+         :class="isDark ? 'bg-[#050e07]' : 'bg-slate-50'"
          :style="isDark ? 'background: linear-gradient(180deg, #050e07 0%, #060d1a 50%, #050e07 100%)' : 'background: linear-gradient(180deg, #f8fafc 0%, #eff6ff 50%, #f8fafc 100%)'" />
     <div class="absolute inset-0 pointer-events-none"
-         style="background: radial-gradient(ellipse at 50% 30%, rgba(74,125,65,0.06) 0%, transparent 60%)" />
+         style="background: radial-gradient(ellipse at 25% 40%, rgba(59,130,246,0.07) 0%, transparent 55%)" />
 
-    <div class="relative z-10 max-w-[1240px] mx-auto px-6 lg:px-12 py-12">
-      <!-- TABS HEADER -->
-      <div class="flex flex-wrap items-center gap-2 mb-6 border-b border-white/10 pb-2">
-        <button @click="activeTab = 'pin'" 
-                :class="['px-6 py-2.5 rounded-t-xl font-bold transition-all border-b-2', activeTab === 'pin' ? 'text-[#Fbb03a] border-[#Fbb03a] bg-[#Fbb03a]/10' : 'text-white/50 border-transparent hover:text-white hover:bg-white/5']">
-          Pin Location
-        </button>
-        <button @click="activeTab = 'info'" 
-                :class="['px-6 py-2.5 rounded-t-xl font-bold transition-all border-b-2', activeTab === 'info' ? 'text-[#Fbb03a] border-[#Fbb03a] bg-[#Fbb03a]/10' : 'text-white/50 border-transparent hover:text-white hover:bg-white/5']">
-          Area Information
-        </button>
-        <div class="flex-1"></div>
-        <button @click="openNewForm"
-                class="px-6 py-2 rounded-xl font-semibold text-white transition-all duration-300 bg-[#Fbb03a] hover:bg-[#e09e34] shadow-lg shadow-[#Fbb03a]/25 flex items-center justify-center gap-2 text-sm ml-auto">
-          <span class="material-symbols-outlined text-[18px]">add</span>
-          Record New Data
-        </button>
+    <div class="max-w-[1240px] mx-auto px-8 lg:px-12 w-full relative z-10">
+      <!-- HERO-STYLE HEADER -->
+      <div class="mb-16 fade-up" :class="{ 'visible': isMounted }">
+        <div class="flex flex-wrap items-start justify-between gap-6">
+          <div class="max-w-3xl">
+            <h2 class="font-display font-extrabold text-4xl md:text-5xl leading-tight transition-colors mb-4"
+                :class="isDark ? 'text-white' : 'text-[#1a2a12]'">
+              One Health Map
+            </h2>
+            <p class="text-[15px] font-medium leading-relaxed transition-colors"
+               :class="isDark ? 'text-white/60' : 'text-[#4a4230]'">
+              Manage environmental monitoring points and ecosystem health records. This dashboard allows you to track livestock and human health trends, wildlife movements, and water quality across the ecosystem.
+            </p>
+          </div>
+          <div v-if="submitSuccess" class="p-3 px-5 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-bold flex items-center gap-2 shadow-none animate-bounce">
+             <span class="material-symbols-outlined text-[18px]">check_circle</span>
+             {{ isEditing ? 'Entry updated successfully' : 'New entry saved successfully' }}
+          </div>
+        </div>
       </div>
 
-      <!-- MAIN CONTENT AREA -->
-      <div class="relative min-h-[500px]">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- LEFT COLUMN: MAP & FORM -->
+        <div class="lg:col-span-8 space-y-6">
+          <!-- MAP SECTION -->
+          <div class="rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm p-0.5 shadow-lg relative overflow-hidden">
+             <div id="dashboard-map" class="w-full h-[400px] rounded-lg z-0"></div>
+          </div>
+          
+          <!-- COMPACT COORDINATE INPUTS -->
+          <div class="grid grid-cols-2 gap-4 bg-white/5 p-4 rounded-xl border border-white/10 backdrop-blur-sm">
+            <div>
+              <label class="block text-[10px] font-bold uppercase text-white/50 mb-1.5 tracking-wider">Latitude</label>
+              <input v-model.number="lat" type="number" step="0.00001" placeholder="0.00000"
+                     @input="handleManualCoordChange"
+                     class="w-full px-4 py-2 bg-[#1C1F22] rounded-lg text-white border border-white/5 focus:border-white/20 outline-none transition-all text-xs" />
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold uppercase text-white/50 mb-1.5 tracking-wider">Longitude</label>
+              <input v-model.number="lng" type="number" step="0.00001" placeholder="0.00000"
+                     @input="handleManualCoordChange"
+                     class="w-full px-4 py-2 bg-[#1C1F22] rounded-lg text-white border border-white/5 focus:border-white/20 outline-none transition-all text-xs" />
+            </div>
+          </div>
 
-        <!-- TAB 1: PIN AND MAP -->
-        <div v-show="activeTab === 'pin'" class="fade-up max-w-[800px] mx-auto w-full">
-          <div class="rounded-2xl border border-white/10 bg-[#0a160c] p-6 shadow-xl relative overflow-hidden group">
-             <div class="absolute inset-0 bg-[#Fbb03a]/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-             
-             <div class="flex items-center gap-2 mb-4">
-                <span class="material-symbols-outlined text-[#Fbb03a]">pin_drop</span>
-                <h3 class="text-white font-bold text-lg">Pin Location</h3>
-             </div>
-             <p class="text-white/50 text-sm mb-4">Click on the map to view area information or to set coordinates for a new point.</p>
-             
-             <div id="dashboard-map" class="w-full h-[380px] rounded-xl border border-white/10 mb-4 z-0"></div>
-             
-             <div class="grid grid-cols-2 gap-4">
-               <div>
-                 <label class="block text-[10px] font-semibold uppercase text-white/40 mb-1">Latitude</label>
-                 <div class="px-3 py-2 bg-white/5 rounded-lg text-white/70 text-sm border border-white/10 cursor-not-allowed">
-                   {{ lat ? lat.toFixed(5) : '—' }}
-                 </div>
-               </div>
-               <div>
-                 <label class="block text-[10px] font-semibold uppercase text-white/40 mb-1">Longitude</label>
-                 <div class="px-3 py-2 bg-white/5 rounded-lg text-white/70 text-sm border border-white/10 cursor-not-allowed">
-                   {{ lng ? lng.toFixed(5) : '—' }}
-                 </div>
-               </div>
-             </div>
+          <!-- REFINED OBSERVATION FORM -->
+          <div class="bg-[#1C1F22] rounded-2xl border border-white/10 p-8 relative overflow-hidden">
+            <div v-if="submitting" class="absolute inset-0 bg-[#1C1F22]/80 backdrop-blur-sm rounded-2xl z-20 flex flex-col items-center justify-center">
+              <div class="w-8 h-8 border-3 border-gray-500/30 border-t-gray-500 rounded-full animate-spin mb-3" />
+              <p class="text-white text-xs font-medium">Processing...</p>
+            </div>
+
+            <div class="mb-6 flex items-center justify-between">
+              <h3 class="text-white font-bold text-lg">
+                {{ isEditing ? 'Edit Observation' : 'New Observation' }}
+              </h3>
+              <button v-if="isEditing" @click="resetForm" class="text-[10px] text-[#Fbb03a] hover:underline uppercase font-bold tracking-wider">Create new entry instead</button>
+            </div>
+
+            <form @submit.prevent="submitForm" class="space-y-8">
+              <!-- SECTION 1: BASIC INFORMATION -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-5">
+                  <div>
+                    <label class="block text-[10px] font-bold uppercase text-white/50 mb-1.5 tracking-wider">Area Name</label>
+                    <input v-model="form.location_name" type="text" placeholder="e.g. Olgulului Area" required
+                           class="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/20 focus:border-white/30 outline-none transition-all text-sm" />
+                  </div>
+                  
+                  <div>
+                    <label class="block text-[10px] font-bold uppercase text-white/50 mb-1.5 tracking-wider">Point Label / Number</label>
+                    <input v-model="form.point_label" type="text" placeholder="e.g. PT-01" required
+                           class="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/20 focus:border-white/30 outline-none transition-all text-sm" />
+                  </div>
+                </div>
+
+                <div class="space-y-5">
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-[10px] font-bold uppercase text-white/50 mb-1.5 tracking-wider">Wildlife Trends</label>
+                      <select v-model="form.wildlife_trends" required
+                              class="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white focus:border-white/30 outline-none transition-all text-sm appearance-none cursor-pointer">
+                        <option value="" disabled>Select trend...</option>
+                        <option value="Increased">Increased</option>
+                        <option value="Decreased">Decreased</option>
+                        <option value="No Change">No Change</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="block text-[10px] font-bold uppercase text-white/50 mb-1.5 tracking-wider">Water Quality</label>
+                      <select v-model="form.water_quality" required
+                              class="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white focus:border-white/30 outline-none transition-all text-sm appearance-none cursor-pointer">
+                        <option value="" disabled>Select quality...</option>
+                        <option value="Good">Good</option>
+                        <option value="Fair">Fair</option>
+                        <option value="Poor">Poor</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                     <label class="block text-[10px] font-bold uppercase text-white/50 mb-1.5 tracking-wider">Drought readiness</label>
+                     <select v-model="form.drought_preparedness" required
+                            class="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white focus:border-white/30 outline-none transition-all text-sm appearance-none cursor-pointer">
+                      <option value="" disabled>Select readiness...</option>
+                      <option value="Fully prepared">Fully prepared</option>
+                      <option value="Somehow prepared">Somehow prepared</option>
+                      <option value="Not prepared at all">Not prepared at all</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SECTION 2: DETAILED OBSERVATIONS (LARGE TEXTAREAS) -->
+              <div class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div>
+                    <label class="block text-[10px] font-bold uppercase text-white/50 mb-1.5 tracking-wider">Economic activity</label>
+                    <textarea v-model="form.economic_activity" rows="4" required placeholder="Describe main economic activities (e.g. Livestock farming, charcoal burning)..."
+                              class="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/20 focus:border-white/30 outline-none transition-all text-sm resize-none" />
+                  </div>
+                  <div>
+                    <label class="block text-[10px] font-bold uppercase text-white/50 mb-1.5 tracking-wider">Major stressors</label>
+                    <textarea v-model="form.major_stressors" rows="4" required placeholder="Describe major ecosystem stressors (e.g. habitat fragmentation, resource competition, weather extremes)..."
+                              class="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/20 focus:border-white/30 outline-none transition-all text-sm resize-none" />
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div>
+                    <label class="block text-[10px] font-bold uppercase text-white/50 mb-1.5 tracking-wider">Livestock Health</label>
+                    <textarea v-model="form.livestock_diseases" rows="4" placeholder="e.g. FMD outbreaks, skin infections, recent vaccinations, cattle conditions..." required
+                           class="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/20 focus:border-white/30 outline-none transition-all text-sm resize-none" />
+                  </div>
+                  <div>
+                    <label class="block text-[10px] font-bold uppercase text-white/50 mb-1.5 tracking-wider">Human Health</label>
+                    <textarea v-model="form.human_diseases" rows="4" placeholder="e.g. Malaria cases, respiratory issues, health outreach, waterborne diseases..." required
+                           class="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/20 focus:border-white/30 outline-none transition-all text-sm resize-none" />
+                  </div>
+                </div>
+              </div>
+
+              <div v-if="submitError" class="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-xs font-bold">
+                {{ submitError }}
+              </div>
+
+              <div class="pt-6">
+                <button type="submit"
+                        class="w-full py-4 rounded-xl font-bold text-white transition-all duration-300 bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center gap-2 text-sm shadow-none outline-none">
+                  {{ isEditing ? 'Update Entry' : 'Submit' }}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
 
-        <!-- TAB 2: AREA INFORMATION -->
-        <div v-show="activeTab === 'info'" class="fade-up max-w-[800px] mx-auto w-full">
-           <div class="rounded-2xl border border-white/10 bg-[#0a160c] p-6 shadow-xl relative min-h-[500px] flex flex-col overflow-y-auto custom-scroll">
-              <div v-if="!selectedInfo" class="flex flex-col items-center justify-center h-full text-center opacity-50 absolute inset-0">
-                 <span class="material-symbols-outlined text-4xl mb-3 text-white/30">touch_app</span>
-                 <h2 class="text-xl font-display font-medium">Select an Observation</h2>
-                 <p class="text-sm mt-2 max-w-sm">Click on any blue marker on the map to view detailed area information.</p>
-              </div>
-              <div v-else class="h-full flex flex-col pt-4">
-                 <h2 class="text-white font-display font-bold text-3xl mb-6 pb-4 border-b border-white/10 flex items-start justify-between">
-                    Area Details
-                 </h2>
-                 <div class="flex items-center gap-2 mb-4 justify-end">
-                    <button type="button" @click="editEntry(selectedInfo)" class="text-xs bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-2 rounded-lg font-semibold transition-colors text-white flex items-center gap-1">
-                      <span class="material-symbols-outlined text-[14px]">edit</span> Edit Selection
-                    </button>
-                    <button type="button" @click="deleteEntry(selectedInfo.id)" class="text-xs border border-red-500/20 hover:bg-red-500/20 text-red-400 px-4 py-2 rounded-lg font-semibold transition-colors flex items-center gap-1">
-                      <span class="material-symbols-outlined text-[14px]">delete</span> Delete Selection
-                    </button>
-                 </div>
-
-                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pb-6">
-                    <div>
-                      <p class="text-xs font-semibold uppercase text-[#Fbb03a] mb-1">Location Name</p>
-                      <p class="text-white bg-white/5 px-4 py-3 rounded-xl border border-white/10">{{ selectedInfo.location_name || 'N/A' }}</p>
-                    </div>
-                    <div>
-                      <p class="text-xs font-semibold uppercase text-[#Fbb03a] mb-1">Point Label</p>
-                      <p class="text-white bg-white/5 px-4 py-3 rounded-xl border border-white/10">{{ selectedInfo.point_label || 'N/A' }}</p>
-                    </div>
-                 </div>
-
-                 <div class="space-y-6">
-                    <div>
-                      <p class="text-[10px] font-semibold uppercase text-white/40 mb-1">Economic Activity</p>
-                      <p class="text-white/80">{{ selectedInfo.economic_activity || 'N/A' }}</p>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                       <div>
-                         <p class="text-[10px] font-semibold uppercase text-orange-400 mb-1 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">monitor_heart</span> Livestock Diseases</p>
-                         <p class="text-white/80">{{ selectedInfo.livestock_diseases || 'N/A' }}</p>
-                       </div>
-                       <div>
-                         <p class="text-[10px] font-semibold uppercase text-red-400 mb-1 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">favorite</span> Human Diseases</p>
-                         <p class="text-white/80">{{ selectedInfo.human_diseases || 'N/A' }}</p>
-                       </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                       <div>
-                         <p class="text-[10px] font-semibold uppercase text-blue-400 mb-1 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">cruelty_free</span> Wildlife Trends</p>
-                         <p class="text-white/80">{{ selectedInfo.wildlife_trends || 'N/A' }}</p>
-                       </div>
-                       <div>
-                         <p class="text-[10px] font-semibold uppercase text-cyan-400 mb-1 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">water_drop</span> Water Quality</p>
-                         <p class="text-white/80">{{ selectedInfo.water_quality || 'N/A' }}</p>
-                       </div>
-                    </div>
-                    <div>
-                      <p class="text-[10px] font-semibold uppercase text-white/40 mb-1">Drought Preparedness</p>
-                      <p class="text-white/80">{{ selectedInfo.drought_preparedness || 'N/A' }}</p>
-                    </div>
-                    <div>
-                      <p class="text-[10px] font-semibold uppercase text-white/40 mb-1">Major Stressors</p>
-                      <p class="text-white/80">{{ selectedInfo.major_stressors || 'N/A' }}</p>
-                    </div>
-                    <div>
-                      <p class="text-[10px] font-semibold uppercase text-white/40 mb-1">Response to Extreme Climate</p>
-                      <p class="text-white/80">{{ selectedInfo.extreme_climate_response || 'N/A' }}</p>
-                    </div>
-                 </div>
-              </div>
-           </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- MODAL POPUP FOR SURVEY FORM -->
-    <transition name="modal">
-      <div v-if="showModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 fade-up">
-        <!-- Backdrop -->
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-md" @click="cancelEdit"></div>
-        
-        <div class="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto custom-scroll bg-[#0a160c] rounded-3xl shadow-2xl border border-white/10 p-7 xl:p-10 z-[110]">
-          <button @click="cancelEdit" class="absolute top-6 right-6 p-2 rounded-full bg-black/40 text-white/50 hover:text-white hover:bg-black/60 transition-colors border border-white/10 z-[120]">
-             <span class="material-symbols-outlined text-[18px]">close</span>
-          </button>
-          
-          <form @submit.prevent="submitForm" class="relative">
-            <div v-if="submitting" class="absolute inset-0 bg-[#0a160c]/80 backdrop-blur-sm rounded-2xl z-20 flex flex-col items-center justify-center">
-              <div class="w-10 h-10 border-4 border-[#Fbb03a]/30 border-t-[#Fbb03a] rounded-full animate-spin mb-4" />
-              <p class="text-white font-medium">Saving data...</p>
-            </div>
-
-            <div class="flex items-center justify-between mb-8">
-              <h2 class="text-white font-display font-bold text-3xl flex items-center gap-3">
-                {{ isEditing ? 'Edit Existing Point' : 'Area Information Survey' }}
-                <span v-if="isEditing && form.point_label" class="text-sm font-normal text-[#Fbb03a] bg-[#Fbb03a]/20 px-2 py-0.5 rounded-full border border-[#Fbb03a]/30 mt-1">
-                  {{ form.point_label }}
-                </span>
-              </h2>
-            </div>
-            
-            <p class="text-white/50 text-sm mb-6 border-b border-white/10 pb-4">Please ensure you have selected/pinned a location on the map before submitting.</p>
-
-            <div class="space-y-6">
-              
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label class="block text-xs font-semibold uppercase text-white/70 mb-2">Location / Area Name <span class="text-red-400">*</span></label>
-                  <input v-model="form.location_name" type="text" placeholder="e.g. Olgulului..." required
-                         class="w-full px-4 py-3 rounded-xl bg-black/20 border border-white/10 text-white placeholder-white/30 focus:border-[#Fbb03a] outline-none transition-all text-sm" />
-                </div>
-                <div>
-                  <label class="block text-xs font-semibold uppercase text-white/70 mb-2">Point Label / Number <span class="text-red-400">*</span></label>
-                  <input v-model="form.point_label" type="text" placeholder="e.g. Point 1, Point 2..." required
-                         class="w-full px-4 py-3 rounded-xl bg-black/20 border border-white/10 text-white placeholder-white/30 focus:border-[#Fbb03a] outline-none transition-all text-sm" />
-                </div>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label class="block text-xs font-semibold uppercase text-white/70 mb-2">Main economic activity</label>
-                  <input v-model="form.economic_activity" type="text" placeholder="e.g. Livestock keeping, Faming..." required
-                         class="w-full px-4 py-3 rounded-xl bg-black/20 border border-white/10 text-white focus:border-[#Fbb03a] outline-none transition-all text-sm" />
-                </div>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label class="block text-xs font-semibold uppercase text-white/70 mb-2 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-orange-400 text-[16px]">monitor_heart</span>
-                    Livestock diseases in selected area
-                  </label>
-                  <input v-model="form.livestock_diseases" type="text" placeholder="e.g. Heart water, FMD..." required
-                         class="w-full px-4 py-3 rounded-xl bg-black/20 border border-white/10 text-white focus:border-orange-500 outline-none transition-all text-sm" />
-                </div>
-                <div>
-                  <label class="block text-xs font-semibold uppercase text-white/70 mb-2 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-red-400 text-[16px]">favorite</span>
-                    Human diseases mentioned
-                  </label>
-                  <input v-model="form.human_diseases" type="text" placeholder="e.g. Malaria, Cold and flu..." required
-                         class="w-full px-4 py-3 rounded-xl bg-black/20 border border-white/10 text-white focus:border-red-500 outline-none transition-all text-sm" />
-                </div>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label class="block text-xs font-semibold uppercase text-white/70 mb-2 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-blue-400 text-[16px]">cruelty_free</span>
-                    Wildlife trends in selected area
-                  </label>
-                  <select v-model="form.wildlife_trends" required
-                          class="w-full px-4 py-3 rounded-xl bg-[#131b20] border border-white/10 text-white focus:border-blue-500 outline-none transition-all text-sm appearance-none">
-                    <option value="" disabled>Select a trend...</option>
-                    <option value="Increased">Increased</option>
-                    <option value="Decreased">Decreased</option>
-                    <option value="No Change">No Change</option>
-                  </select>
-                </div>
-                <div>
-                  <label class="block text-xs font-semibold uppercase text-white/70 mb-2 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-cyan-400 text-[16px]">water_drop</span>
-                    Water quality in your area
-                  </label>
-                  <select v-model="form.water_quality" required
-                          class="w-full px-4 py-3 rounded-xl bg-[#131b20] border border-white/10 text-white focus:border-cyan-500 outline-none transition-all text-sm appearance-none">
-                    <option value="" disabled>Select quality...</option>
-                    <option value="Good">Good</option>
-                    <option value="Fair">Fair</option>
-                    <option value="Poor">Poor</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-xs font-semibold uppercase text-white/70 mb-2">Drought preparedness</label>
-                <select v-model="form.drought_preparedness" required
-                        class="w-full px-4 py-3 rounded-xl bg-[#131b20] border border-white/10 text-white focus:border-[#Fbb03a] outline-none transition-all text-sm appearance-none">
-                  <option value="" disabled>Select readiness level...</option>
-                  <option value="Fully prepared">Fully prepared</option>
-                  <option value="Somehow prepared">Somehow prepared</option>
-                  <option value="Not prepared at all">Not prepared at all</option>
+        <!-- RIGHT COLUMN: HISTORY -->
+        <div class="lg:col-span-4 flex flex-col h-[850px]">
+          <div class="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-6 flex flex-col h-full min-h-0">
+            <div class="mb-8 flex items-center justify-between flex-shrink-0">
+              <h3 class="text-white font-bold text-base uppercase tracking-wider">History</h3>
+              <div class="flex items-center gap-2">
+                <select v-model="sortOrder" 
+                        class="bg-black/40 border border-white/10 rounded-lg text-[10px] text-white/70 px-3 py-1.5 outline-none cursor-pointer hover:border-[#Fbb03a]/50 transition-all uppercase font-bold tracking-tighter">
+                  <option value="desc">Points (Desc)</option>
+                  <option value="asc">Points (Asc)</option>
                 </select>
               </div>
+            </div>
+            
+            <div v-if="loadingEntries" class="py-10 flex justify-center flex-1 items-center">
+              <div class="w-6 h-6 border-2 border-gray-400/30 border-t-gray-400 rounded-full animate-spin" />
+            </div>
+            
+            <div v-else-if="myEntries.length === 0" class="py-8 text-center text-white/30 text-xs italic flex-1 flex items-center justify-center">
+              No previous entries found.
+            </div>
 
-              <div>
-                <label class="block text-xs font-semibold uppercase text-white/70 mb-2">Major life stressors</label>
-                <textarea v-model="form.major_stressors" rows="2" required placeholder="e.g. Frequent droughts, school fees..."
-                          class="w-full px-4 py-3 rounded-xl bg-black/20 border border-white/10 text-white focus:border-[#Fbb03a] outline-none transition-all text-sm resize-none" />
+            <div v-else class="flex-1 overflow-y-auto min-h-0 custom-scroll pr-2 relative">
+              <div class="space-y-3 absolute inset-0 right-2">
+                <div v-for="entry in myEntries" :key="entry.id" 
+                     class="group flex items-center justify-between p-4 rounded-lg bg-black/20 border border-white/5 hover:border-white/20 transition-all duration-300">
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                      <span class="text-white font-semibold text-sm truncate uppercase tracking-tight">{{ entry.location_name }}</span>
+                    </div>
+                    <div class="text-[11px] text-white/40 font-medium">
+                      {{ entry.latitude.toFixed(5) }}, {{ entry.longitude.toFixed(5) }}
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-1.5 ml-4">
+                    <button @click="editExistingEntry(entry)" 
+                            class="p-1.5 rounded-md hover:bg-white/10 text-white/50 hover:text-white transition-all"
+                            title="Edit Entry">
+                      <span class="material-symbols-outlined text-[16px]">edit</span>
+                    </button>
+                    <button @click="deleteEntry(entry.id)" 
+                            class="p-1.5 rounded-md hover:bg-white/10 text-white/50 hover:text-white transition-all"
+                            title="Delete Entry">
+                      <span class="material-symbols-outlined text-[16px]">delete</span>
+                    </button>
+                  </div>
+                </div>
               </div>
-              <div>
-                <label class="block text-xs font-semibold uppercase text-white/70 mb-2">What can be done in response to extreme climate?</label>
-                <textarea v-model="form.extreme_climate_response" rows="2" required placeholder="e.g. Capacity building, hospital food..."
-                          class="w-full px-4 py-3 rounded-xl bg-black/20 border border-white/10 text-white focus:border-[#Fbb03a] outline-none transition-all text-sm resize-none" />
-              </div>
-
             </div>
-
-            <div v-if="submitError" class="mt-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-sm font-medium">
-              {{ submitError }}
-            </div>
-            <div v-if="submitSuccess" class="mt-6 p-4 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium flex items-center gap-2">
-               <span class="material-symbols-outlined">check_circle</span>
-               {{ isEditing ? 'Data point updated successfully.' : 'New map point saved successfully!' }}
-            </div>
-
-            <div class="flex justify-end gap-4 mt-8 pt-6 border-t border-white/10">
-              <button type="submit"
-                      class="px-8 py-3 rounded-xl font-semibold text-white transition-all duration-300 bg-[#Fbb03a] hover:bg-[#e09e34] shadow-lg shadow-[#Fbb03a]/25 flex items-center justify-center gap-2 text-sm w-full md:w-auto">
-                <span class="material-symbols-outlined">{{ isEditing ? 'save_as' : 'check_circle' }}</span>
-                {{ isEditing ? 'Save Changes' : 'Submit Record' }}
-              </button>
-            </div>
-          </form>
+          </div>
         </div>
       </div>
-    </transition>
+    </div>
   </section>
 </template>
 
 <script setup>
-import { ref, onMounted, inject, onUnmounted } from 'vue'
+import { ref, onMounted, inject, onUnmounted, computed } from 'vue'
 import { supabase } from '../supabase'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
 const user = inject('user')
 const isDark = inject('isDark')
-
-const activeTab = ref('pin')
-const showModal = ref(false)
+const isMounted = ref(false)
 
 let map = null
 let formMarker = null
@@ -335,7 +272,7 @@ const initialFormState = {
   water_quality: '',
   drought_preparedness: '',
   major_stressors: '',
-  extreme_climate_response: ''
+  extreme_climate_response: 'N/A' // Defaulted for simplicity in compact UI
 }
 const form = ref({ ...initialFormState })
 
@@ -344,13 +281,25 @@ const submitSuccess = ref(false)
 const submitError = ref('')
 const isEditing = ref(false)
 const editId = ref(null)
-const selectedInfo = ref(null)
 
 const allEntries = ref([])
-const myEntries = ref([])
+const sortOrder = ref('desc')
+
+const myEntries = computed(() => {
+  if (!user.value) return []
+  const mine = allEntries.value.filter(e => e.user_id === user.value.id)
+  return mine.sort((a, b) => {
+    // Extract only digits for true numeric comparison
+    const valA = parseInt((a.point_label || '').toString().replace(/\D/g, '')) || 0
+    const valB = parseInt((b.point_label || '').toString().replace(/\D/g, '')) || 0
+    
+    return sortOrder.value === 'asc' ? valA - valB : valB - valA
+  })
+})
 const loadingEntries = ref(true)
 
 onMounted(async () => {
+  setTimeout(() => { isMounted.value = true }, 100)
   delete L.Icon.Default.prototype._getIconUrl
   L.Icon.Default.mergeOptions({
     iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
@@ -366,18 +315,19 @@ onMounted(async () => {
   }).addTo(map)
 
   map.on('click', (e) => {
-    lat.value = e.latlng.lat
-    lng.value = e.latlng.lng
+    lat.value = Number(e.latlng.lat.toFixed(5))
+    lng.value = Number(e.latlng.lng.toFixed(5))
     updateMarker(e.latlng)
+    // If we were editing, stay in edit but marker moves
   })
 
   await fetchAllEntries()
   
   const style = document.createElement('style')
   style.textContent = `
-    .custom-scroll::-webkit-scrollbar { width: 4px; }
+    .custom-scroll::-webkit-scrollbar { width: 3px; }
     .custom-scroll::-webkit-scrollbar-track { background: transparent; }
-    .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,176,58,0.2); border-radius: 10px; }
   `
   document.head.appendChild(style)
 })
@@ -385,6 +335,14 @@ onMounted(async () => {
 onUnmounted(() => {
   if (map) { map.remove() }
 })
+
+const handleManualCoordChange = () => {
+  if (lat.value && lng.value) {
+    const latlng = [lat.value, lng.value]
+    updateMarker(latlng)
+    map.panTo(latlng)
+  }
+}
 
 const updateMarker = (latlng) => {
   if (formMarker) {
@@ -403,9 +361,6 @@ const fetchAllEntries = async () => {
   
   if (!error && data) {
     allEntries.value = data
-    if (user.value) {
-      myEntries.value = data.filter(e => e.user_id === user.value.id)
-    }
     renderMapMarkers()
   }
   loadingEntries.value = false
@@ -416,40 +371,88 @@ const renderMapMarkers = () => {
   mapMarkers = []
   
   allEntries.value.forEach(entry => {
-    const m = L.marker([entry.latitude, entry.longitude], { icon: blueIcon }).addTo(map)
+    const isMine = user.value && entry.user_id === user.value.id
+    const m = L.marker([entry.latitude, entry.longitude], { 
+      icon: isMine ? greenIcon : blueIcon 
+    }).addTo(map)
 
     m.on('click', () => {
-      selectMarker(entry, m)
+      if (isMine) {
+        selectMine(entry, m)
+      } else {
+        selectOther(entry, m)
+      }
     })
     
     mapMarkers.push(m)
   })
 }
 
-const selectMarker = (entry, markerInstance) => {
+const selectMine = (entry, markerInstance) => {
   if (selectedMarkerInstance) {
-     selectedMarkerInstance.setIcon(blueIcon)
+     selectedMarkerInstance.setIcon(selectedMarkerInstance.isMine ? greenIcon : blueIcon)
   }
   
   markerInstance.setIcon(redIcon)
+  markerInstance.isMine = true
   selectedMarkerInstance = markerInstance
   
-  selectedInfo.value = entry
-  activeTab.value = 'info'
+  isEditing.value = true
+  editId.value = entry.id
+  lat.value = entry.latitude
+  lng.value = entry.longitude
+  
+  form.value = { ...entry }
+  if (formMarker) { map.removeLayer(formMarker); formMarker = null }
 }
 
-const openNewForm = () => {
-  form.value = { ...initialFormState }
+const editExistingEntry = (entry) => {
+  // Find marker to highlight
+  const m = mapMarkers.find(mark => mark.getLatLng().lat === entry.latitude && mark.getLatLng().lng === entry.longitude)
+  if (m) {
+    selectMine(entry, m)
+    map.setView([entry.latitude, entry.longitude], 12)
+  } else {
+    // If not found (unlikely), just set form
+    isEditing.value = true
+    editId.value = entry.id
+    lat.value = entry.latitude
+    lng.value = entry.longitude
+    form.value = { ...entry }
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+const selectOther = (entry, markerInstance) => {
+  // Read-only essentially in this compact UI
+  if (selectedMarkerInstance) {
+     selectedMarkerInstance.setIcon(selectedMarkerInstance.isMine ? greenIcon : blueIcon)
+  }
+  markerInstance.setIcon(redIcon)
+  markerInstance.isMine = false
+  selectedMarkerInstance = markerInstance
+  
+  // Just show info? In this UI we focus on owner actions.
+}
+
+const resetForm = () => {
   isEditing.value = false
   editId.value = null
-  showModal.value = true
+  form.value = { ...initialFormState }
+  lat.value = null
+  lng.value = null
+  submitError.value = ''
+  if (selectedMarkerInstance) {
+    selectedMarkerInstance.setIcon(selectedMarkerInstance.isMine ? greenIcon : blueIcon)
+    selectedMarkerInstance = null
+  }
+  if (formMarker) { map.removeLayer(formMarker); formMarker = null }
 }
 
 const submitForm = async () => {
   if (!user.value) { submitError.value = 'Must be logged in to save.'; return }
   if (lat.value === null || lng.value === null) {
-    submitError.value = 'Please click on the map to drop a location pin first.'
-    return
+    submitError.value = 'Please select a location on map.'; return
   }
 
   submitting.value = true
@@ -475,81 +478,47 @@ const submitForm = async () => {
   submitting.value = false
 
   if (error) {
-    console.error('db error', error)
-    submitError.value = 'Database error: ' + error.message
+    submitError.value = error.message
   } else {
     submitSuccess.value = true
-    showModal.value = false
-    activeTab.value = 'info'
-    form.value = { ...initialFormState }
-    lat.value = null
-    lng.value = null
-    if (formMarker) { map.removeLayer(formMarker); formMarker = null }
-    isEditing.value = false
-    editId.value = null
-    
+    resetForm()
     await fetchAllEntries()
     setTimeout(() => { submitSuccess.value = false }, 3000)
   }
 }
 
-const editEntry = (entry) => {
-  isEditing.value = true
-  showModal.value = true
-  editId.value = entry.id
-  
-  form.value = {
-    location_name: entry.location_name,
-    point_label: entry.point_label,
-    economic_activity: entry.economic_activity,
-    livestock_diseases: entry.livestock_diseases,
-    human_diseases: entry.human_diseases,
-    wildlife_trends: entry.wildlife_trends,
-    water_quality: entry.water_quality,
-    drought_preparedness: entry.drought_preparedness,
-    major_stressors: entry.major_stressors,
-    extreme_climate_response: entry.extreme_climate_response
-  }
-  
-  lat.value = entry.latitude
-  lng.value = entry.longitude
-  const latlng = [entry.latitude, entry.longitude]
-  updateMarker(latlng)
-  map.setView(latlng, 12)
-  window.scrollTo({ top: 0, behavior: 'smooth' })
-}
-
-const cancelEdit = () => {
-  showModal.value = false
-  isEditing.value = false
-  editId.value = null
-  form.value = { ...initialFormState }
-  lat.value = null
-  lng.value = null
-  if (formMarker) { map.removeLayer(formMarker); formMarker = null }
-}
-
 const deleteEntry = async (id) => {
   if (confirm("Are you sure you want to delete this map point?")) {
+    const originalEntries = [...allEntries.value]
+    
+    // Optimistic UI Update: Remove immediately from local state
+    allEntries.value = allEntries.value.filter(e => e.id !== id)
+    if (editId.value === id) resetForm()
+
     const { error } = await supabase.from('one_health_data').delete().eq('id', id)
-    if (!error) {
-      if (editId.value === id) cancelEdit()
-      await fetchAllEntries()
+    
+    if (error) {
+      // Revert if deletion fails on server
+      allEntries.value = originalEntries
+      submitError.value = "Failed to delete entry: " + error.message
+    } else {
+      // Silent success since we already updated the UI
+      renderMapMarkers()
     }
   }
 }
 </script>
 
 <style scoped>
-.fade-up { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+.custom-scroll::-webkit-scrollbar { width: 3px; }
+.custom-scroll::-webkit-scrollbar-track { background: transparent; }
+.custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,176,58,0.2); border-radius: 10px; }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
-.modal-enter-active, .modal-leave-active { transition: opacity 0.3s ease; }
-.modal-enter-from, .modal-leave-to { opacity: 0; }
-.modal-enter-active .fade-up, .modal-leave-active .fade-up { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-.modal-enter-from .fade-up { opacity: 0; transform: scale(0.95) translateY(20px); }
-.modal-leave-to .fade-up { opacity: 0; transform: scale(0.95); }
+/* Removed transition bloat */
 </style>

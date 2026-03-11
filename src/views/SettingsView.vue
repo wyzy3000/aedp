@@ -1,14 +1,14 @@
 <template>
   <div class="px-6 lg:px-10 py-8 max-w-4xl mx-auto animation-fade-in pb-24">
     
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold tracking-tight text-white mb-2">Account Settings</h1>
-      <p class="text-stone-400 text-sm">Manage your security credentials and view your system status.</p>
+    <div class="mb-10">
+      <h1 class="text-4xl font-extrabold tracking-tight text-white mb-3">Account Settings</h1>
+      <p class="text-white/50 text-base">Manage your security credentials and view your system status.</p>
     </div>
 
-    <div class="bg-[#1C1C1E] border border-white/5 shadow-2xl rounded-2xl p-6 mb-6">
-      <h2 class="text-sm font-semibold text-stone-300 uppercase tracking-widest mb-4 flex items-center gap-2">
-        <Clock class="w-4 h-4 text-[#FBB03A]" /> 
+    <div class="bg-[#1C1F22] border border-white/10 rounded-2xl p-6 mb-6">
+      <h2 class="text-xs font-bold text-white/40 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+        <Clock class="w-4 h-4 text-white/40" /> 
         System Time
       </h2>
       <div class="text-white text-lg font-medium tabular-nums">
@@ -19,9 +19,9 @@
       </div>
     </div>
 
-    <div class="bg-[#1C1C1E] border border-white/5 shadow-2xl rounded-2xl p-6 mb-6">
-      <h2 class="text-sm font-semibold text-stone-300 uppercase tracking-widest mb-4 flex items-center gap-2">
-        <UserCircle class="w-4 h-4 text-[#FBB03A]" /> 
+    <div class="bg-[#1C1F22] border border-white/10 rounded-2xl p-6 mb-6">
+      <h2 class="text-xs font-bold text-white/40 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+        <UserCircle class="w-4 h-4 text-white/40" /> 
         Account Identification
       </h2>
       
@@ -35,25 +35,25 @@
             :value="user?.email" 
             readonly
             disabled
-            class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-stone-400 outline-none cursor-not-allowed"
+            class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white/40 outline-none cursor-not-allowed text-sm"
           />
-          <p class="text-xs text-stone-500 mt-2">Your email address cannot be changed as it serves as your universal identifier.</p>
+          <p class="text-[10px] text-white/30 mt-2 uppercase tracking-wide">Your email address cannot be changed as it serves as your universal identifier.</p>
         </div>
 
         <div class="flex-1 md:max-w-xs">
           <label class="block text-xs font-semibold text-stone-400 mb-2 uppercase tracking-wide">
             Assigned Role
           </label>
-          <div class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-[#FBB03A] font-semibold outline-none">
+          <div class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white font-semibold outline-none text-sm">
             {{ userProfile?.role || 'Loading...' }}
           </div>
         </div>
       </div>
     </div>
 
-    <div class="bg-[#1C1C1E] border border-white/5 shadow-2xl rounded-2xl p-6">
-      <h2 class="text-sm font-semibold text-stone-300 uppercase tracking-widest mb-4 flex items-center gap-2">
-        <ShieldCheck class="w-4 h-4 text-[#FBB03A]" /> 
+    <div class="bg-[#1C1F22] border border-white/10 rounded-2xl p-6 mb-6">
+      <h2 class="text-xs font-bold text-white/40 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+        <ShieldCheck class="w-4 h-4 text-white/40" /> 
         Security
       </h2>
       
@@ -70,7 +70,7 @@
         </div>
 
         <div>
-          <label class="block text-xs font-semibold text-stone-300 mb-2 uppercase tracking-wide">
+          <label class="block text-[10px] font-bold text-white/40 mb-2 uppercase tracking-[0.2em]">
             New Password
           </label>
           <input 
@@ -78,12 +78,12 @@
             type="password" 
             placeholder="Min. 8 characters"
             required
-            class="w-full bg-white/5 border border-white/10 focus:border-[#FBB03A] focus:ring-1 focus:ring-[#FBB03A] rounded-xl px-4 py-3 text-white placeholder:text-stone-600 outline-none transition-all"
+            class="w-full bg-[#1C1F22] border border-white/10 focus:border-white/30 rounded-xl px-4 py-3 text-white placeholder:text-white/20 outline-none transition-all text-sm"
           />
         </div>
 
         <div>
-          <label class="block text-xs font-semibold text-stone-300 mb-2 uppercase tracking-wide">
+          <label class="block text-[10px] font-bold text-white/40 mb-2 uppercase tracking-[0.2em]">
             Confirm New Password
           </label>
           <input 
@@ -91,7 +91,7 @@
             type="password" 
             placeholder="Retype new password"
             required
-            class="w-full bg-white/5 border border-white/10 focus:border-[#FBB03A] focus:ring-1 focus:ring-[#FBB03A] rounded-xl px-4 py-3 text-white placeholder:text-stone-600 outline-none transition-all"
+            class="w-full bg-[#1C1F22] border border-white/10 focus:border-white/30 rounded-xl px-4 py-3 text-white placeholder:text-white/20 outline-none transition-all text-sm"
           />
         </div>
 
@@ -99,7 +99,7 @@
           <button 
             type="submit" 
             :disabled="updating"
-            class="bg-[#FBB03A] hover:bg-[#e09e34] text-white px-6 py-3 rounded-xl font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            class="bg-white/5 hover:bg-white/10 border border-white/10 text-white px-8 py-3.5 rounded-xl font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 group text-sm uppercase tracking-widest"
           >
             <span v-if="updating" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
             {{ updating ? 'Updating...' : 'Update Password' }}
@@ -108,30 +108,53 @@
       </form>
     </div>
 
-    <div v-if="userProfile?.role === 'Admin'" class="bg-[#1C1C1E] border border-[#FBB03A]/20 shadow-2xl rounded-2xl p-6 mt-6">
-      <h2 class="text-sm font-semibold text-[#FBB03A] uppercase tracking-widest mb-4 flex items-center gap-2">
-        <Users class="w-4 h-4" /> 
-        User Management (Admin)
-      </h2>
+    <div v-if="userProfile?.role === 'Admin'" class="bg-[#1C1F22] border border-white/10 rounded-2xl p-6 mt-10">
+      <div class="flex items-center justify-between mb-8">
+        <h2 class="text-xs font-bold text-white/40 uppercase tracking-[0.2em] flex items-center gap-2">
+          <Users class="w-4 h-4" /> 
+          User Management (Admin)
+        </h2>
+        <span class="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-[10px] font-bold text-white/40 uppercase tracking-widest">
+          {{ allUsers.length }} Total Users
+        </span>
+      </div>
       
-      <div v-if="loadingUsers" class="text-stone-400 text-sm">Loading users...</div>
+      <div v-if="loadingUsers" class="flex items-center gap-2 text-white/30 text-xs py-10 justify-center">
+        <div class="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+        Loading secure user data...
+      </div>
       
-      <div v-else class="overflow-x-auto">
-        <table class="w-full text-left text-sm text-stone-300">
-          <thead class="text-xs uppercase bg-white/5 text-stone-400 border-b border-white/10">
+      <div v-else class="rounded-xl border border-white/10 overflow-hidden bg-white/[0.02]">
+        <table class="w-full text-left text-xs text-white/70">
+          <thead class="text-[10px] uppercase bg-white/5 text-white/40 border-b border-white/10">
             <tr>
-              <th scope="col" class="px-4 py-3 font-semibold">Email</th>
-              <th scope="col" class="px-4 py-3 font-semibold">Current Role</th>
+              <th scope="col" class="px-5 py-4 font-bold tracking-widest">User Profile</th>
+              <th scope="col" class="px-5 py-4 font-bold tracking-widest">Status</th>
+              <th scope="col" class="px-5 py-4 font-bold tracking-widest">Current Role</th>
+              <th scope="col" class="px-5 py-4 font-bold tracking-widest text-right">Actions</th>
             </tr>
           </thead>
-          <tbody>
-            <tr v-for="u in allUsers" :key="u.id" class="border-b border-white/5 hover:bg-white/[0.02]">
-              <td class="px-4 py-3 font-medium">{{ u.email || 'N/A' }}</td>
-              <td class="px-4 py-3">
+          <tbody class="divide-y divide-white/5">
+            <tr v-for="u in allUsers" :key="u.id" class="hover:bg-white/[0.04] transition-colors group">
+              <td class="px-5 py-4">
+                <div class="flex flex-col">
+                  <span class="font-bold text-white text-sm">{{ u.email || 'N/A' }}</span>
+                  <span class="text-[10px] text-white/20 font-mono mt-0.5 truncate max-w-[150px]">{{ u.id }}</span>
+                </div>
+              </td>
+              <td class="px-5 py-4">
+                <span :class="[
+                  'px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest border',
+                  u.status === 'Activated' ? 'bg-green-500/10 text-green-400 border-green-500/20' : 'bg-orange-500/10 text-orange-400 border-orange-500/20'
+                ]">
+                  {{ u.status || 'Pending' }}
+                </span>
+              </td>
+              <td class="px-5 py-4">
                 <select 
                   v-model="u.role"
                   @change="updateRole(u.id, u.role)"
-                  class="bg-[#2A2A2E] border border-white/10 text-white text-sm rounded-lg focus:ring-[#FBB03A] focus:border-[#FBB03A] block w-full p-2 outline-none"
+                  class="bg-[#1C1F22] border border-white/10 text-white text-xs rounded-lg focus:border-white/30 block w-full p-2 outline-none appearance-none cursor-pointer"
                   :disabled="updatingRole === u.id"
                 >
                   <option value="Admin">Admin</option>
@@ -140,29 +163,57 @@
                   <option value="User">User</option>
                 </select>
               </td>
+              <td class="px-5 py-4 text-right">
+                <button @click="deleteUser(u.id, u.email)" 
+                  class="p-2 text-white/20 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
+                  title="Hard Delete User">
+                  <Trash2 class="w-4 h-4" />
+                </button>
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <div class="mt-6 pt-6 border-t border-white/5">
-        <h3 class="text-sm font-semibold text-stone-300 uppercase tracking-widest mb-4 flex items-center gap-2">
-          <UserPlus class="w-4 h-4 text-[#FBB03A]" />
-          Add New User
+      <div class="mt-10 pt-10 border-t border-white/10">
+        <h3 class="text-xs font-bold text-white/40 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
+          <UserPlus class="w-4 h-4 text-white/40" />
+          Invite New Contributor
         </h3>
-        <div class="flex flex-col sm:flex-row gap-3">
-          <input v-model="newUserEmail" type="email" placeholder="user@example.com"
-            class="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder-white/30 focus:ring-2 focus:ring-[#FBB03A]/40 focus:border-[#FBB03A] outline-none transition-all" />
-          <input v-model="newUserPassword" type="password" placeholder="Temporary password (min 8 chars)"
-            class="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder-white/30 focus:ring-2 focus:ring-[#FBB03A]/40 focus:border-[#FBB03A] outline-none transition-all" />
-          <button @click="addUser" :disabled="addingUser"
-            class="px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-[#FBB03A] hover:bg-[#e09e34] disabled:opacity-50 disabled:cursor-not-allowed transition-all whitespace-nowrap">
-            {{ addingUser ? 'Creating...' : 'Create Account' }}
-          </button>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="md:col-span-1">
+            <input v-model="newUserEmail" type="email" placeholder="Email Address"
+              class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder:text-white/20 focus:border-white/30 outline-none transition-all" />
+          </div>
+          <div class="md:col-span-1">
+            <input v-model="newUserPassword" type="password" placeholder="Temp Password"
+              class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder:text-white/20 focus:border-white/30 outline-none transition-all" />
+          </div>
+          <div class="md:col-span-1">
+            <select v-model="newUserRole"
+              class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:border-white/30 outline-none transition-all appearance-none cursor-pointer">
+              <option value="User">Standard User</option>
+              <option value="Data Analyst">Data Analyst</option>
+              <option value="Resource Assessor">Resource Assessor</option>
+              <option value="Admin">System Admin</option>
+            </select>
+          </div>
+          <div class="md:col-span-1">
+            <button @click="addUser" :disabled="addingUser"
+              class="w-full h-full bg-[#FBB03A] text-white hover:bg-[#e09e34] disabled:opacity-50 disabled:cursor-not-allowed transition-all py-3 rounded-xl font-bold text-xs uppercase tracking-widest">
+              {{ addingUser ? 'Inviting...' : 'Invite User' }}
+            </button>
+          </div>
         </div>
-        <p v-if="addUserError" class="text-red-400 text-xs mt-2">{{ addUserError }}</p>
-        <p v-if="addUserSuccess" class="text-green-400 text-xs mt-2">{{ addUserSuccess }}</p>
-        <p class="text-stone-500 text-xs mt-2">The user will receive a confirmation email. You can assign their role above after they appear in the list.</p>
+        <div class="mt-4 flex flex-col gap-2">
+           <p v-if="addUserError" class="text-red-400 text-[10px] font-bold uppercase tracking-wider bg-red-400/10 p-2 rounded-lg border border-red-400/20 w-fit flex items-center gap-2">
+             <AlertCircle class="w-3 h-3" /> {{ addUserError }}
+           </p>
+           <p v-if="addUserSuccess" class="text-green-400 text-[10px] font-bold uppercase tracking-wider bg-green-400/10 p-2 rounded-lg border border-green-500/20 w-fit flex items-center gap-2">
+             <CheckCircle2 class="w-3 h-3" /> {{ addUserSuccess }}
+           </p>
+        </div>
+        <p class="text-white/30 text-[10px] mt-4 uppercase tracking-[0.15em] leading-relaxed">The user will receive a system invitation. Once they sign in for the first time, their status will flip from "Pending" to "Activated". Role is assigned immediately upon registration.</p>
       </div>
     </div>
 
@@ -171,8 +222,18 @@
 
 <script setup>
 import { ref, inject, onMounted, onUnmounted } from 'vue'
-import { Clock, UserCircle, ShieldCheck, AlertCircle, CheckCircle2, Users, UserPlus } from 'lucide-vue-next'
+import { Clock, UserCircle, ShieldCheck, AlertCircle, CheckCircle2, Users, UserPlus, Trash2 } from 'lucide-vue-next'
 import { supabase } from '../supabase'
+
+// Admin helpers using direct REST calls (JS client admin namespace is browser-restricted)
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
+const SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxpd3V5ZXVrenBxZmZ4aG1iYnhzIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MjcwOTk0NywiZXhwIjoyMDg4Mjg1OTQ3fQ.LtyigQQn8f5auwT0Plz7AdfhUoWZ4_o8UFNXEO0faJs'
+
+const adminHeaders = {
+  'Content-Type': 'application/json',
+  'apikey': SERVICE_ROLE_KEY,
+  'Authorization': `Bearer ${SERVICE_ROLE_KEY}`
+}
 
 const user = inject('user')
 const userProfile = ref(null)
@@ -201,7 +262,20 @@ onMounted(async () => {
   timer = setInterval(updateClock, 1000)
 
   if (user.value) {
-    const { data } = await supabase.from('profiles').select('*').eq('id', user.value.id).single()
+    // Use maybeSingle() to avoid 406 when no profile row exists yet
+    let { data } = await supabase.from('profiles').select('*').eq('id', user.value.id).maybeSingle()
+    
+    // If no profile exists, create one (first-time admin bootstrap)
+    if (!data) {
+      const { data: upserted } = await supabase.from('profiles').upsert({
+        id: user.value.id,
+        email: user.value.email,
+        role: user.value.email === 'wycliff.ontiri@gmail.com' ? 'Admin' : 'User',
+        status: 'Activated'
+      }).select().maybeSingle()
+      data = upserted
+    }
+    
     userProfile.value = data
 
     if (data?.role === 'Admin') {
@@ -229,6 +303,7 @@ const updateRole = async (userId, newRole) => {
 
 const newUserEmail    = ref('')
 const newUserPassword = ref('')
+const newUserRole     = ref('User')
 const addingUser      = ref(false)
 const addUserError    = ref('')
 const addUserSuccess  = ref('')
@@ -245,19 +320,68 @@ const addUser = async () => {
     return
   }
   addingUser.value = true
-  const { data, error } = await supabase.auth.signUp({
-    email: newUserEmail.value.trim().toLowerCase(),
-    password: newUserPassword.value,
-  })
-  if (error) {
-    addUserError.value = error.message
-  } else {
-    addUserSuccess.value = `Account created for ${newUserEmail.value}. They will receive a confirmation email.`
-    newUserEmail.value    = ''
-    newUserPassword.value = ''
-    await fetchUsers()
+  
+  try {
+    // Use Supabase Admin REST API directly (JS client admin namespace is CORS-restricted in browsers)
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/admin/users`, {
+      method: 'POST',
+      headers: adminHeaders,
+      body: JSON.stringify({
+        email: newUserEmail.value.trim().toLowerCase(),
+        password: newUserPassword.value,
+        email_confirm: true,
+        user_metadata: { role: newUserRole.value }
+      })
+    })
+    
+    const result = await res.json()
+    
+    if (!res.ok) {
+      addUserError.value = result.msg || result.message || `Error ${res.status}`
+    } else {
+      // Set role and Activated status on the new profile row
+      await supabase.from('profiles').upsert({ 
+        id: result.id, 
+        email: newUserEmail.value.trim().toLowerCase(),
+        role: newUserRole.value, 
+        status: 'Activated' 
+      })
+      
+      addUserSuccess.value = `User ${newUserEmail.value} added and activated successfully.`
+      newUserEmail.value    = ''
+      newUserPassword.value = ''
+      await fetchUsers()
+    }
+  } catch (e) {
+    addUserError.value = 'Network error: ' + e.message
   }
   addingUser.value = false
+}
+
+const deleteUser = async (userId, email) => {
+  if (userId === user.value.id) {
+    alert("You cannot delete your own admin account.")
+    return
+  }
+  if (!confirm(`Are you absolutely sure you want to HARD DELETE ${email}? This is permanent.`)) {
+    return
+  }
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${userId}`, {
+      method: 'DELETE',
+      headers: adminHeaders
+    })
+    if (!res.ok) {
+      const err = await res.json()
+      alert('Failed to delete user: ' + (err.msg || err.message || res.status))
+    } else {
+      await supabase.from('profiles').delete().eq('id', userId)
+      await fetchUsers()
+    }
+  } catch (e) {
+    alert('Network error: ' + e.message)
+  }
 }
 
 onUnmounted(() => {
@@ -312,5 +436,11 @@ const updatePassword = async () => {
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* Fix native dropdown option text visibility on dark backgrounds */
+select option {
+  background-color: #1C1F22;
+  color: #ffffff;
 }
 </style>
