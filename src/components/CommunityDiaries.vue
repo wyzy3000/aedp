@@ -16,7 +16,7 @@
           Local Community Environmental Diaries
         </h2>
         <p class="mt-2 font-display font-medium text-lg italic transition-colors" style="color: #FBB03A;">Maoni ya wenyeji</p>
-        <p class="mt-3 text-white text-[15px] leading-relaxed max-w-2xl transition-colors opacity-100">
+        <p class="mt-3 text-white text-[15px] leading-relaxed max-w-2xl transition-colors">
           First-hand seasonal observations from pastoralist and farming communities
           across the Amboseli ecosystem, recorded as structured field notes.
         </p>
