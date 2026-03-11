@@ -104,8 +104,8 @@
               </div>
             </div>
 
-            <p class="text-[15px] md:text-base text-slate-800 dark:text-neutral-200 leading-relaxed font-serif italic mb-6 line-clamp-5 group-hover:line-clamp-none transition-all duration-300 relative z-10">
-              "{{ entry.observation }}"
+            <p class="text-[15px] md:text-base text-slate-800 dark:text-neutral-200 leading-relaxed mb-6 line-clamp-5 group-hover:line-clamp-none transition-all duration-300 relative z-10">
+              {{ entry.observation }}
             </p>
           </div>
 
