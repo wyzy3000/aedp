@@ -225,15 +225,8 @@ import { ref, inject, onMounted, onUnmounted } from 'vue'
 import { Clock, UserCircle, ShieldCheck, AlertCircle, CheckCircle2, Users, UserPlus, Trash2 } from 'lucide-vue-next'
 import { supabase } from '../supabase'
 
-// Admin helpers using direct REST calls (JS client admin namespace is browser-restricted)
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
-const SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxpd3V5ZXVrenBxZmZ4aG1iYnhzIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MjcwOTk0NywiZXhwIjoyMDg4Mjg1OTQ3fQ.LtyigQQn8f5auwT0Plz7AdfhUoWZ4_o8UFNXEO0faJs'
-
-const adminHeaders = {
-  'Content-Type': 'application/json',
-  'apikey': SERVICE_ROLE_KEY,
-  'Authorization': `Bearer ${SERVICE_ROLE_KEY}`
-}
+// Admin operations are handled server-side via the admin-user-action Edge Function.
+// The service_role key is stored as a Deno secret and never reaches the browser.
 
 const user = inject('user')
 const userProfile = ref(null)
@@ -320,33 +313,20 @@ const addUser = async () => {
     return
   }
   addingUser.value = true
-  
+
   try {
-    // Use Supabase Admin REST API directly (JS client admin namespace is CORS-restricted in browsers)
-    const res = await fetch(`${SUPABASE_URL}/auth/v1/admin/users`, {
-      method: 'POST',
-      headers: adminHeaders,
-      body: JSON.stringify({
+    const { data, error } = await supabase.functions.invoke('admin-user-action', {
+      body: {
+        action: 'createUser',
         email: newUserEmail.value.trim().toLowerCase(),
         password: newUserPassword.value,
-        email_confirm: true,
-        user_metadata: { role: newUserRole.value }
-      })
+        role: newUserRole.value
+      }
     })
-    
-    const result = await res.json()
-    
-    if (!res.ok) {
-      addUserError.value = result.msg || result.message || `Error ${res.status}`
+
+    if (error || data?.error) {
+      addUserError.value = data?.error || error.message
     } else {
-      // Set role and Activated status on the new profile row
-      await supabase.from('profiles').upsert({ 
-        id: result.id, 
-        email: newUserEmail.value.trim().toLowerCase(),
-        role: newUserRole.value, 
-        status: 'Activated' 
-      })
-      
       addUserSuccess.value = `User ${newUserEmail.value} added and activated successfully.`
       newUserEmail.value    = ''
       newUserPassword.value = ''
@@ -360,23 +340,18 @@ const addUser = async () => {
 
 const deleteUser = async (userId, email) => {
   if (userId === user.value.id) {
-    alert("You cannot delete your own admin account.")
+    alert('You cannot delete your own admin account.')
     return
   }
-  if (!confirm(`Are you absolutely sure you want to HARD DELETE ${email}? This is permanent.`)) {
-    return
-  }
+  if (!confirm(`Permanently delete ${email}? This cannot be undone.`)) return
 
   try {
-    const res = await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${userId}`, {
-      method: 'DELETE',
-      headers: adminHeaders
+    const { data, error } = await supabase.functions.invoke('admin-user-action', {
+      body: { action: 'deleteUser', userId }
     })
-    if (!res.ok) {
-      const err = await res.json()
-      alert('Failed to delete user: ' + (err.msg || err.message || res.status))
+    if (error || data?.error) {
+      alert('Failed to delete user: ' + (data?.error || error.message))
     } else {
-      await supabase.from('profiles').delete().eq('id', userId)
       await fetchUsers()
     }
   } catch (e) {

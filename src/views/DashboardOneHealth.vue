@@ -237,29 +237,20 @@ const lng = ref(null)
 
 const blueIcon = new L.Icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
+  iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34],
+  shadowUrl: '', shadowSize: [0, 0]
 })
 
 const redIcon = new L.Icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
+  iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34],
+  shadowUrl: '', shadowSize: [0, 0]
 })
 
 const greenIcon = new L.Icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
+  iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34],
+  shadowUrl: '', shadowSize: [0, 0]
 })
 
 const initialFormState = {
@@ -495,7 +486,8 @@ const deleteEntry = async (id) => {
     allEntries.value = allEntries.value.filter(e => e.id !== id)
     if (editId.value === id) resetForm()
 
-    const { error } = await supabase.from('one_health_data').delete().eq('id', id)
+    // Scoped to current user's own entries — prevents deleting other users' data
+    const { error } = await supabase.from('one_health_data').delete().eq('id', id).eq('user_id', user.value.id)
     
     if (error) {
       // Revert if deletion fails on server
