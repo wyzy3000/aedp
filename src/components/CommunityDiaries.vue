@@ -21,40 +21,47 @@
           across the Amboseli ecosystem, recorded as structured field notes.
         </p>
 
-        <div class="mt-8 flex flex-col sm:flex-row gap-4">
-          <div class="flex flex-col gap-1">
-            <label class="text-xs font-semibold uppercase tracking-wider text-white">Location</label>
-            <select v-model="filterLocation" @change="applyFilters"
-                    class="bg-white/10 border border-white/20 text-white text-sm rounded-xl focus:ring-[#FBB03A] focus:border-[#FBB03A] block w-full sm:w-48 p-2.5 outline-none transition-all [&>option]:bg-slate-800 [&>option]:text-white">
-              <option value="">All Locations</option>
-              <option v-for="loc in uniqueLocations" :key="loc" :value="loc">{{ loc }}</option>
-            </select>
+        <div class="mt-8 flex flex-col sm:flex-row gap-5">
+          <div class="flex flex-col gap-1.5 relative group">
+            <label class="text-[10px] font-bold uppercase tracking-widest text-[#FBB03A]">Location</label>
+            <div class="relative">
+              <select v-model="filterLocation" @change="applyFilters"
+                      class="w-full sm:w-56 appearance-none bg-white/40 dark:bg-[#1C1F22]/80 border border-slate-200 dark:border-white/10 text-slate-800 dark:text-white text-sm rounded-xl focus:ring-2 focus:ring-[#FBB03A]/50 focus:border-[#FBB03A] py-3 pl-4 pr-10 outline-none transition-all cursor-pointer shadow-sm hover:shadow-md backdrop-blur-sm">
+                <option value="">All Locations</option>
+                <option v-for="loc in uniqueLocations" :key="loc" :value="loc">{{ loc }}</option>
+              </select>
+              <ChevronDown class="w-4 h-4 text-slate-500 dark:text-neutral-400 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none transition-transform group-hover:translate-y-[-40%]" />
+            </div>
           </div>
-          <div class="flex flex-col gap-1">
-            <label class="text-xs font-semibold uppercase tracking-wider text-white">Date</label>
-            <select v-model="filterDate" @change="applyFilters"
-                    class="bg-white/10 border border-white/20 text-white text-sm rounded-xl focus:ring-[#FBB03A] focus:border-[#FBB03A] block w-full sm:w-48 p-2.5 outline-none transition-all [&>option]:bg-slate-800 [&>option]:text-white">
-              <option value="all">All Time</option>
-              <option value="7">Last 7 Days</option>
-              <option value="30">Last 30 Days</option>
-              <option value="90">Last 3 Months</option>
-            </select>
+          <div class="flex flex-col gap-1.5 relative group">
+            <label class="text-[10px] font-bold uppercase tracking-widest text-[#FBB03A]">Date Range</label>
+            <div class="relative">
+              <select v-model="filterDate" @change="applyFilters"
+                      class="w-full sm:w-56 appearance-none bg-white/40 dark:bg-[#1C1F22]/80 border border-slate-200 dark:border-white/10 text-slate-800 dark:text-white text-sm rounded-xl focus:ring-2 focus:ring-[#FBB03A]/50 focus:border-[#FBB03A] py-3 pl-4 pr-10 outline-none transition-all cursor-pointer shadow-sm hover:shadow-md backdrop-blur-sm">
+                <option value="all">All Time</option>
+                <option value="7">Last 7 Days</option>
+                <option value="30">Last 30 Days</option>
+                <option value="90">Last 3 Months</option>
+              </select>
+              <ChevronDown class="w-4 h-4 text-slate-500 dark:text-neutral-400 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none transition-transform group-hover:translate-y-[-40%]" />
+            </div>
           </div>
         </div>
       </div>
 
-      <div v-if="loading" class="columns-1 sm:columns-2 lg:columns-3 gap-5 space-y-5">
-        <div v-for="i in 6" :key="i" class="break-inside-avoid glass-card p-5 animate-pulse">
-          <div class="flex gap-2 mb-3">
-            <div class="h-5 w-20 rounded-full bg-white/5" />
-            <div class="h-5 w-24 rounded-full bg-white/5" />
+      <div v-if="loading" class="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
+        <div v-for="i in 6" :key="i" class="break-inside-avoid glass-card p-6 rounded-2xl border border-black/5 dark:border-white/10 bg-white/50 dark:bg-black/20 backdrop-blur-md animate-pulse">
+          <div class="w-24 h-6 rounded-full bg-slate-200 dark:bg-white/5 mb-6" />
+          <div class="space-y-3 mb-8">
+            <div class="h-4 rounded bg-slate-200 dark:bg-white/5 w-full" />
+            <div class="h-4 rounded bg-slate-200 dark:bg-white/5 w-5/6" />
+            <div class="h-4 rounded bg-slate-200 dark:bg-white/5 w-4/6" />
+            <div class="h-4 rounded bg-slate-200 dark:bg-white/5 w-3/4" />
           </div>
-          <div class="space-y-2 mb-4">
-            <div class="h-3 rounded bg-white/5 w-full" />
-            <div class="h-3 rounded bg-white/5 w-5/6" />
-            <div class="h-3 rounded bg-white/5 w-4/6" />
+          <div class="flex items-center justify-between pt-4 border-t border-black/5 dark:border-white/10">
+            <div class="h-4 rounded bg-slate-200 dark:bg-white/5 w-20" />
+            <div class="h-4 rounded bg-slate-200 dark:bg-white/5 w-24" />
           </div>
-          <div class="h-1 rounded-full bg-white/5" />
         </div>
       </div>
 
@@ -64,56 +71,53 @@
       </div>
 
       <div v-else-if="diariesData.length === 0"
-           class="flex flex-col items-center justify-center py-24 text-center animate-fade-in">
-        <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-6"
-             style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
-          <span class="material-symbols-outlined text-white/40" style="font-size: 32px;">inbox</span>
+           class="flex flex-col items-center justify-center py-32 text-center animate-fade-in px-4">
+        <div class="w-24 h-24 rounded-full flex items-center justify-center mb-6 bg-gradient-to-tr from-stone-200 to-white dark:from-white/5 dark:to-white/10 border border-black/5 dark:border-white/10 shadow-xl backdrop-blur-lg">
+          <BookOpen class="w-10 h-10 text-slate-400/50 dark:text-white/30" />
         </div>
-        <h3 class="font-display font-medium text-xl text-white mb-2">No observations found</h3>
-        <p class="text-white/50 text-sm max-w-sm leading-relaxed mb-6">
-          There are currently no diary entries matching your selected location or date.
+        <h3 class="font-display font-semibold text-2xl text-slate-800 dark:text-white mb-3">No field notes found</h3>
+        <p class="text-slate-500 dark:text-white/50 text-[15px] max-w-sm leading-relaxed mb-8">
+          There are currently no community diary entries matching your selected filters. Adjust your search to explore more observations.
         </p>
         <button v-if="filterLocation !== '' || filterDate !== 'all'" @click="resetFilters"
-          class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium text-sm transition-all duration-300">
+          class="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-white/10 dark:hover:bg-white/20 text-white font-semibold text-sm transition-all duration-300 shadow-lg hover:-translate-y-0.5">
           <span class="material-symbols-outlined" style="font-size: 18px;">refresh</span>
-          Clear Filters
+          Clear All Filters
         </button>
       </div>
 
-      <div v-else class="columns-1 sm:columns-2 lg:columns-3 gap-5 space-y-5 animate-fade-in" ref="gridRef">
+      <div v-else class="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6 animate-fade-in" ref="gridRef">
         <div v-for="entry in diariesData" :key="entry.id"
-             class="break-inside-avoid glass-card p-5 hover:border-forest-600/40 hover:bg-black/5 dark:hover:bg-white/[0.06] transition-all duration-300 group">
+             class="break-inside-avoid glass-card p-6 rounded-2xl border border-black/5 dark:border-white/10 hover:border-black/10 dark:hover:border-white/20 transition-all duration-500 group relative flex flex-col hover:-translate-y-1 bg-white/50 dark:bg-[#1C1F22]/80 backdrop-blur-md overflow-hidden hover:shadow-xl dark:hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
+             
+          <!-- Glow effect based on sentiment -->
+          <div class="absolute inset-0 opacity-0 group-hover:opacity-10 dark:group-hover:opacity-15 transition-opacity duration-700 pointer-events-none"
+               :style="{ background: `radial-gradient(circle at top right, ${sentimentColor(entry.sentiment)}, transparent 70%)` }" />
 
-          <div class="flex items-start justify-between gap-3 mb-3">
-            <div class="flex-1">
-              <div class="flex items-center gap-2 flex-wrap">
-                <span class="tag-pill">
-                  <MapPin class="w-3 h-3 text-forest-600 dark:text-savanna-400 transition-colors" />
-                  {{ entry.location }}
-                </span>
-                <span class="tag-pill">
-                  <Calendar class="w-3 h-3 text-slate-500 dark:text-neutral-500 transition-colors" />
-                  {{ formatDate(entry.date) }}
+          <div class="flex-1">
+            <div class="mb-5 flex justify-between items-start">
+              <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-black/5 dark:border-white/5 bg-white/80 dark:bg-black/20 shadow-sm relative z-10 transition-colors">
+                <div class="w-1.5 h-1.5 rounded-full shadow-[0_0_8px_currentColor]" :style="{ backgroundColor: sentimentColor(entry.sentiment), color: sentimentColor(entry.sentiment) }" />
+                <span class="text-[10px] uppercase tracking-widest font-bold text-slate-700 dark:text-neutral-300">
+                  {{ getSentimentLabel(entry.sentiment) }}
                 </span>
               </div>
             </div>
+
+            <p class="text-[15px] md:text-base text-slate-800 dark:text-neutral-200 leading-relaxed font-serif italic mb-6 line-clamp-5 group-hover:line-clamp-none transition-all duration-300 relative z-10">
+              "{{ entry.observation }}"
+            </p>
           </div>
 
-          <p class="text-sm text-slate-600 dark:text-neutral-300 leading-relaxed group-hover:text-slate-900 dark:group-hover:text-neutral-200 transition-colors">
-            {{ entry.observation }}
-          </p>
-
-          <div class="mt-4 flex items-center gap-2">
-            <span class="text-[10px] text-slate-500 dark:text-neutral-600 uppercase tracking-wider transition-colors">Sentiment</span>
-            <div class="flex-1 h-1 bg-black/10 dark:bg-white/5 rounded-full overflow-hidden transition-colors">
-              <div class="h-full rounded-full transition-all duration-500"
-                   :style="{ width: entry.sentiment + '%', background: sentimentColor(entry.sentiment) }" />
+          <div class="mt-auto pt-4 border-t border-black/5 dark:border-white/10 flex items-center justify-between gap-3 relative z-10">
+            <div class="flex items-center gap-1.5 text-xs font-semibold text-slate-500 dark:text-neutral-400 group-hover:text-slate-700 dark:group-hover:text-neutral-300 transition-colors">
+              <MapPin class="w-3.5 h-3.5 text-[#FBB03A]" />
+              <span class="truncate max-w-[120px]">{{ entry.location }}</span>
             </div>
-            <span class="text-[10px]" :style="{ color: sentimentColor(entry.sentiment) }">
-              {{ entry.sentiment >= 70 ? (lang === 'en' ? 'Hopeful' : 'Matumaini') :
-                 entry.sentiment >= 40 ? (lang === 'en' ? 'Mixed' : 'Wastani') :
-                 (lang === 'en' ? 'Concerned' : 'Wasiwasi') }}
-            </span>
+            <div class="flex items-center gap-1.5 text-xs font-medium text-slate-400 dark:text-neutral-500">
+              <Calendar class="w-3.5 h-3.5" />
+              <span>{{ formatDate(entry.date) }}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -135,7 +139,7 @@
 
 <script setup>
 import { ref, inject, onMounted, onUnmounted } from 'vue'
-import { MapPin, Calendar, BookOpen } from 'lucide-vue-next'
+import { MapPin, Calendar, BookOpen, ChevronDown } from 'lucide-vue-next'
 import { supabase } from '../supabase'
 
 const lang = inject('lang')
@@ -317,6 +321,12 @@ const sentimentColor = (val) => {
   if (val >= 70) return '#22c55e'
   if (val >= 40) return '#eab308'
   return '#ef4444'
+}
+
+const getSentimentLabel = (val) => {
+  if (val >= 70) return lang.value === 'en' ? 'Hopeful' : 'Matumaini'
+  if (val >= 40) return lang.value === 'en' ? 'Mixed' : 'Wastani'
+  return lang.value === 'en' ? 'Concerned' : 'Wasiwasi'
 }
 </script>
 
