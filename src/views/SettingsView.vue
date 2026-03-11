@@ -180,14 +180,12 @@
           <UserPlus class="w-4 h-4 text-white/40" />
           Invite New Contributor
         </h3>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
           <div class="md:col-span-1">
-            <input v-model="newUserEmail" type="email" placeholder="Email Address"
-              class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder:text-white/20 focus:border-white/30 outline-none transition-all" />
+            <BaseInput v-model="newUserEmail" type="email" placeholder="Email Address" class="!bg-white/5 !border-white/10 !text-white placeholder:!text-white/20 focus:!border-white/30" />
           </div>
           <div class="md:col-span-1">
-            <input v-model="newUserPassword" type="password" placeholder="Temp Password"
-              class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder:text-white/20 focus:border-white/30 outline-none transition-all" />
+            <BaseInput v-model="newUserPassword" type="password" placeholder="Temp Password" class="!bg-white/5 !border-white/10 !text-white placeholder:!text-white/20 focus:!border-white/30" />
           </div>
           <div class="md:col-span-1">
             <select v-model="newUserRole"
@@ -198,11 +196,10 @@
               <option value="Admin">System Admin</option>
             </select>
           </div>
-          <div class="md:col-span-1">
-            <button @click="addUser" :disabled="addingUser"
-              class="w-full h-full bg-[#FBB03A] text-white hover:bg-[#e09e34] disabled:opacity-50 disabled:cursor-not-allowed transition-all py-3 rounded-xl font-bold text-xs uppercase tracking-widest">
+          <div class="md:col-span-1 pb-[2px]">
+            <BaseButton @click="addUser" :loading="addingUser" variant="primary" class="h-11">
               {{ addingUser ? 'Inviting...' : 'Invite User' }}
-            </button>
+            </BaseButton>
           </div>
         </div>
         <div class="mt-4 flex flex-col gap-2">
@@ -221,14 +218,18 @@
 </template>
 
 <script setup>
-import { ref, inject, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { Clock, UserCircle, ShieldCheck, AlertCircle, CheckCircle2, Users, UserPlus, Trash2 } from 'lucide-vue-next'
 import { supabase } from '../supabase'
+import { useAuthStore } from '../stores/auth'
+import BaseInput from '../components/ui/BaseInput.vue'
+import BaseButton from '../components/ui/BaseButton.vue'
 
 // Admin operations are handled server-side via the admin-user-action Edge Function.
 // The service_role key is stored as a Deno secret and never reaches the browser.
 
-const user = inject('user')
+const authStore = useAuthStore()
+const user = authStore.user
 const userProfile = ref(null)
 const allUsers = ref([])
 const loadingUsers = ref(false)
@@ -339,7 +340,7 @@ const addUser = async () => {
 }
 
 const deleteUser = async (userId, email) => {
-  if (userId === user.value.id) {
+  if (userId === authStore.user.id) {
     alert('You cannot delete your own admin account.')
     return
   }

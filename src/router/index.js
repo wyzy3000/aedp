@@ -1,33 +1,22 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import PastureLevel from '../components/PastureLevel.vue'
-import HabitatChanges from '../components/HabitatChanges.vue'
-import CommunityDiaries from '../components/CommunityDiaries.vue'
-import WeatherForecast from '../components/WeatherForecast.vue'
-import OutlookReports from '../components/OutlookReports.vue'
-import DroughtStory from '../components/DroughtStory.vue'
-import OneHealth from '../components/OneHealth.vue'
-import AuthView from '../views/AuthView.vue'
-import DashboardView from '../views/DashboardView.vue'
-import DashboardOneHealth from '../views/DashboardOneHealth.vue'
-import SettingsView from '../views/SettingsView.vue'
-import AboutView from '../views/AboutView.vue'
+
 import { supabase } from '../supabase'
 
 const routes = [
     { path: '/', component: HomeView },
-    { path: '/pasture', component: PastureLevel },
-    { path: '/habitat', component: HabitatChanges },
-    { path: '/diaries', component: CommunityDiaries },
-    { path: '/weather', component: WeatherForecast },
-    { path: '/outlook', component: OutlookReports },
-    { path: '/drought', component: DroughtStory },
-    { path: '/onehealth', component: OneHealth },
-    { path: '/login', component: AuthView, props: { mode: 'login' } },
-    { path: '/dashboard', component: DashboardView, meta: { requiresAuth: true } },
-    { path: '/dashboard/one-health', component: DashboardOneHealth, meta: { requiresAuth: true } },
-    { path: '/dashboard/settings', component: SettingsView, meta: { requiresAuth: true } },
-    { path: '/about', component: AboutView }
+    { path: '/pasture', component: () => import('../components/PastureLevel.vue') },
+    { path: '/habitat', component: () => import('../components/HabitatChanges.vue') },
+    { path: '/diaries', component: () => import('../components/CommunityDiaries.vue') },
+    { path: '/weather', component: () => import('../components/WeatherForecast.vue') },
+    { path: '/outlook', component: () => import('../components/OutlookReports.vue') },
+    { path: '/drought', component: () => import('../components/DroughtStory.vue') },
+    { path: '/onehealth', component: () => import('../components/OneHealth.vue') },
+    { path: '/login', component: () => import('../views/AuthView.vue'), props: { mode: 'login' } },
+    { path: '/dashboard', component: () => import('../views/DashboardView.vue'), meta: { requiresAuth: true } },
+    { path: '/dashboard/one-health', component: () => import('../views/DashboardOneHealth.vue'), meta: { requiresAuth: true } },
+    { path: '/dashboard/settings', component: () => import('../views/SettingsView.vue'), meta: { requiresAuth: true } },
+    { path: '/about', component: () => import('../views/AboutView.vue') }
 ]
 
 const router = createRouter({

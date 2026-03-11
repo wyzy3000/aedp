@@ -8,16 +8,16 @@
 import { ref, provide, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import MainLayout from './layouts/MainLayout.vue'
-import { useAuth } from './composables/useAuth'
+import { useAuthStore } from './stores/auth'
+import { useThemeStore } from './stores/theme'
 
 const route = useRoute()
 const activeSection = ref('')
 provide('activeSection', activeSection)
 
-const { user, signOut, loading } = useAuth()
-provide('user', user)
-provide('signOut', signOut)
-provide('authLoading', loading)
+const authStore = useAuthStore()
+const themeStore = useThemeStore()
+
 watch(
   () => route.path,
   (newPath) => {
@@ -27,30 +27,8 @@ watch(
   { immediate: true }
 )
 
-const isDark = ref(true)
-
-const toggleTheme = () => {
-  isDark.value = !isDark.value
-  if (isDark.value) {
-    document.documentElement.classList.add('dark')
-    localStorage.setItem('theme', 'dark')
-  } else {
-    document.documentElement.classList.remove('dark')
-    localStorage.setItem('theme', 'light')
-  }
-}
-
 onMounted(() => {
-  if (localStorage.getItem('theme') === 'light' || (!('theme' in localStorage) && !window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-    isDark.value = false
-    document.documentElement.classList.remove('dark')
-  } else {
-    isDark.value = true
-    document.documentElement.classList.add('dark')
-    localStorage.setItem('theme', 'dark')
-  }
+  authStore.initAuth()
+  themeStore.initTheme()
 })
-
-provide('isDark', isDark)
-provide('toggleTheme', toggleTheme)
 </script>

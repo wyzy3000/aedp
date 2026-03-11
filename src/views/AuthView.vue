@@ -1,8 +1,8 @@
 <template>
   <section class="relative min-h-screen flex items-center justify-center p-6 overflow-hidden">
     <div class="absolute inset-0 pointer-events-none transition-colors duration-700"
-         :class="isDark ? 'bg-[#050e07]' : 'bg-slate-50'"
-         :style="isDark ? 'background: linear-gradient(180deg, #050e07 0%, #060d1a 50%, #050e07 100%)' : 'background: linear-gradient(180deg, #f8fafc 0%, #eff6ff 50%, #f8fafc 100%)'" />
+         :class="themeStore.isDark ? 'bg-[#050e07]' : 'bg-slate-50'"
+         :style="themeStore.isDark ? 'background: linear-gradient(180deg, #050e07 0%, #060d1a 50%, #050e07 100%)' : 'background: linear-gradient(180deg, #f8fafc 0%, #eff6ff 50%, #f8fafc 100%)'" />
     <div class="absolute inset-0 pointer-events-none"
          style="background: radial-gradient(ellipse at 50% 50%, rgba(59,130,246,0.12) 0%, transparent 60%)" />
 
@@ -29,39 +29,33 @@
 
         <form v-else @submit.prevent="handleSubmit" class="space-y-4" novalidate>
 
-          <div>
-            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400 mb-2">
-              Email Address
-            </label>
-            <input v-model="email" type="email" autocomplete="email"
-                   :class="['w-full px-4 py-3 rounded-xl bg-white dark:bg-black/20 border text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-600 focus:ring-2 outline-none transition-all',
-                            fieldErrors.email ? 'border-red-400 focus:ring-red-400/30' : 'border-slate-200 dark:border-white/10 focus:ring-[#FBB03A]/50 focus:border-[#FBB03A]']"
-                   placeholder="you@example.com" maxlength="254" />
-            <p v-if="fieldErrors.email" class="text-red-400 text-xs mt-1.5 flex items-center gap-1">
-              <span>⚠</span> {{ fieldErrors.email }}
-            </p>
-          </div>
+          <BaseInput
+            label="Email Address"
+            v-model="email"
+            type="email"
+            autocomplete="email"
+            placeholder="you@example.com"
+            maxlength="254"
+            :error="fieldErrors.email"
+          />
 
-          <div>
-            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400 mb-2">
-              Password
-            </label>
-            <div class="relative">
-              <input v-model="password" :type="showPassword ? 'text' : 'password'"
-                     autocomplete="current-password"
-                     :class="['w-full px-4 py-3 pr-10 rounded-xl bg-white dark:bg-black/20 border text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-600 focus:ring-2 outline-none transition-all',
-                              fieldErrors.password ? 'border-red-400 focus:ring-red-400/30' : 'border-slate-200 dark:border-white/10 focus:ring-[#FBB03A]/50 focus:border-[#FBB03A]']"
-                     placeholder="••••••••" maxlength="128" />
+          <BaseInput
+            label="Password"
+            v-model="password"
+            :type="showPassword ? 'text' : 'password'"
+            autocomplete="current-password"
+            placeholder="••••••••"
+            maxlength="128"
+            :error="fieldErrors.password"
+          >
+            <template #suffix>
               <button type="button" @click="showPassword = !showPassword"
                       class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-neutral-300 transition-colors">
                 <svg v-if="!showPassword" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                 <svg v-else class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/></svg>
               </button>
-            </div>
-            <p v-if="fieldErrors.password" class="text-red-400 text-xs mt-1.5 flex items-center gap-1">
-              <span>⚠</span> {{ fieldErrors.password }}
-            </p>
-          </div>
+            </template>
+          </BaseInput>
 
           <div v-if="attemptWarning" class="p-3 rounded-lg bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs text-center">
             {{ attemptWarning }}
@@ -71,13 +65,9 @@
             {{ errorMsg }}
           </div>
 
-          <button type="submit" :disabled="loading"
-                  class="w-full py-3.5 rounded-xl font-semibold text-white transition-all duration-300
-                         bg-white/10 hover:bg-white/20 border border-white/20
-                         disabled:opacity-70 disabled:cursor-not-allowed mt-2 flex justify-center items-center gap-2">
-            <span v-if="loading" class="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+          <BaseButton type="submit" :loading="loading" variant="primary" class="mt-2">
             Sign In
-          </button>
+          </BaseButton>
         </form>
 
       </div>
@@ -86,15 +76,18 @@
 </template>
 
 <script setup>
-import { ref, computed, inject, onBeforeUnmount } from 'vue'
+import { ref, computed, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase } from '../supabase'
 import { validateEmail, validatePassword, createRateLimiter } from '../utils/sanitize'
+import { useThemeStore } from '../stores/theme'
+import BaseInput from '../components/ui/BaseInput.vue'
+import BaseButton from '../components/ui/BaseButton.vue'
 
 const props = defineProps({ mode: { type: String, default: 'login' } })
 
 const router  = useRouter()
-const isDark  = inject('isDark')
+const themeStore = useThemeStore()
 
 const email        = ref('')
 const password     = ref('')

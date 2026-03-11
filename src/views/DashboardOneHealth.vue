@@ -153,10 +153,9 @@
               </div>
 
               <div class="pt-6">
-                <button type="submit"
-                        class="w-full py-4 rounded-xl font-bold text-white transition-all duration-300 bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center gap-2 text-sm shadow-none outline-none">
+                <BaseButton type="submit" :loading="submitting" variant="primary">
                   {{ isEditing ? 'Update Entry' : 'Submit' }}
-                </button>
+                </BaseButton>
               </div>
             </form>
           </div>
@@ -219,13 +218,17 @@
 </template>
 
 <script setup>
-import { ref, onMounted, inject, onUnmounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 import { supabase } from '../supabase'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import { useAuthStore } from '../stores/auth'
+import { useThemeStore } from '../stores/theme'
+import BaseButton from '../components/ui/BaseButton.vue'
 
-const user = inject('user')
-const isDark = inject('isDark')
+const authStore = useAuthStore()
+const user = authStore.user
+const isDark = useThemeStore().isDark
 const isMounted = ref(false)
 
 let map = null
@@ -441,7 +444,11 @@ const resetForm = () => {
 }
 
 const submitForm = async () => {
-  if (!user.value) { submitError.value = 'Must be logged in to save.'; return }
+  if (!authStore.user) {
+    submitError.value = 'You must be logged in to submit data.'
+    submitting.value = false
+    return
+  }
   if (lat.value === null || lng.value === null) {
     submitError.value = 'Please select a location on map.'; return
   }
@@ -451,7 +458,7 @@ const submitForm = async () => {
   submitSuccess.value = false
 
   const dataPayload = {
-    user_id: user.value.id,
+    user_id: authStore.user.id,
     latitude: lat.value,
     longitude: lng.value,
     ...form.value
@@ -487,7 +494,7 @@ const deleteEntry = async (id) => {
     if (editId.value === id) resetForm()
 
     // Scoped to current user's own entries — prevents deleting other users' data
-    const { error } = await supabase.from('one_health_data').delete().eq('id', id).eq('user_id', user.value.id)
+    const { error } = await supabase.from('one_health_data').delete().eq('id', id).eq('user_id', authStore.user.id)
     
     if (error) {
       // Revert if deletion fails on server

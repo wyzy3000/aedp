@@ -122,7 +122,7 @@
       <!-- Bottom controls -->
       <div class="flex-shrink-0 border-t border-black/5 dark:border-white/5 p-3 flex flex-col gap-2.5 transition-colors">
         
-        <template v-if="!authLoading && !isDashboard && !user">
+        <template v-if="!authStore.loading && !isDashboard && !authStore.user">
           <button @click="router.push('/login')"
             class="premium-orange-button w-full mb-1"
             :title="collapsed ? 'Login' : ''">
@@ -134,7 +134,7 @@
         </template>
 
         <!-- Sign Out — shown when logged in, on all pages -->
-        <template v-if="!authLoading && user">
+        <template v-if="!authStore.loading && authStore.user">
           <!-- My Dashboard Button in Sidebar -->
           <button v-if="!isDashboard" @click="router.push('/dashboard')"
             class="sidebar-link group w-full border-l-2 border-[#FBB03A]/60 hover:border-[#FBB03A] mb-1 text-[#FBB03A]"
@@ -204,17 +204,17 @@ import { ref, inject, provide, computed, watchEffect } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { Sun, Moon, Leaf, Globe, ChevronLeft, Home, Sprout, Trees, BookOpen, Cloud, BarChart2, AlertTriangle, Heart, LayoutDashboard, ArrowLeft, LogOut, UserCircle, Settings, Info } from 'lucide-vue-next'
 import { supabase } from '../supabase'
+import { useAuthStore } from '../stores/auth'
+import { useThemeStore } from '../stores/theme'
 
 const router = useRouter()
 const route = useRoute()
 const lang = ref('en')
 const collapsed = ref(false)
 const activeSection = inject('activeSection', ref(''))
-const isDark = inject('isDark')
-const toggleTheme = inject('toggleTheme')
-const user = inject('user', ref(null))
-const signOut = inject('signOut', () => {})
-const authLoading = inject('authLoading', ref(false))
+
+const authStore = useAuthStore()
+const themeStore = useThemeStore()
 
 const isDashboard = computed(() => route.path.startsWith('/dashboard'))
 
@@ -223,7 +223,7 @@ provide('lang', lang)
 const toggleLang = () => { lang.value = lang.value === 'en' ? 'sw' : 'en' }
 
 const handleSignOut = async () => {
-  await signOut()
+  await authStore.signOut()
   router.push('/')
 }
 
@@ -246,10 +246,10 @@ const scrollTo = (id) => {
 
 // Automatically activate user account when they first access the dashboard
 watchEffect(async () => {
-  if (user.value && isDashboard.value) {
-    const { data: profile } = await supabase.from('profiles').select('status').eq('id', user.value.id).single()
+  if (authStore.user && isDashboard.value) {
+    const { data: profile } = await supabase.from('profiles').select('status').eq('id', authStore.user.id).single()
     if (profile && profile.status === 'Pending') {
-      await supabase.from('profiles').update({ status: 'Activated' }).eq('id', user.value.id)
+      await supabase.from('profiles').update({ status: 'Activated' }).eq('id', authStore.user.id)
     }
   }
 })
