@@ -86,38 +86,40 @@
         </button>
       </div>
 
-      <div v-else class="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6 animate-fade-in" ref="gridRef">
+      <div v-else class="columns-1 sm:columns-2 lg:columns-3 gap-5 space-y-5 animate-fade-in" ref="gridRef">
         <div v-for="entry in diariesData" :key="entry.id"
-             class="break-inside-avoid glass-card p-6 rounded-2xl border border-black/5 dark:border-white/10 hover:border-black/10 dark:hover:border-white/20 transition-all duration-500 group relative flex flex-col hover:-translate-y-1 bg-white/50 dark:bg-[#1C1F22]/80 backdrop-blur-md overflow-hidden hover:shadow-xl dark:hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
-             
-          <!-- Glow effect based on sentiment -->
-          <div class="absolute inset-0 opacity-0 group-hover:opacity-10 dark:group-hover:opacity-15 transition-opacity duration-700 pointer-events-none"
-               :style="{ background: `radial-gradient(circle at top right, ${sentimentColor(entry.sentiment)}, transparent 70%)` }" />
+             class="break-inside-avoid glass-card p-[18px] hover:border-forest-600/40 hover:bg-black/5 dark:hover:bg-white/[0.06] transition-all duration-300 group">
 
-          <div class="flex-1">
-            <div class="mb-5 flex justify-between items-start">
-              <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-black/5 dark:border-white/5 bg-white/80 dark:bg-black/20 shadow-sm relative z-10 transition-colors">
-                <div class="w-1.5 h-1.5 rounded-full shadow-[0_0_8px_currentColor]" :style="{ backgroundColor: sentimentColor(entry.sentiment), color: sentimentColor(entry.sentiment) }" />
-                <span class="text-[10px] uppercase tracking-widest font-bold text-slate-700 dark:text-neutral-300">
-                  {{ getSentimentLabel(entry.sentiment) }}
+          <div class="flex items-start justify-between gap-3 mb-3">
+            <div class="flex-1">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="tag-pill">
+                  <MapPin class="w-3 h-3 text-forest-600 dark:text-savanna-400 transition-colors" />
+                  {{ entry.location }}
+                </span>
+                <span class="tag-pill">
+                  <Calendar class="w-3 h-3 text-slate-500 dark:text-neutral-500 transition-colors" />
+                  {{ formatDate(entry.date) }}
                 </span>
               </div>
             </div>
-
-            <p class="text-[15px] md:text-base text-slate-800 dark:text-neutral-200 leading-relaxed mb-6 line-clamp-5 group-hover:line-clamp-none transition-all duration-300 relative z-10">
-              {{ entry.observation }}
-            </p>
           </div>
 
-          <div class="mt-auto pt-4 border-t border-black/5 dark:border-white/10 flex items-center justify-between gap-3 relative z-10">
-            <div class="flex items-center gap-1.5 text-xs font-semibold text-slate-500 dark:text-neutral-400 group-hover:text-slate-700 dark:group-hover:text-neutral-300 transition-colors">
-              <MapPin class="w-3.5 h-3.5 text-[#FBB03A]" />
-              <span class="truncate max-w-[120px]">{{ entry.location }}</span>
+          <p class="text-[13px] text-slate-600 dark:text-neutral-300 leading-relaxed group-hover:text-slate-900 dark:group-hover:text-neutral-200 transition-colors">
+            {{ entry.observation }}
+          </p>
+
+          <div class="mt-4 flex items-center gap-2">
+            <span class="text-[10px] text-slate-500 dark:text-neutral-600 uppercase tracking-wider transition-colors">Sentiment</span>
+            <div class="flex-1 h-1 bg-black/10 dark:bg-white/5 rounded-full overflow-hidden transition-colors">
+              <div class="h-full rounded-full transition-all duration-500"
+                   :style="{ width: entry.sentiment + '%', background: sentimentColor(entry.sentiment) }" />
             </div>
-            <div class="flex items-center gap-1.5 text-xs font-medium text-slate-400 dark:text-neutral-500">
-              <Calendar class="w-3.5 h-3.5" />
-              <span>{{ formatDate(entry.date) }}</span>
-            </div>
+            <span class="text-[10px]" :style="{ color: sentimentColor(entry.sentiment) }">
+              {{ entry.sentiment >= 70 ? (lang === 'en' ? 'Hopeful' : 'Matumaini') :
+                 entry.sentiment >= 40 ? (lang === 'en' ? 'Mixed' : 'Wastani') :
+                 (lang === 'en' ? 'Concerned' : 'Wasiwasi') }}
+            </span>
           </div>
         </div>
       </div>

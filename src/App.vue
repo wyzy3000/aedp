@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import { ref, provide, onMounted, watch } from 'vue'
+import { ref, provide, onMounted, watch, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import MainLayout from './layouts/MainLayout.vue'
 import { useAuthStore } from './stores/auth'
@@ -17,6 +17,8 @@ provide('activeSection', activeSection)
 
 const authStore = useAuthStore()
 const themeStore = useThemeStore()
+
+provide('isDark', computed(() => themeStore.isDark))
 
 watch(
   () => route.path,
