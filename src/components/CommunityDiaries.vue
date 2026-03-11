@@ -26,7 +26,7 @@
             <label class="text-[10px] font-bold uppercase tracking-widest text-[#FBB03A]">Location</label>
             <div class="relative">
               <select v-model="filterLocation" @change="applyFilters"
-                      class="w-full sm:w-56 appearance-none bg-black/10 dark:bg-white/[0.038] border border-black/10 dark:border-white/[0.07] text-slate-800 dark:text-white text-sm rounded-xl py-3 pl-4 pr-10 outline-none transition-all cursor-pointer">
+                      class="w-full sm:w-56 appearance-none bg-black/10 dark:bg-white/[0.038] border border-black/10 dark:border-white/[0.07] text-slate-800 dark:text-white text-sm rounded-xl py-3 pl-4 pr-10 outline-none transition-all cursor-pointer [&>option]:bg-white [&>option]:text-slate-800 dark:[&>option]:bg-[#1C1F22] dark:[&>option]:text-white">
                 <option value="">All Locations</option>
                 <option v-for="loc in uniqueLocations" :key="loc" :value="loc">{{ loc }}</option>
               </select>
@@ -37,7 +37,7 @@
             <label class="text-[10px] font-bold uppercase tracking-widest text-[#FBB03A]">Date Range</label>
             <div class="relative">
               <select v-model="filterDate" @change="applyFilters"
-                      class="w-full sm:w-56 appearance-none bg-black/10 dark:bg-white/[0.038] border border-black/10 dark:border-white/[0.07] text-slate-800 dark:text-white text-sm rounded-xl py-3 pl-4 pr-10 outline-none transition-all cursor-pointer">
+                      class="w-full sm:w-56 appearance-none bg-black/10 dark:bg-white/[0.038] border border-black/10 dark:border-white/[0.07] text-slate-800 dark:text-white text-sm rounded-xl py-3 pl-4 pr-10 outline-none transition-all cursor-pointer [&>option]:bg-white [&>option]:text-slate-800 dark:[&>option]:bg-[#1C1F22] dark:[&>option]:text-white">
                 <option value="all">All Time</option>
                 <option value="7">Last 7 Days</option>
                 <option value="30">Last 30 Days</option>
@@ -86,9 +86,9 @@
         </button>
       </div>
 
-      <div v-else class="columns-1 sm:columns-2 lg:columns-3 gap-5 space-y-5 animate-fade-in" ref="gridRef">
+      <div v-else class="columns-1 sm:columns-2 lg:columns-3 gap-5 animate-fade-in" ref="gridRef">
         <div v-for="entry in diariesData" :key="entry.id"
-             class="break-inside-avoid glass-card p-[18px] hover:border-forest-600/40 hover:bg-black/5 dark:hover:bg-white/[0.06] hover:shadow-xl dark:hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)] transition-all duration-300 group flex flex-col relative overflow-hidden">
+             class="break-inside-avoid mb-5 glass-card p-[18px] hover:border-forest-600/40 hover:bg-black/5 dark:hover:bg-white/[0.06] hover:shadow-xl dark:hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)] transition-all duration-300 group flex flex-col relative overflow-hidden">
 
           <div class="flex-1">
             <div class="mb-5 flex justify-between items-start">
