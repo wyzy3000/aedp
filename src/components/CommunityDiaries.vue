@@ -100,7 +100,7 @@
               </div>
             </div>
 
-            <p class="text-[14px] md:text-[15px] text-slate-800 dark:text-neutral-200 leading-relaxed mb-6 line-clamp-5 group-hover:line-clamp-none transition-all duration-300 relative z-10">
+            <p class="text-[14px] text-slate-800 dark:text-neutral-200 leading-relaxed mb-6 line-clamp-5 group-hover:line-clamp-none transition-all duration-300 relative z-10">
               {{ entry.observation }}
             </p>
           </div>
