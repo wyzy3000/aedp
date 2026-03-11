@@ -26,24 +26,24 @@
             <label class="text-[10px] font-bold uppercase tracking-widest text-[#FBB03A]">Location</label>
             <div class="relative">
               <select v-model="filterLocation" @change="applyFilters"
-                      class="w-full sm:w-56 appearance-none bg-white/40 dark:bg-[#1C1F22]/80 border border-slate-200 dark:border-white/10 text-slate-800 dark:text-white text-sm rounded-xl focus:ring-2 focus:ring-[#FBB03A]/50 focus:border-[#FBB03A] py-3 pl-4 pr-10 outline-none transition-all cursor-pointer shadow-sm hover:shadow-md backdrop-blur-sm">
+                      class="w-full sm:w-56 appearance-none bg-white/40 dark:bg-[#1C1F22]/80 border border-slate-200 dark:border-white/10 text-slate-800 dark:text-white text-sm rounded-xl focus:ring-2 focus:ring-[#FBB03A]/50 focus:border-[#FBB03A] py-3 pl-4 pr-10 outline-none transition-all cursor-pointer shadow-sm backdrop-blur-sm">
                 <option value="">All Locations</option>
                 <option v-for="loc in uniqueLocations" :key="loc" :value="loc">{{ loc }}</option>
               </select>
-              <ChevronDown class="w-4 h-4 text-slate-500 dark:text-neutral-400 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none transition-transform group-hover:translate-y-[-40%]" />
+              <ChevronDown class="w-4 h-4 text-slate-500 dark:text-neutral-400 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none transition-transform" />
             </div>
           </div>
           <div class="flex flex-col gap-1.5 relative group">
             <label class="text-[10px] font-bold uppercase tracking-widest text-[#FBB03A]">Date Range</label>
             <div class="relative">
               <select v-model="filterDate" @change="applyFilters"
-                      class="w-full sm:w-56 appearance-none bg-white/40 dark:bg-[#1C1F22]/80 border border-slate-200 dark:border-white/10 text-slate-800 dark:text-white text-sm rounded-xl focus:ring-2 focus:ring-[#FBB03A]/50 focus:border-[#FBB03A] py-3 pl-4 pr-10 outline-none transition-all cursor-pointer shadow-sm hover:shadow-md backdrop-blur-sm">
+                      class="w-full sm:w-56 appearance-none bg-white/40 dark:bg-[#1C1F22]/80 border border-slate-200 dark:border-white/10 text-slate-800 dark:text-white text-sm rounded-xl focus:ring-2 focus:ring-[#FBB03A]/50 focus:border-[#FBB03A] py-3 pl-4 pr-10 outline-none transition-all cursor-pointer shadow-sm backdrop-blur-sm">
                 <option value="all">All Time</option>
                 <option value="7">Last 7 Days</option>
                 <option value="30">Last 30 Days</option>
                 <option value="90">Last 3 Months</option>
               </select>
-              <ChevronDown class="w-4 h-4 text-slate-500 dark:text-neutral-400 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none transition-transform group-hover:translate-y-[-40%]" />
+              <ChevronDown class="w-4 h-4 text-slate-500 dark:text-neutral-400 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none transition-transform" />
             </div>
           </div>
         </div>
