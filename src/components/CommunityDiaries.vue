@@ -26,7 +26,7 @@
             <label class="text-[10px] font-bold uppercase tracking-widest text-[#FBB03A]">Location</label>
             <div class="relative">
               <select v-model="filterLocation" @change="applyFilters"
-                      class="w-full sm:w-56 appearance-none bg-white/40 dark:bg-[#1C1F22]/80 border border-slate-200 dark:border-white/10 text-slate-800 dark:text-white text-sm rounded-xl focus:ring-2 focus:ring-[#FBB03A]/50 focus:border-[#FBB03A] py-3 pl-4 pr-10 outline-none transition-all cursor-pointer shadow-sm backdrop-blur-sm">
+                      class="w-full sm:w-56 appearance-none bg-black/10 dark:bg-white/[0.038] border border-black/10 dark:border-white/[0.07] text-slate-800 dark:text-white text-sm rounded-xl py-3 pl-4 pr-10 outline-none transition-all cursor-pointer">
                 <option value="">All Locations</option>
                 <option v-for="loc in uniqueLocations" :key="loc" :value="loc">{{ loc }}</option>
               </select>
@@ -37,7 +37,7 @@
             <label class="text-[10px] font-bold uppercase tracking-widest text-[#FBB03A]">Date Range</label>
             <div class="relative">
               <select v-model="filterDate" @change="applyFilters"
-                      class="w-full sm:w-56 appearance-none bg-white/40 dark:bg-[#1C1F22]/80 border border-slate-200 dark:border-white/10 text-slate-800 dark:text-white text-sm rounded-xl focus:ring-2 focus:ring-[#FBB03A]/50 focus:border-[#FBB03A] py-3 pl-4 pr-10 outline-none transition-all cursor-pointer shadow-sm backdrop-blur-sm">
+                      class="w-full sm:w-56 appearance-none bg-black/10 dark:bg-white/[0.038] border border-black/10 dark:border-white/[0.07] text-slate-800 dark:text-white text-sm rounded-xl py-3 pl-4 pr-10 outline-none transition-all cursor-pointer">
                 <option value="all">All Time</option>
                 <option value="7">Last 7 Days</option>
                 <option value="30">Last 30 Days</option>
