@@ -223,7 +223,7 @@
 </template>
 
 <script setup>
-import { ref, inject, computed, onMounted, onUnmounted } from 'vue'
+import { ref, inject, computed, watch, onMounted, onUnmounted } from 'vue'
 import { supabase } from '../supabase'
 import { sanitizeText } from '../utils/sanitize'
 
@@ -307,9 +307,18 @@ const setupRealtime = () => {
     .subscribe()
 }
 
+watch(user, (u) => {
+  if (u) {
+    fetchMyEntries()
+    if (!subscription) setupRealtime()
+  }
+}, { immediate: true })
+
 onMounted(() => {
-  fetchMyEntries()
-  setupRealtime()
+  if (user?.value) {
+    fetchMyEntries()
+    setupRealtime()
+  }
 })
 
 onUnmounted(() => {

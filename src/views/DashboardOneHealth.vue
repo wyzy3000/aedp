@@ -219,6 +219,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
+import { storeToRefs } from 'pinia'
 import { supabase } from '../supabase'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
@@ -227,7 +228,7 @@ import { useThemeStore } from '../stores/theme'
 import BaseButton from '../components/ui/BaseButton.vue'
 
 const authStore = useAuthStore()
-const user = authStore.user
+const { user } = storeToRefs(authStore)
 const isDark = useThemeStore().isDark
 const isMounted = ref(false)
 
@@ -324,6 +325,12 @@ onMounted(async () => {
     .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,176,58,0.2); border-radius: 10px; }
   `
   document.head.appendChild(style)
+})
+
+watch(user, (newUser) => {
+  if (newUser && allEntries.value.length > 0) {
+    renderMapMarkers()
+  }
 })
 
 onUnmounted(() => {

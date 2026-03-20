@@ -1,0 +1,31 @@
+# Block heavy dependency folders
+node_modules/
+
+# Block compiled build folders
+dist/
+build/
+.output/
+
+# Block version control history
+.git/
+
+# Block massive lock files (wastes huge tokens to read)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Block environment variables (for security)
+.env
+.env.local
+.env.*
+
+# Block heavy image/media asset folders
+public/images/
+public/assets/
+src/assets/images/
+src/assets/media/
+*.svg
+*.png
+*.jpg
+*.jpeg
+*.mp4

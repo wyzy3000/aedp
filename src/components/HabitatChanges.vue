@@ -32,19 +32,52 @@
       </div>
 
       <div class="glass-card mb-8 fade-up bg-white/80 dark:bg-[#0a160c]/50 transition-colors" ref="mapRef" style="border-radius:16px;">
-        <div class="relative w-full bg-slate-100 dark:bg-black transition-colors" style="height:420px; border-radius:12px; overflow:hidden;">
-          
-          <div v-for="yd in habitatDataSet" :key="yd.year"
-               class="absolute transition-opacity duration-700 ease-in-out"
-               style="top:0; left:0; right:0; bottom:0; height:420px; width:100%;"
-               :style="{ opacity: selectedYear === yd.year ? 1 : 0, zIndex: selectedYear === yd.year ? 2 : 1 }">
-            <img :src="yd.image"
-                 style="width:100%; height:420px; object-fit:cover; object-position: center 65%; display:block;"
-                 :alt="`Amboseli Basin map ${yd.year}`" />
+        <div class="flex flex-col lg:flex-row gap-2 bg-white dark:bg-white border border-slate-100 transition-colors shadow-2xl" style="height:550px; border-radius:12px; overflow:hidden; padding:8px;">
+          <!-- MAP CONTAINER -->
+          <div class="relative flex-1 bg-white rounded-lg overflow-hidden border border-slate-50">
+            <div v-for="yd in habitatDataSet" :key="yd.year"
+                 class="absolute transition-opacity duration-700 ease-in-out inset-0"
+                 :style="{ opacity: selectedYear === yd.year ? 1 : 0, zIndex: selectedYear === yd.year ? 2 : 1 }">
+              <img :src="yd.image"
+                   class="map-image w-full h-full object-contain"
+                   :alt="`Amboseli Basin map ${yd.year}`" />
+            </div>
+
+            <div v-if="selectedYear === 2023" class="absolute inset-0 z-[5] pointer-events-none">
+              <!-- Example Hotspots for 2023 -->
+              <div v-for="hotspot in hotspots" :key="hotspot.id" 
+                   class="absolute group pointer-events-auto cursor-help"
+                   :style="{ top: hotspot.y + '%', left: hotspot.x + '%' }">
+                <div class="relative">
+                  <div class="w-2.5 h-2.5 rounded-full border border-white/50 shadow-lg animate-pulse" :style="{ backgroundColor: hotspot.color }"></div>
+                  <div class="absolute left-1/2 -top-1 -translate-x-1/2 -translate-y-full opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap bg-black/80 backdrop-blur-md border border-white/10 px-2 py-1 rounded text-[9px] font-bold text-white z-20 shadow-xl">
+                    {{ hotspot.label }}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div class="absolute top-3 right-3 glass-card px-3 py-1.5 text-xs text-slate-800 dark:text-neutral-300 font-semibold border border-black/5 dark:border-white/10 shadow-lg transition-colors" style="z-index:10;">
-            Displaying: {{ selectedYear }}
+          <!-- EMBEDDED LEGEND -->
+          <div class="w-full lg:w-[280px] h-full flex flex-col bg-white rounded-lg p-6 shadow-xl overflow-hidden">
+            <h4 class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#FBB03A] mb-5 text-center border-b border-[#FBB03A]/20 pb-2">Habitat Key</h4>
+            
+            <div class="flex-1 space-y-4 pr-1">
+               <div v-for="item in legendItems" :key="item.label" class="flex items-center gap-3 group">
+                 <div class="w-3.5 h-3.5 rounded-sm shadow-sm transition-transform group-hover:scale-125 border border-black/10" :style="{ backgroundColor: item.color }"></div>
+                 <div class="flex flex-col">
+                   <span class="text-[11px] font-bold text-slate-900">{{ item.label }}</span>
+                   <span class="text-[9px] text-slate-500 uppercase tracking-tighter mt-0.5">{{ item.type }}</span>
+                 </div>
+               </div>
+               
+               <div class="pt-4 mt-4 border-t border-slate-100">
+                 <div class="flex items-center gap-3">
+                   <div class="w-4 h-0.5 bg-[#ff0000]"></div>
+                   <span class="text-[11px] font-bold text-slate-900">Park Boundary</span>
+                 </div>
+               </div>
+            </div>
           </div>
         </div>
 
@@ -93,20 +126,43 @@ const mapRef = ref(null)
 const selectorRef = ref(null)
 
 const selectedYear = ref(2023)
+const showLegend = ref(false)
 
 const yearsList = [1950, 1967, 1973, 1978, 1983, 1987, 1993, 1997, 2002, 2007, 2012, 2017, 2023]
 
-const habitatDataSet = yearsList.map(y => ({
-  year: y,
-  image: new URL(`../assets/maps/habitat_${y}.png`, import.meta.url).href,
-  trendValue: 'Archive',
-  trendLabel: `Snapshot ${y}`,
-  trendColor: 'text-neutral-400',
-  desc: `Satellite landcover and ecosystem footprint across the Amboseli basin during the ${y} period. Observe the shift in dry wood and permanent swamps.`
-}))
+const habitatDataSet = yearsList.map(y => {
+  const ext = [1983, 1997, 2002, 2007].includes(y) ? 'jpg' : 'png'
+  return {
+    year: y,
+    image: new URL(`../assets/mapsv1/${y}.${ext}`, import.meta.url).href,
+    trendValue: 'Archive',
+    trendLabel: `Snapshot ${y}`,
+    trendColor: 'text-neutral-400',
+    desc: `Satellite landcover and ecosystem footprint across the Amboseli basin during the ${y} period. Observe the shift in dry wood and permanent swamps.`
+  }
+})
 
 const currentYearData = computed(() => habitatDataSet.find(d => d.year === selectedYear.value) || habitatDataSet[0])
 const selectedYearIndex = computed(() => habitatDataSet.findIndex(d => d.year === selectedYear.value))
+
+const legendItems = [
+  { label: 'Dense Bushlands', color: '#541c19', type: 'High Cover' },
+  { label: 'Dense Woodlands', color: '#134d1c', type: 'Tree Canopy' },
+  { label: 'Grasslands',      color: '#fffda8', type: 'Open Plain' },
+  { label: 'Open Bushlands',  color: '#9e6211', type: 'Low Cover' },
+  { label: 'Open Waters',     color: '#969696', type: 'Hydrology' },
+  { label: 'Open Woodlands',  color: '#13b313', type: 'Scattered Trees' },
+  { label: 'Permanent Swamp', color: '#11108c', type: 'Wetland' },
+  { label: 'Sueda',           color: '#b0a300', type: 'Saline Scrub' },
+  { label: 'Swamp Edge',      color: '#00f7f7', type: 'Buffer' }
+]
+
+const hotspots = [
+  { id: 1, x: 25, y: 70, color: '#11108c', label: 'Marshes' },
+  { id: 2, x: 15, y: 30, color: '#fffda8', label: 'Primary Grasslands' },
+  { id: 3, x: 80, y: 60, color: '#9e6211', label: 'Acacia Scrub' },
+  { id: 4, x: 50, y: 45, color: '#00f7f7', label: 'Wetland Buffer' }
+]
 
 const audioElement = ref(null)
 const isPlaying = ref(false)
@@ -177,5 +233,28 @@ onMounted(() => {
 @keyframes wave {
   0%, 100% { height: 4px; }
   50% { height: 14px; }
+}
+
+.map-image {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  filter: contrast(1.15) brightness(1.02) saturate(1.1);
+  transition: filter 0.3s ease;
+}
+
+.map-image:hover {
+  filter: contrast(1.2) brightness(1.05) saturate(1.2);
+}
+
+.custom-scroll-light::-webkit-scrollbar { width: 3px; }
+.custom-scroll-light::-webkit-scrollbar-track { background: transparent; }
+.custom-scroll-light::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
 }
 </style>

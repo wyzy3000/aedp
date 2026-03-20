@@ -218,7 +218,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { Clock, UserCircle, ShieldCheck, AlertCircle, CheckCircle2, Users, UserPlus, Trash2 } from 'lucide-vue-next'
 import { supabase } from '../supabase'
 import { useAuthStore } from '../stores/auth'
@@ -251,31 +251,38 @@ const updateClock = () => {
   })
 }
 
-onMounted(async () => {
+const loadInitialData = async () => {
+  if (!user.value) return
+  
+  // Use maybeSingle() to avoid 406 when no profile row exists yet
+  let { data } = await supabase.from('profiles').select('*').eq('id', user.value.id).maybeSingle()
+  
+  // If no profile exists, create one (first-time admin bootstrap)
+  if (!data) {
+    const { data: upserted } = await supabase.from('profiles').upsert({
+      id: user.value.id,
+      email: user.value.email,
+      role: user.value.email === 'wycliff.ontiri@gmail.com' ? 'Admin' : 'User',
+      status: 'Activated'
+    }).select().maybeSingle()
+    data = upserted
+  }
+  
+  userProfile.value = data
+
+  if (data?.role === 'Admin') {
+    await fetchUsers()
+  }
+}
+
+watch(user, (newUser) => {
+  if (newUser) loadInitialData()
+}, { immediate: true })
+
+onMounted(() => {
   updateClock()
   timer = setInterval(updateClock, 1000)
-
-  if (user.value) {
-    // Use maybeSingle() to avoid 406 when no profile row exists yet
-    let { data } = await supabase.from('profiles').select('*').eq('id', user.value.id).maybeSingle()
-    
-    // If no profile exists, create one (first-time admin bootstrap)
-    if (!data) {
-      const { data: upserted } = await supabase.from('profiles').upsert({
-        id: user.value.id,
-        email: user.value.email,
-        role: user.value.email === 'wycliff.ontiri@gmail.com' ? 'Admin' : 'User',
-        status: 'Activated'
-      }).select().maybeSingle()
-      data = upserted
-    }
-    
-    userProfile.value = data
-
-    if (data?.role === 'Admin') {
-      await fetchUsers()
-    }
-  }
+  if (user.value) loadInitialData()
 })
 
 const fetchUsers = async () => {

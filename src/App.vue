@@ -19,6 +19,7 @@ const authStore = useAuthStore()
 const themeStore = useThemeStore()
 
 provide('isDark', computed(() => themeStore.isDark))
+provide('user', computed(() => authStore.user))
 
 watch(
   () => route.path,
