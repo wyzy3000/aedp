@@ -49,7 +49,7 @@ create policy "Admins can update all profiles."
 
 -- 6. SECURITY HARDENING: Prevent non-admins from updating their own 'role' or 'email'
 create or replace function public.preserve_sensitive_profile_data()
-returns trigger language plpgsql security definer as $$
+returns trigger language plpgsql security definer set search_path = public as $$
 begin
   if (select role from public.profiles where id = auth.uid()) != 'Admin' then
     new.email := old.email;

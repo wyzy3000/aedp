@@ -1,5 +1,5 @@
 <template>
-  <div class="px-6 lg:px-10 py-8 max-w-4xl mx-auto animation-fade-in pb-24">
+  <div class="px-4 lg:px-10 py-8 max-w-4xl mx-auto animation-fade-in pb-24">
     
     <div class="mb-10">
       <h1 class="text-4xl font-extrabold tracking-tight text-white mb-3">Account Settings</h1>
@@ -99,7 +99,7 @@
           <button 
             type="submit" 
             :disabled="updating"
-            class="bg-white/5 hover:bg-white/10 border border-white/10 text-white px-8 py-3.5 rounded-xl font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 group text-sm uppercase tracking-widest"
+            class="w-full md:w-auto bg-white/5 hover:bg-white/10 border border-white/10 text-white px-8 py-3.5 rounded-xl font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 group text-sm uppercase tracking-widest"
           >
             <span v-if="updating" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
             {{ updating ? 'Updating...' : 'Update Password' }}
@@ -124,7 +124,7 @@
         Loading secure user data...
       </div>
       
-      <div v-else class="rounded-xl border border-white/10 overflow-hidden bg-white/[0.02]">
+      <div v-else class="rounded-xl border border-white/10 overflow-x-auto bg-white/[0.02]">
         <table class="w-full text-left text-xs text-white/70">
           <thead class="text-[10px] uppercase bg-white/5 text-white/40 border-b border-white/10">
             <tr>

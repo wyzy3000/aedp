@@ -10,10 +10,13 @@ import { useRoute } from 'vue-router'
 import MainLayout from './layouts/MainLayout.vue'
 import { useAuthStore } from './stores/auth'
 import { useThemeStore } from './stores/theme'
+import { useDevice } from './composables/useDevice'
 
 const route = useRoute()
+const { isMobile } = useDevice()
 const activeSection = ref('')
 provide('activeSection', activeSection)
+provide('isMobile', isMobile)
 
 const authStore = useAuthStore()
 const themeStore = useThemeStore()

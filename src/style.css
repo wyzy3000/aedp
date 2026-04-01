@@ -11,9 +11,14 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-size: 16px;
+    /* Safe area insets for mobile */
+    --so-top: env(safe-area-inset-top, 0px);
+    --so-bottom: env(safe-area-inset-bottom, 0px);
   }
 
   body {
+    padding-top: var(--so-top);
+    padding-bottom: var(--so-bottom);
     @apply font-sans text-stone-800 transition-colors duration-300;
     background-color: #faf9f6;
     background-image:
@@ -505,3 +510,8 @@ a.underline-hover::after {
 a.underline-hover:hover::after {
   right: 0;
 }
+
+/* ─── Mobile Safe Area Utilities ─────────────────────────────── */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}

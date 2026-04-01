@@ -9,14 +9,14 @@
     <div class="absolute bottom-24 right-[22%] w-80 h-80 rounded-full pointer-events-none"
          :style="'background: radial-gradient(circle, rgba(190,140,40,' + (isDark ? '0.08' : '0.05') + '), transparent 70%); filter: blur(64px); animation: pulse 8.5s ease-in-out 2.3s infinite;'" />
 
-    <div class="relative z-10 text-center max-w-6xl mx-auto px-8 pt-16">
+    <div class="relative z-10 text-center max-w-6xl mx-auto px-6 pt-16 pb-28 md:pb-16">
       <div class="inline-flex items-center gap-2 mb-8">
         <span class="text-xs font-semibold uppercase tracking-[0.2em] text-white">
           {{ lang === 'en' ? 'Ecosystem Early Warning System' : 'Mfumo wa Onyo la Mapema wa Ikolojia' }}
         </span>
       </div>
 
-      <h1 class="font-display font-extrabold text-6xl md:text-7xl lg:text-8xl leading-[0.95] mb-5 transition-colors overflow-visible pb-2 select-none"
+      <h1 class="font-display font-extrabold text-4xl sm:text-5xl md:text-7xl lg:text-8xl leading-[0.95] mb-5 transition-colors overflow-visible pb-2 select-none"
           :class="isDark ? 'text-white' : 'text-[#1a2a12]'">
         Amboseli<br />
         <span
@@ -36,17 +36,17 @@
         }}
       </p>
 
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+      <div class="flex flex-col items-stretch sm:flex-row sm:items-center justify-center gap-3 w-full max-w-sm mx-auto sm:max-w-none">
         <button @click="router.push('/pasture')"
-                class="group flex items-center gap-2.5 px-7 py-3.5 rounded-2xl font-semibold text-[15px] text-white
-                       transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:shadow-forest-500/25"
+                class="group flex items-center justify-center gap-2.5 px-7 py-4 rounded-2xl font-semibold text-[15px] text-white
+                       transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-forest-500/25"
                 style="background: linear-gradient(135deg, #376332, #4a9e3a)">
           <span>{{ lang === 'en' ? 'Explore the Data' : 'Chunguza Takwimu' }}</span>
           <ChevronDown class="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
         </button>
 
         <button @click="router.push('/onehealth')"
-                class="flex items-center gap-2 px-7 py-3.5 rounded-xl text-[14px] font-medium
+                class="flex items-center justify-center gap-2 px-7 py-4 rounded-xl text-[14px] font-medium
                        transition-all duration-300 border"
                 :class="isDark
                   ? 'text-neutral-300 hover:text-white hover:bg-white/8 border-white/10'

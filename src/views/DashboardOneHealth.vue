@@ -1,12 +1,12 @@
 <template>
-  <section class="relative min-h-screen overflow-hidden py-20">
+  <section class="relative min-h-screen overflow-hidden py-4 md:py-20">
     <div class="absolute inset-0 pointer-events-none transition-colors duration-700"
          :class="isDark ? 'bg-[#050e07]' : 'bg-slate-50'"
          :style="isDark ? 'background: linear-gradient(180deg, #050e07 0%, #060d1a 50%, #050e07 100%)' : 'background: linear-gradient(180deg, #f8fafc 0%, #eff6ff 50%, #f8fafc 100%)'" />
     <div class="absolute inset-0 pointer-events-none"
          style="background: radial-gradient(ellipse at 25% 40%, rgba(59,130,246,0.07) 0%, transparent 55%)" />
 
-    <div class="max-w-[1240px] mx-auto px-8 lg:px-12 w-full relative z-10">
+    <div class="max-w-[1240px] mx-auto px-4 lg:px-12 w-full relative z-10">
       <!-- HERO-STYLE HEADER -->
       <div class="mb-16 fade-up" :class="{ 'visible': isMounted }">
         <div class="flex flex-wrap items-start justify-between gap-6">
@@ -32,7 +32,7 @@
         <div class="lg:col-span-8 space-y-6">
           <!-- MAP SECTION -->
           <div class="rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm p-0.5 shadow-lg relative overflow-hidden">
-             <div id="dashboard-map" class="w-full h-[400px] rounded-lg z-0"></div>
+             <div id="dashboard-map" class="w-full h-[280px] md:h-[400px] rounded-lg z-0"></div>
           </div>
           
           <!-- COMPACT COORDINATE INPUTS -->
@@ -162,7 +162,7 @@
         </div>
 
         <!-- RIGHT COLUMN: HISTORY -->
-        <div class="lg:col-span-4 flex flex-col h-[850px]">
+        <div class="lg:col-span-4 flex flex-col h-auto lg:h-[850px]">
           <div class="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-6 flex flex-col h-full min-h-0">
             <div class="mb-8 flex items-center justify-between flex-shrink-0">
               <h3 class="text-white font-bold text-base uppercase tracking-wider">History</h3>

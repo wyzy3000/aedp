@@ -1,5 +1,5 @@
 <template>
-  <section class="relative min-h-screen flex items-center justify-center p-6 overflow-hidden">
+  <section class="relative min-h-screen flex items-center justify-center p-4 pb-28 md:pb-6 overflow-hidden">
     <div class="absolute inset-0 pointer-events-none transition-colors duration-700"
          :class="themeStore.isDark ? 'bg-[#050e07]' : 'bg-slate-50'"
          :style="themeStore.isDark ? 'background: linear-gradient(180deg, #050e07 0%, #060d1a 50%, #050e07 100%)' : 'background: linear-gradient(180deg, #f8fafc 0%, #eff6ff 50%, #f8fafc 100%)'" />
@@ -7,7 +7,7 @@
          style="background: radial-gradient(ellipse at 50% 50%, rgba(59,130,246,0.12) 0%, transparent 60%)" />
 
     <div class="relative z-10 w-full max-w-md">
-      <div class="rounded-2xl border border-black/5 dark:border-white/8 overflow-hidden bg-white/80 dark:bg-[#0a160c]/80 backdrop-blur-md shadow-2xl p-8 fade-up">
+      <div class="rounded-2xl border border-black/5 dark:border-white/8 overflow-hidden bg-white/80 dark:bg-[#0a160c]/80 backdrop-blur-md shadow-2xl p-6 md:p-8 fade-up">
 
         <!-- Header -->
         <div class="text-center mb-8">
