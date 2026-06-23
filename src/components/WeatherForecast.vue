@@ -15,7 +15,7 @@
         <h2 class="font-display font-extrabold text-4xl md:text-5xl text-white leading-tight transition-colors" style="letter-spacing:-0.02em">
           Weather Forecast
         </h2>
-        <p class="mt-2 font-display font-medium text-lg italic text-[#FBB03A] transition-colors">Hali ya anga · Open-Meteo</p>
+        <p class="mt-2 font-display font-medium text-lg italic text-[#E09E34] transition-colors">Hali ya anga · Open-Meteo</p>
         <p class="mt-3 text-white/90 text-[15px] leading-relaxed max-w-2xl transition-colors">
           Real-time atmospheric data for Amboseli Basin (Lat −2.64°, Lon 37.25°).
           Sourced live from the Open-Meteo free weather API.

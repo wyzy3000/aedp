@@ -9,13 +9,13 @@
     <div class="max-w-[1240px] mx-auto px-8 lg:px-12 w-full relative z-10">
       <div class="mb-10 fade-up" ref="headerRef">
         <div class="flex items-center gap-2 mb-3">
-          <div class="w-1 h-8 rounded-full transition-colors" style="background-color: #FBB03A;" />
+          <div class="w-1 h-8 rounded-full transition-colors" style="background-color: #E09E34;" />
           <span class="text-xs font-semibold uppercase tracking-[0.2em] text-white transition-colors">Module 03 · Diaries</span>
         </div>
         <h2 class="font-display font-extrabold text-4xl md:text-5xl text-white leading-tight transition-colors" style="letter-spacing:-0.02em">
           Local Community Environmental Diaries
         </h2>
-        <p class="mt-2 font-display font-medium text-lg italic transition-colors" style="color: #FBB03A;">Maoni ya wenyeji</p>
+        <p class="mt-2 font-display font-medium text-lg italic transition-colors" style="color: #E09E34;">Maoni ya wenyeji</p>
         <p class="mt-3 text-white text-[15px] leading-relaxed max-w-2xl transition-colors" style="color: #ffffff;">
           First-hand seasonal observations from pastoralist and farming communities
           across the Amboseli ecosystem, recorded as structured field notes.
@@ -23,7 +23,7 @@
 
         <div class="mt-8 flex flex-col sm:flex-row gap-5">
           <div class="flex flex-col gap-1.5 relative group">
-            <label class="text-[10px] font-bold uppercase tracking-widest text-[#FBB03A]">Location</label>
+            <label class="text-[10px] font-bold uppercase tracking-widest text-[#E09E34]">Location</label>
             <div class="relative">
               <select v-model="filterLocation" @change="applyFilters"
                       class="w-full sm:w-56 appearance-none bg-black/10 dark:bg-white/[0.038] border border-black/10 dark:border-white/[0.07] text-slate-800 dark:text-white text-sm rounded-xl py-3 pl-4 pr-10 outline-none transition-all cursor-pointer [&>option]:bg-white [&>option]:text-slate-800 dark:[&>option]:bg-[#1C1F22] dark:[&>option]:text-white">
@@ -34,7 +34,7 @@
             </div>
           </div>
           <div class="flex flex-col gap-1.5 relative group">
-            <label class="text-[10px] font-bold uppercase tracking-widest text-[#FBB03A]">Date Range</label>
+            <label class="text-[10px] font-bold uppercase tracking-widest text-[#E09E34]">Date Range</label>
             <div class="relative">
               <select v-model="filterDate" @change="applyFilters"
                       class="w-full sm:w-56 appearance-none bg-black/10 dark:bg-white/[0.038] border border-black/10 dark:border-white/[0.07] text-slate-800 dark:text-white text-sm rounded-xl py-3 pl-4 pr-10 outline-none transition-all cursor-pointer [&>option]:bg-white [&>option]:text-slate-800 dark:[&>option]:bg-[#1C1F22] dark:[&>option]:text-white">
@@ -107,7 +107,7 @@
 
           <div class="mt-auto pt-4 border-t border-black/5 dark:border-white/10 flex items-center justify-between gap-3 relative z-10">
             <div class="flex items-center gap-1.5 text-xs font-semibold text-slate-500 dark:text-neutral-400 group-hover:text-slate-700 dark:group-hover:text-neutral-300 transition-colors">
-              <MapPin class="w-3.5 h-3.5 text-[#FBB03A]" />
+              <MapPin class="w-3.5 h-3.5 text-[#E09E34]" />
               <span class="truncate max-w-[120px]">{{ entry.location }}</span>
             </div>
             <div class="flex items-center gap-1.5 text-xs font-medium text-slate-400 dark:text-neutral-500">

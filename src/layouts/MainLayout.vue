@@ -137,11 +137,11 @@
         <template v-if="!authStore.loading && authStore.user">
           <!-- My Dashboard Button in Sidebar -->
           <button v-if="!isDashboard" @click="router.push('/dashboard')"
-            class="sidebar-link group w-full border-l-2 border-[#FBB03A]/60 hover:border-[#FBB03A] mb-1 text-[#FBB03A]"
+            class="sidebar-link group w-full border-l-2 border-[#E09E34]/60 hover:border-[#E09E34] mb-1 text-[#E09E34]"
             :title="collapsed ? 'My Dashboard' : ''">
-            <LayoutDashboard class="sidebar-icon text-[#FBB03A]" />
+            <LayoutDashboard class="sidebar-icon text-[#E09E34]" />
             <Transition name="fade-side">
-              <span v-if="!collapsed" class="sidebar-label text-[#FBB03A]">My Dashboard</span>
+              <span v-if="!collapsed" class="sidebar-label text-[#E09E34]">My Dashboard</span>
             </Transition>
           </button>
           <button @click="handleSignOut"
@@ -207,13 +207,13 @@
         <template v-if="!isDashboard">
           <button @click="scrollTo('__top')"
             class="flex flex-col items-center justify-center gap-1 min-h-[56px] min-w-[52px] px-2 transition-colors"
-            :class="activeSection === '' ? 'text-[#FBB03A]' : 'text-stone-400 dark:text-neutral-500'">
+            :class="activeSection === '' ? 'text-[#E09E34]' : 'text-stone-400 dark:text-neutral-500'">
             <Home class="w-5 h-5" />
             <span class="text-[9px] font-semibold">Home</span>
           </button>
           <button v-for="link in navLinks.slice(0,3)" :key="link.id" @click="scrollTo(link.id)"
             class="flex flex-col items-center justify-center gap-1 min-h-[56px] min-w-[52px] px-2 transition-colors"
-            :class="activeSection === link.id ? 'text-[#FBB03A]' : 'text-stone-400 dark:text-neutral-500'">
+            :class="activeSection === link.id ? 'text-[#E09E34]' : 'text-stone-400 dark:text-neutral-500'">
             <component :is="link.icon" class="w-5 h-5" />
             <span class="text-[9px] font-semibold">{{ lang === 'en' ? link.en : link.sw }}</span>
           </button>
@@ -234,19 +234,19 @@
           </button>
           <button @click="router.push('/dashboard')"
             class="flex flex-col items-center justify-center gap-1 min-h-[56px] min-w-[52px] px-2 transition-colors"
-            :class="route.path === '/dashboard' ? 'text-[#FBB03A]' : 'text-stone-400 dark:text-neutral-500'">
+            :class="route.path === '/dashboard' ? 'text-[#E09E34]' : 'text-stone-400 dark:text-neutral-500'">
             <BookOpen class="w-5 h-5" />
             <span class="text-[9px] font-semibold">Diaries</span>
           </button>
           <button @click="router.push('/dashboard/one-health')"
             class="flex flex-col items-center justify-center gap-1 min-h-[56px] min-w-[52px] px-2 transition-colors"
-            :class="route.path === '/dashboard/one-health' ? 'text-[#FBB03A]' : 'text-stone-400 dark:text-neutral-500'">
+            :class="route.path === '/dashboard/one-health' ? 'text-[#E09E34]' : 'text-stone-400 dark:text-neutral-500'">
             <Heart class="w-5 h-5" />
             <span class="text-[9px] font-semibold">Health</span>
           </button>
           <button @click="router.push('/dashboard/settings')"
             class="flex flex-col items-center justify-center gap-1 min-h-[56px] min-w-[52px] px-2 transition-colors"
-            :class="route.path === '/dashboard/settings' ? 'text-[#FBB03A]' : 'text-stone-400 dark:text-neutral-500'">
+            :class="route.path === '/dashboard/settings' ? 'text-[#E09E34]' : 'text-stone-400 dark:text-neutral-500'">
             <Settings class="w-5 h-5" />
             <span class="text-[9px] font-semibold">Settings</span>
           </button>
@@ -386,7 +386,7 @@ watchEffect(async () => {
   gap: 10px;
   padding: 12px 16px;
   border-radius: 12px;
-  background: #FBB03A;
+  background: #E09E34;
   color: #ffffff;
   border: 1px solid rgba(0, 0, 0, 0.15);
   cursor: pointer;

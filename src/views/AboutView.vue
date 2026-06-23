@@ -36,7 +36,7 @@
           <ul class="space-y-2 list-none">
             <li v-for="(item, idx) in findings" :key="idx" class="flex gap-3 text-[15px] font-medium leading-relaxed transition-colors"
                 :class="isDark ? 'text-white' : 'text-[#4a4230]'">
-              <span class="text-[#FBB03A] text-xl leading-none">•</span>
+              <span class="text-[#E09E34] text-xl leading-none">•</span>
               {{ item }}
             </li>
           </ul>

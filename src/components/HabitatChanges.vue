@@ -10,14 +10,21 @@
       <div class="mb-10 fade-up" ref="headerRef">
         <div class="flex items-center gap-2 mb-3">
           <div class="w-1 h-8 rounded-full bg-savanna-500" />
-          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-white/70 transition-colors">Module 02 · Habitat</span>
+          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-white/70 transition-colors">
+            {{ lang === 'en' ? 'Module 02 · Habitat' : 'Moduli 02 · Makazi' }}
+          </span>
         </div>
         <h2 class="font-display font-extrabold text-4xl md:text-5xl text-white leading-tight transition-colors" style="letter-spacing:-0.02em">
-          Habitat Dynamics
+          {{ lang === 'en' ? 'Habitat Dynamics' : 'Mabadiliko ya Makazi' }}
         </h2>
-        <p class="mt-2 font-display font-medium text-lg italic text-[#FBB03A] transition-colors">Hali ya miti na makazi</p>
-        <p class="mt-3 text-white/90 text-[15px] leading-relaxed max-w-2xl transition-colors">
-          Observe spatial shifts in woody cover, wetlands, and open plains. Select a year to view the corresponding satellite terrain mapping.
+        <p class="mt-2 font-display font-medium text-lg italic transition-colors" style="color: #E09E34;">
+          {{ lang === 'en' ? 'Tree and Habitat Condition' : 'Hali ya miti na makazi' }}
+        </p>
+        <p class="mt-3 text-[15px] leading-relaxed max-w-2xl transition-colors" style="color: #ffffff;">
+          {{ lang === 'en'
+            ? 'Observe spatial shifts in woody cover, wetlands, and open plains. Select a year to view the corresponding satellite terrain mapping.'
+            : 'Chunguza mabadiliko ya maeneo ya miti, maeneo ya majimaji, na nyanda wazi. Chagua mwaka ili kuona ramani ya satelaiti ya kipindi husika.'
+          }}
         </p>
       </div>
 
@@ -26,7 +33,7 @@
           v-for="yd in habitatDataSet" :key="yd.year"
           @click="selectedYear = yd.year"
           class="year-btn"
-          :class="selectedYear === yd.year ? 'selected border-orange-500 text-white dark:text-white bg-orange-500 dark:bg-orange-500' : 'border-black/5 dark:border-white/10 text-slate-600 dark:text-neutral-400 bg-black/5 dark:bg-white/5'">
+          :class="{ selected: selectedYear === yd.year }">
           {{ yd.year }}
         </button>
       </div>
@@ -60,7 +67,9 @@
 
           <!-- EMBEDDED LEGEND -->
           <div class="w-full lg:w-[280px] h-full flex flex-col bg-white rounded-lg p-6 shadow-xl overflow-hidden">
-            <h4 class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#FBB03A] mb-5 text-center border-b border-[#FBB03A]/20 pb-2">Habitat Key</h4>
+            <h4 class="text-[10px] font-bold uppercase tracking-[0.2em] mb-5 text-center border-b pb-2" style="color: #E09E34; border-color: rgba(224, 158, 52, 0.2);">
+              {{ lang === 'en' ? 'Habitat Key' : 'Ufunguo wa Makazi' }}
+            </h4>
             
             <div class="flex-1 space-y-4 pr-1">
                <div v-for="item in legendItems" :key="item.label" class="flex items-center gap-3 group">
@@ -74,7 +83,9 @@
                <div class="pt-4 mt-4 border-t border-slate-100">
                  <div class="flex items-center gap-3">
                    <div class="w-4 h-0.5 bg-[#ff0000]"></div>
-                   <span class="text-[11px] font-bold text-slate-900">Park Boundary</span>
+                   <span class="text-[11px] font-bold text-slate-900">
+                     {{ lang === 'en' ? 'Park Boundary' : 'Mpaka wa Hifadhi' }}
+                   </span>
                  </div>
                </div>
             </div>
@@ -130,39 +141,43 @@ const showLegend = ref(false)
 
 const yearsList = [1950, 1967, 1973, 1978, 1983, 1987, 1993, 1997, 2002, 2007, 2012, 2017, 2023]
 
-const habitatDataSet = yearsList.map(y => {
-  const ext = [1983, 1997, 2002, 2007].includes(y) ? 'jpg' : 'png'
-  return {
-    year: y,
-    image: new URL(`../assets/mapsv1/${y}.${ext}`, import.meta.url).href,
-    trendValue: 'Archive',
-    trendLabel: `Snapshot ${y}`,
-    trendColor: 'text-neutral-400',
-    desc: `Satellite landcover and ecosystem footprint across the Amboseli basin during the ${y} period. Observe the shift in dry wood and permanent swamps.`
-  }
+const habitatDataSet = computed(() => {
+  return yearsList.map(y => {
+    const ext = [1983, 1997, 2002, 2007].includes(y) ? 'jpg' : 'png'
+    return {
+      year: y,
+      image: new URL(`../assets/mapsv1/${y}.${ext}`, import.meta.url).href,
+      trendValue: lang.value === 'en' ? 'Archive' : 'Kumbukumbu',
+      trendLabel: lang.value === 'en' ? `Snapshot ${y}` : `Picha ya ${y}`,
+      trendColor: 'text-neutral-400',
+      desc: lang.value === 'en'
+        ? `Satellite landcover and ecosystem footprint across the Amboseli basin during the ${y} period. Observe the shift in dry wood and permanent swamps.`
+        : `Utafiti wa satelaiti wa uoto wa ardhi na ikolojia katika bonde la Amboseli katika kipindi cha ${y}. Chunguza mabadiliko ya misitu kavu na mabwawa ya kudumu.`
+    }
+  })
 })
 
-const currentYearData = computed(() => habitatDataSet.find(d => d.year === selectedYear.value) || habitatDataSet[0])
-const selectedYearIndex = computed(() => habitatDataSet.findIndex(d => d.year === selectedYear.value))
+const currentYearData = computed(() => habitatDataSet.value.find(d => d.year === selectedYear.value) || habitatDataSet.value[0])
+const selectedYearIndex = computed(() => habitatDataSet.value.findIndex(d => d.year === selectedYear.value))
 
-const legendItems = [
-  { label: 'Dense Bushlands', color: '#541c19', type: 'High Cover' },
-  { label: 'Dense Woodlands', color: '#134d1c', type: 'Tree Canopy' },
-  { label: 'Grasslands',      color: '#fffda8', type: 'Open Plain' },
-  { label: 'Open Bushlands',  color: '#9e6211', type: 'Low Cover' },
-  { label: 'Open Waters',     color: '#969696', type: 'Hydrology' },
-  { label: 'Open Woodlands',  color: '#13b313', type: 'Scattered Trees' },
-  { label: 'Permanent Swamp', color: '#11108c', type: 'Wetland' },
-  { label: 'Sueda',           color: '#b0a300', type: 'Saline Scrub' },
-  { label: 'Swamp Edge',      color: '#00f7f7', type: 'Buffer' }
-]
+const legendItems = computed(() => [
+  { label: lang.value === 'en' ? 'Dense Bushlands' : 'Vichaka Kizito', color: '#541c19', type: lang.value === 'en' ? 'High Cover' : 'Kifuniko cha Juu' },
+  { label: lang.value === 'en' ? 'Dense Woodlands' : 'Misitu Mizito', color: '#134d1c', type: lang.value === 'en' ? 'Tree Canopy' : 'Kilele cha Miti' },
+  { label: lang.value === 'en' ? 'Grasslands' : 'Mbuga za Nyasi',      color: '#fffda8', type: lang.value === 'en' ? 'Open Plain' : 'Tandiko Wazi' },
+  { label: lang.value === 'en' ? 'Open Bushlands' : 'Vichaka Wazi',  color: '#9e6211', type: lang.value === 'en' ? 'Low Cover' : 'Kifuniko cha Chini' },
+  { label: lang.value === 'en' ? 'Open Waters' : 'Maji Wazi',     color: '#969696', type: lang.value === 'en' ? 'Hydrology' : 'Utafiti wa Maji' },
+  { label: lang.value === 'en' ? 'Open Woodlands' : 'Misitu Wazi',  color: '#13b313', type: lang.value === 'en' ? 'Scattered Trees' : 'Miti ya Hapa na Pale' },
+  { label: lang.value === 'en' ? 'Permanent Swamp' : 'Bwawa la Kudumu', color: '#11108c', type: lang.value === 'en' ? 'Wetland' : 'Ardhi Linganifu' },
+  { label: lang.value === 'en' ? 'Sueda' : 'Sueda',           color: '#b0a300', type: lang.value === 'en' ? 'Saline Scrub' : 'Kichaka cha Chumvi' },
+  { label: lang.value === 'en' ? 'Swamp Edge' : 'Pambizo la Bwawa',      color: '#00f7f7', type: lang.value === 'en' ? 'Buffer' : 'Kinga' }
+])
 
-const hotspots = [
-  { id: 1, x: 25, y: 70, color: '#11108c', label: 'Marshes' },
-  { id: 2, x: 15, y: 30, color: '#fffda8', label: 'Primary Grasslands' },
-  { id: 3, x: 80, y: 60, color: '#9e6211', label: 'Acacia Scrub' },
-  { id: 4, x: 50, y: 45, color: '#00f7f7', label: 'Wetland Buffer' }
-]
+const hotspots = computed(() => [
+  { id: 1, x: 25, y: 70, color: '#11108c', label: lang.value === 'en' ? 'Marshes' : 'Mito/Mabwawa' },
+  { id: 2, x: 15, y: 30, color: '#fffda8', label: lang.value === 'en' ? 'Primary Grasslands' : 'Mbuga za Nyasi Kuu' },
+  { id: 3, x: 80, y: 60, color: '#9e6211', label: lang.value === 'en' ? 'Acacia Scrub' : 'Vichaka vya Akasia' },
+  { id: 4, x: 50, y: 45, color: '#00f7f7', label: lang.value === 'en' ? 'Wetland Buffer' : 'Kinga ya Ardhi Linganifu' }
+])
 
 const audioElement = ref(null)
 const isPlaying = ref(false)
@@ -189,25 +204,29 @@ onMounted(() => {
 
 <style scoped>
 .year-btn {
-  padding: 6px 16px;
+  padding: 6px 14px;
   border-radius: 20px;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.05em;
-  border: 1px solid;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
   cursor: pointer;
   transition: all 0.25s ease;
 }
 .year-btn:hover {
-  /* background: #f97316; */
-  /* border-color: #f97316; */
+  background: #E09E34;
+  border-color: #E09E34;
   color: #ffffff;
 }
-:global(.dark) .year-btn:hover {
-  /* background: #f97316; */
-  /* border-color: #f97316; */
+.year-btn.selected {
+  background: #E09E34;
+  border-color: #E09E34;
   color: #ffffff;
+  font-weight: 700;
 }
+
 .waveform {
   display: flex;
   align-items: center;

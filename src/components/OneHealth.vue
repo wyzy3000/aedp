@@ -9,15 +9,20 @@
     <div class="max-w-[1240px] mx-auto px-8 lg:px-12 w-full relative z-10">
       <div class="mb-10 fade-up" ref="headerRef">
         <div class="flex items-center gap-2 mb-3">
-          <div class="w-1 h-8 rounded-full transition-colors" style="background-color: #FBB03A;" />
-          <span class="text-xs font-semibold uppercase tracking-[0.2em] transition-colors" style="color: white;">Module 07 · One Health</span>
+          <div class="w-1 h-8 rounded-full transition-colors" style="background-color: #E09E34;" />
+          <span class="text-xs font-semibold uppercase tracking-[0.2em] transition-colors" style="color: white;">
+            {{ lang === 'en' ? 'Module 07 · One Health' : 'Moduli 07 · Afya Moja' }}
+          </span>
         </div>
         <h2 class="font-display font-extrabold text-4xl md:text-5xl text-white leading-tight transition-colors" style="letter-spacing:-0.02em">
-          Ecosystem One Health Indicators
+          {{ lang === 'en' ? 'One Health Indicators' : 'Viashiria vya Afya Moja' }}
         </h2>
        
         <p class="mt-3 text-white text-[15px] leading-relaxed max-w-2xl transition-colors" style="color: white;">
-          Interactive Household Research Dissemination Explorer.
+          {{ lang === 'en'
+            ? 'Interactive Household Research Dissemination Explorer.'
+            : 'Kivinjari Shirikishi cha Kusambaza Utafiti wa Kaya.'
+          }}
         </p>
       </div>
 

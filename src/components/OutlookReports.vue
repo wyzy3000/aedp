@@ -16,7 +16,7 @@
         <h2 class="font-display font-extrabold text-4xl md:text-5xl text-white leading-tight transition-colors" style="letter-spacing:-0.02em">
           Amboseli Outlook Report
         </h2>
-        <p class="mt-2 font-display font-medium text-lg italic text-[#FBB03A] transition-colors">Taarifa za Amboseli</p>
+        <p class="mt-2 font-display font-medium text-lg italic text-[#E09E34] transition-colors">Taarifa za Amboseli</p>
         <p class="mt-3 text-white/90 text-[15px] leading-relaxed max-w-2xl transition-colors">
           Expert synthesis of current ecosystem conditions drawn from satellite data,
           ground-truth surveys, and meteorological analysis.

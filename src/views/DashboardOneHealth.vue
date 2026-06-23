@@ -62,7 +62,7 @@
               <h3 class="text-white font-bold text-lg">
                 {{ isEditing ? 'Edit Observation' : 'New Observation' }}
               </h3>
-              <button v-if="isEditing" @click="resetForm" class="text-[10px] text-[#Fbb03a] hover:underline uppercase font-bold tracking-wider">Create new entry instead</button>
+              <button v-if="isEditing" @click="resetForm" class="text-[10px] text-[#E09E34] hover:underline uppercase font-bold tracking-wider">Create new entry instead</button>
             </div>
 
             <form @submit.prevent="submitForm" class="space-y-8">
@@ -168,7 +168,7 @@
               <h3 class="text-white font-bold text-base uppercase tracking-wider">History</h3>
               <div class="flex items-center gap-2">
                 <select v-model="sortOrder" 
-                        class="bg-black/40 border border-white/10 rounded-lg text-[10px] text-white/70 px-3 py-1.5 outline-none cursor-pointer hover:border-[#Fbb03a]/50 transition-all uppercase font-bold tracking-tighter">
+                        class="bg-black/40 border border-white/10 rounded-lg text-[10px] text-white/70 px-3 py-1.5 outline-none cursor-pointer hover:border-[#E09E34]/50 transition-all uppercase font-bold tracking-tighter">
                   <option value="desc">Points (Desc)</option>
                   <option value="asc">Points (Asc)</option>
                 </select>

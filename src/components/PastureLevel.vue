@@ -10,13 +10,19 @@
       <div class="mb-10 fade-up" ref="headerRef">
         <div class="flex items-center gap-2 mb-3">
           <div class="w-1 h-8 rounded-full" :style="{ background: selectedYearData.lineColor }" />
-          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-white/70">Module 01 · Pasture</span>
+          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-white/70">
+            {{ lang === 'en' ? 'Module 01 · Pasture' : 'Moduli 01 · Nyasi' }}
+          </span>
         </div>
         <h2 class="font-display font-extrabold text-4xl md:text-5xl text-white leading-tight">
-          The Grass Story of Amboseli
+          {{ lang === 'en' ? 'The Pasture Levels of Amboseli' : 'Viwango vya Nyasi vya Amboseli' }}
         </h2>
-        <p class="mt-2 text-[#FBB03A] font-display font-medium text-lg italic">Kiwango cha Nyasi</p>
-        <p class="mt-3 text-white/90 text-[15px] leading-relaxed max-w-2xl">{{ selectedYearData.context }}</p>
+        <p class="mt-2 font-display font-medium text-lg italic" style="color: #E09E34;">
+          {{ lang === 'en' ? 'Grass Level' : 'Kiwango cha Nyasi' }}
+        </p>
+        <p class="mt-3 text-[15px] leading-relaxed max-w-2xl" style="color: #ffffff;">
+          {{ lang === 'en' ? selectedYearData.contextEn : selectedYearData.contextSw }}
+        </p>
       </div>
 
       <!-- Year selector -->
@@ -35,7 +41,9 @@
         <div class="flex items-center justify-between px-6 py-4 border-b border-white/5">
           <div class="flex items-center gap-2.5">
             <div class="w-2 h-2 rounded-full animate-pulse" :style="{ background: selectedYearData.lineColor }" />
-            <span class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Multi-Year NDVI Trend</span>
+            <span class="text-xs font-semibold uppercase tracking-wider text-neutral-500">
+              {{ lang === 'en' ? 'Multi-Year NDVI Trend' : 'Mwelekeo wa NDVI wa Miaka Mingi' }}
+            </span>
           </div>
           <div class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-black text-neutral-300 border border-white/10">
             {{ selectedYear }} · NDVI {{ selectedYearData.ndvi }}
@@ -81,13 +89,15 @@
         </div>
 
         <div class="px-6 py-3 border-t border-white/5 flex items-center gap-4">
-          <span class="text-xs text-neutral-600">Pasture Condition:</span>
+          <span class="text-xs text-neutral-600">
+            {{ lang === 'en' ? 'Pasture Condition:' : 'Hali ya Nyasi:' }}
+          </span>
           <div class="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden">
             <div class="h-full rounded-full transition-all duration-700"
                  :style="{ width: (selectedYearData.ndvi * 100) + '%', background: selectedYearData.lineColor }" />
           </div>
           <span class="text-xs font-semibold text-white">
-            {{ selectedYearData.label }}
+            {{ lang === 'en' ? selectedYearData.labelEn : selectedYearData.labelSw }}
           </span>
         </div>
       </div>
@@ -95,8 +105,12 @@
       <!-- Live Grass Preview -->
       <div class="rounded-2xl border border-white/8 overflow-hidden mb-8 fade-up bg-[#08120a]/90" ref="grassRef">
         <div class="flex items-center justify-between px-6 py-3 border-b border-white/5">
-          <span class="text-[11px] uppercase tracking-widest text-neutral-600 font-semibold">Live Condition Preview · {{ selectedYear }}</span>
-          <span class="text-[11px] font-semibold text-white">{{ selectedYearData.label }}</span>
+          <span class="text-[11px] uppercase tracking-widest text-neutral-600 font-semibold">
+            {{ lang === 'en' ? 'Live Condition Preview' : 'Uhakiki wa Hali Halisi' }} · {{ selectedYear }}
+          </span>
+          <span class="text-[11px] font-semibold text-white">
+            {{ lang === 'en' ? selectedYearData.labelEn : selectedYearData.labelSw }}
+          </span>
         </div>
 
         <div class="relative overflow-hidden" style="height: 180px;">
@@ -153,7 +167,7 @@ import { ref, inject, computed, onMounted } from 'vue'
 const lang = inject('lang')
 const isDark = inject('isDark')
 const isPlaying = ref(false)
-const selectedYear = ref(2022)
+const selectedYear = ref(2024)
 const headerRef = ref(null)
 const selectorRef = ref(null)
 const chartRef = ref(null)
@@ -165,53 +179,67 @@ const audioElement = ref(null)
 // Drought years → short sparse stubble. Rain years → tall lush blades.
 const yearDataSet = [
   {
-    year: 2018, ndvi: 0.55, label: 'Good',
+    year: 2018, ndvi: 0.55,
+    labelEn: 'Good', labelSw: 'Nzuri',
     lineColor: '#4a9e3a', grassColor: '#2d7a1f',
     swaySpeed: 3.5, grassOpacity: 1.0, soilColor: '#2a1a08',
     grassMinH: 40, grassMaxH: 90,
-    context: 'Above-average rains in 2018 brought healthy pasture conditions across the basin. Livestock body condition was good and wildlife populations remained stable.',
+    contextEn: 'Above-average rains in 2018 brought healthy pasture conditions across the basin. Livestock body condition was good and wildlife populations remained stable.',
+    contextSw: 'Mvua zaidi ya wastani mwaka wa 2018 ilileta hali nzuri ya malisho katika bonde lote. Hali ya miili ya mifugo ilikuwa nzuri na idadi ya wanyamapori ilibaki thabiti.',
   },
   {
-    year: 2019, ndvi: 0.65, label: 'Excellent',
+    year: 2019, ndvi: 0.65,
+    labelEn: 'Excellent', labelSw: 'Bora Sana',
     lineColor: '#28c443', grassColor: '#1e9a2a',
     swaySpeed: 3.0, grassOpacity: 1.0, soilColor: '#1a2800',
     grassMinH: 65, grassMaxH: 120,
-    context: 'Peak pasture year. High NDVI readings across the Amboseli basin, excellent forage availability, and strong short and long rain seasons contributed to thriving grassland ecosystems.',
+    contextEn: 'Peak pasture year. High NDVI readings across the Amboseli basin, excellent forage availability, and strong short and long rain seasons contributed to thriving grassland ecosystems.',
+    contextSw: 'Mwaka wa malisho ya kiwango cha juu zaidi. Vipimo vya juu vya NDVI katika bonde la Amboseli, upatikanaji mzuri wa chakula cha mifugo, na msimu mzuri wa mvua fupi na ndefu ulichangia kustawi kwa mfumo wa ikolojia wa nyasi.',
   },
   {
-    year: 2020, ndvi: 0.50, label: 'Adequate',
+    year: 2020, ndvi: 0.50,
+    labelEn: 'Adequate', labelSw: 'Ya Kutosha',
     lineColor: '#89b83a', grassColor: '#5a8a1a',
     swaySpeed: 3.8, grassOpacity: 1.0, soilColor: '#22180a',
     grassMinH: 35, grassMaxH: 78,
-    context: 'A moderate year with some variability in seasonal rainfall. Overall pasture conditions remained adequate, though slight stress was observed in northern rangeland areas.',
+    contextEn: 'A moderate year with some variability in seasonal rainfall. Overall pasture conditions remained adequate, though slight stress was observed in northern rangeland areas.',
+    contextSw: 'Mwaka wa wastani wenye mabadiliko katika mvua za msimu. Hali ya jumla ya malisho ilibaki ya kutosha, ingawa changamoto kidogo ilionekana katika maeneo ya kaskazini ya malisho.',
   },
   {
-    year: 2021, ndvi: 0.42, label: 'Stressed',
+    year: 2021, ndvi: 0.42,
+    labelEn: 'Stressed', labelSw: 'Hali Dhaifu',
     lineColor: '#c8a020', grassColor: '#b08b1a',
     swaySpeed: 4.5, grassOpacity: 0.9, soilColor: '#2a1c06',
     grassMinH: 14, grassMaxH: 48,
-    context: 'First signs of a developing drought cycle. The 2021 short rains (OND) failed significantly, triggering early warnings for the ecosystem. Pasture stress became visible by late November.',
+    contextEn: 'First signs of a developing drought cycle. The 2021 short rains (OND) failed significantly, triggering early warnings for the ecosystem. Pasture stress became visible by late November.',
+    contextSw: 'Ishara za kwanza za kuanza kwa ukame. Mvua fupi za mwaka 2021 (OND) zilifeli sana, na kusababisha tahadhari ya mapema kwa mfumo wa ikolojia. Hali ngumu ya malisho ilianza kuonekana kufikia mwishoni mwa Novemba.',
   },
   {
-    year: 2022, ndvi: 0.18, label: 'Severe Drought',
+    year: 2022, ndvi: 0.18,
+    labelEn: 'Severe Drought', labelSw: 'Ukame Mkali',
     lineColor: '#d94f14', grassColor: '#a8460b',
     swaySpeed: 6.5, grassOpacity: 0.75, soilColor: '#3a1e08',
     grassMinH: 4, grassMaxH: 18,
-    context: 'Catastrophic La Niña-driven drought — the worst in 40 years. VCI fell below 0.15 across 68% of Kajiado rangeland. Widespread livestock losses, dry water pans, and emergency declarations were recorded.',
+    contextEn: 'Catastrophic La Niña-driven drought — the worst in 40 years. VCI fell below 0.15 across 68% of Kajiado rangeland. Widespread livestock losses, dry water pans, and emergency declarations were recorded.',
+    contextSw: 'Ukame mkubwa uliosababishwa na La Niña — mbaya zaidi katika miaka 40. VCI ilianguka chini ya 0.15 katika 68% ya malisho ya Kajiado. Hasara kubwa ya mifugo, mabwawa ya maji kukauka, na matangazo ya dharura yalirekodiwa.',
   },
   {
-    year: 2023, ndvi: 0.38, label: 'Early Recovery',
+    year: 2023, ndvi: 0.38,
+    labelEn: 'Early Recovery', labelSw: 'Ufufukaji wa Mapema',
     lineColor: '#d4911f', grassColor: '#9c841c',
     swaySpeed: 4.2, grassOpacity: 0.9, soilColor: '#281a06',
     grassMinH: 12, grassMaxH: 42,
-    context: 'Long rains returned near-normal in 2023, triggering a slow green flush. NDVI recovered to 60% of baseline by mid-year. Livestock populations remained well below pre-drought levels.',
+    contextEn: 'Long rains returned near-normal in 2023, triggering a slow green flush. NDVI recovered to 60% of baseline by mid-year. Livestock populations remained well below pre-drought levels.',
+    contextSw: 'Mvua ndefu zilirejea karibu na wastani mnamo 2023, na kuchochea kurejea polepole kwa uoto wa kijani. NDVI ilirejea hadi 60% ya msingi ifikapo katikati ya mwaka. Idadi ya mifugo ilibaki chini sana ya viwango vya kabla ya ukame.',
   },
   {
-    year: 2024, ndvi: 0.54, label: 'Recovering',
+    year: 2024, ndvi: 0.54,
+    labelEn: 'Recovering', labelSw: 'Inayorejea',
     lineColor: '#6db84a', grassColor: '#4a9c26',
     swaySpeed: 3.2, grassOpacity: 1.0, soilColor: '#201808',
     grassMinH: 38, grassMaxH: 84,
-    context: 'Continued recovery across the basin. Pasture conditions returning toward pre-drought norms. Community monitors report improving livestock body condition and returning wildlife movement patterns.',
+    contextEn: 'Continued recovery across the basin. Pasture conditions returning toward pre-drought norms. Community monitors report improving livestock body condition and returning wildlife movement patterns.',
+    contextSw: 'Ufufukaji unaoendelea katika bonde zima. Hali ya malisho inarejea kuelekea kawaida ya kabla ya ukame. Wasimamizi wa jamii wanaripoti kuboreka kwa hali ya mifugo na kurejea kwa mifumo ya harakati ya wanyamapori.',
   },
 ]
 
@@ -293,13 +321,13 @@ onMounted(() => {
   transition: all 0.25s ease;
 }
 .year-btn:hover {
-  background: rgba(251, 176, 58, 0.15);
-  border-color: #FBB03A;
-  color: #FBB03A;
+  background: #E09E34;
+  border-color: #E09E34;
+  color: #ffffff;
 }
 .year-btn.selected {
-  background: #FBB03A;
-  border-color: #FBB03A;
+  background: #E09E34;
+  border-color: #E09E34;
   color: #ffffff;
   font-weight: 700;
 }

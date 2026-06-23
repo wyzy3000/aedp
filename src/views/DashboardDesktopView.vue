@@ -9,11 +9,11 @@
 
       <div class="mb-10 fade-up">
         <div class="flex items-center gap-2 mb-3">
-          <div class="w-1 h-8 rounded-full bg-[#FBB03A]" />
+          <div class="w-1 h-8 rounded-full bg-[#E09E34]" />
           <span class="text-xs font-semibold uppercase tracking-[0.2em] text-white/60">Community Portal</span>
         </div>
         <h1 class="font-display font-extrabold text-4xl md:text-5xl text-white leading-tight">My Dashboard</h1>
-        <p class="mt-2 text-[#FBB03A]/70 font-medium text-base">{{ user?.email }}</p>
+        <p class="mt-2 text-[#E09E34]/70 font-medium text-base">{{ user?.email }}</p>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
@@ -21,7 +21,7 @@
         <div class="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-7 fade-up">
           <div class="flex items-center gap-2.5 mb-6">
             <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: rgba(251,176,58,0.15);">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#FBB03A]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#E09E34]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
               </svg>
             </div>
@@ -39,20 +39,20 @@
               <label class="block text-xs font-semibold uppercase tracking-wider text-white/50 mb-2">📍 Location</label>
               <input v-model="form.location" type="text" required
                      placeholder="e.g. Olgulului, Kimana, Rombo..."
-                     class="w-full px-4 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:ring-2 focus:ring-[#FBB03A]/50 focus:border-[#FBB03A] outline-none transition-all text-base" />
+                     class="w-full px-4 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:ring-2 focus:ring-[#E09E34]/50 focus:border-[#E09E34] outline-none transition-all text-base" />
             </div>
 
             <div>
               <label class="block text-xs font-semibold uppercase tracking-wider text-white/50 mb-2">📅 Date of Observation</label>
               <input v-model="form.date" type="date" required
-                     class="w-full px-4 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white focus:ring-2 focus:ring-[#FBB03A]/50 focus:border-[#FBB03A] outline-none transition-all text-base" />
+                     class="w-full px-4 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white focus:ring-2 focus:ring-[#E09E34]/50 focus:border-[#E09E34] outline-none transition-all text-base" />
             </div>
 
             <div>
               <label class="block text-xs font-semibold uppercase tracking-wider text-white/50 mb-2">📝 Field Observation</label>
               <textarea v-model="form.content" required rows="4"
                         placeholder="Describe what you observed — water sources, pasture condition, wildlife, livestock health..."
-                        class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 resize-none focus:ring-2 focus:ring-[#FBB03A]/50 focus:border-[#FBB03A] outline-none transition-all" />
+                        class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 resize-none focus:ring-2 focus:ring-[#E09E34]/50 focus:border-[#E09E34] outline-none transition-all" />
               <p class="text-right text-[10px] text-white/25 mt-1">{{ form.content.length }} / 2000</p>
             </div>
 
@@ -80,7 +80,7 @@
             </div>
 
             <button type="submit" :disabled="submitting"
-                    class="w-full py-3.5 rounded-xl font-semibold text-white transition-all duration-300 bg-[#FBB03A] hover:bg-[#e09e34] shadow-lg shadow-[#FBB03A]/20 disabled:opacity-60 disabled:cursor-not-allowed flex justify-center items-center gap-2 mt-2">
+                    class="w-full py-3.5 rounded-xl font-semibold text-white transition-all duration-300 bg-[#E09E34] hover:bg-[#e09e34] shadow-lg shadow-[#E09E34]/20 disabled:opacity-60 disabled:cursor-not-allowed flex justify-center items-center gap-2 mt-2">
               <span v-if="submitting" class="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
               {{ submitting ? (editingEntry ? 'Updating...' : 'Posting...') : (editingEntry ? 'Save Changes' : 'Submit Diary Entry') }}
             </button>
@@ -147,7 +147,7 @@
                   Preview
                 </button>
                 <button @click="startEdit(entry)"
-                        class="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-[#FBB03A]/70 hover:text-[#FBB03A] hover:bg-[#FBB03A]/10 transition-all border border-white/5">
+                        class="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-[#E09E34]/70 hover:text-[#E09E34] hover:bg-[#E09E34]/10 transition-all border border-white/5">
                   <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                   Edit
                 </button>
@@ -171,7 +171,7 @@
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
           </button>
           <div class="mb-4">
-            <span class="text-xs font-semibold uppercase tracking-[0.15em] text-[#FBB03A]/70">Diary Entry Preview</span>
+            <span class="text-xs font-semibold uppercase tracking-[0.15em] text-[#E09E34]/70">Diary Entry Preview</span>
           </div>
           <div class="flex items-center gap-3 flex-wrap mb-4">
             <span class="text-sm font-medium text-white/80 bg-white/5 px-3 py-1 rounded-full border border-white/10">📍 {{ previewEntry.location }}</span>
@@ -187,7 +187,7 @@
           </div>
           <div class="flex gap-3 mt-5">
             <button @click="startEdit(previewEntry); previewEntry = null"
-                    class="flex-1 py-2.5 rounded-xl text-sm font-medium text-[#FBB03A] border border-[#FBB03A]/30 hover:bg-[#FBB03A]/10 transition-all">
+                    class="flex-1 py-2.5 rounded-xl text-sm font-medium text-[#E09E34] border border-[#E09E34]/30 hover:bg-[#E09E34]/10 transition-all">
               Edit Entry
             </button>
             <button @click="previewEntry = null"
@@ -436,7 +436,7 @@ const deleteEntry = async () => {
 .sentiment-slider::-webkit-slider-thumb {
   -webkit-appearance: none; appearance: none;
   width: 22px; height: 22px; border-radius: 50%;
-  background: white; border: 3px solid #FBB03A; cursor: pointer;
+  background: white; border: 3px solid #E09E34; cursor: pointer;
   box-shadow: 0 2px 8px rgba(0,0,0,0.4); transition: transform 0.15s ease;
 }
 .sentiment-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
