@@ -7,19 +7,24 @@
          style="background: radial-gradient(ellipse at 25% 40%, rgba(59,130,246,0.07) 0%, transparent 55%)" />
 
     <div class="max-w-[1240px] mx-auto px-8 lg:px-12 w-full relative z-10">
-      <!-- Header -->
       <div class="mb-10 fade-up" ref="headerRef">
         <div class="flex items-center gap-2 mb-3">
           <div class="w-1 h-8 rounded-full bg-savanna-500" />
-          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-white/70 transition-colors">Module 05 · Outlook</span>
+          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-white/70 transition-colors">
+            {{ lang === 'en' ? 'Module 05 · Outlook' : 'Moduli 05 · Mwelekeo' }}
+          </span>
         </div>
         <h2 class="font-display font-extrabold text-4xl md:text-5xl text-white leading-tight transition-colors" style="letter-spacing:-0.02em">
-          Amboseli Outlook Report
+          {{ lang === 'en' ? 'Amboseli Outlook Report' : 'Ripoti ya Mwelekeo ya Amboseli' }}
         </h2>
-        <p class="mt-2 font-display font-medium text-lg italic text-[#E09E34] transition-colors">Taarifa za Amboseli</p>
-        <p class="mt-3 text-white/90 text-[15px] leading-relaxed max-w-2xl transition-colors">
-          Expert synthesis of current ecosystem conditions drawn from satellite data,
-          ground-truth surveys, and meteorological analysis.
+        <p class="mt-2 font-display font-medium text-lg italic transition-colors" style="color: #E09E34;">
+          {{ lang === 'en' ? 'Amboseli Reports' : 'Taarifa za Amboseli' }}
+        </p>
+        <p class="mt-3 text-[15px] leading-relaxed max-w-2xl transition-colors" style="color: #ffffff;">
+          {{ lang === 'en'
+            ? 'Expert synthesis of current ecosystem conditions drawn from satellite data, ground-truth surveys, and meteorological analysis.'
+            : 'Uchambuzi wa wataalamu wa hali ya sasa ya ikolojia kutoka kwa data ya satelaiti, tafiti za ardhini, na uchambuzi wa hali ya hewa.'
+          }}
         </p>
       </div>
 
@@ -80,7 +85,7 @@
 </template>
 
 <script setup>
-import { ref, inject, onMounted } from 'vue'
+import { ref, inject, computed, onMounted } from 'vue'
 import { Sprout, Cloud, Activity, AlertTriangle } from 'lucide-vue-next'
 
 const lang = inject('lang')
@@ -91,10 +96,12 @@ const cardRef = ref(null)
 const audioRef = ref(null)
 const audioElement = ref(null)
 
-const outlookData = {
-  date: 'Current Outlook',
-  summary: 'Pasture conditions are showing early signs of recovery across the Amboseli basin following the onset of short rains in late October. Short-term weather forecasts indicate continued rainfall over the next two weeks, which should support further vegetation growth and livestock body condition recovery. However, habitat monitoring shows significant woody cover loss from the previous drought sequence, and wetland margins remain stressed. Community monitors report wildlife movements returning to typical seasonal patterns.',
-}
+const outlookData = computed(() => ({
+  date: lang.value === 'en' ? 'Current Outlook' : 'Mwelekeo wa Sasa',
+  summary: lang.value === 'en'
+    ? 'Pasture conditions are showing early signs of recovery across the Amboseli basin following the onset of short rains in late October. Short-term weather forecasts indicate continued rainfall over the next two weeks, which should support further vegetation growth and livestock body condition recovery. However, habitat monitoring shows significant woody cover loss from the previous drought sequence, and wetland margins remain stressed. Community monitors report wildlife movements returning to typical seasonal patterns.'
+    : 'Hali ya malisho inaonyesha ishara za mapema za kurejea katika bonde la Amboseli kufuatia kuanza kwa mvua fupi mwishoni mwa Oktoba. Utabiri wa hali ya hewa wa muda mfupi unaonyesha mvua inayoendelea katika wiki mbili zijazo, ambayo inapaswa kusaidia ukuaji zaidi wa uoto na kurejea kwa hali ya mifugo. Hata hivyo, ufuatiliaji wa makazi unaonyesha upotezaji mkubwa wa misitu kutoka kwa ukame uliopita, na pembezoni mwa ardhi ya majimaji bado kuna changamoto. Waangalizi wa jamii wanaripoti harakati za wanyamapori zikirejea katika mifumo ya kawaida ya msimu.'
+}))
 
 const conditions = [
   {

@@ -10,15 +10,21 @@
       <div class="mb-10 fade-up" ref="headerRef">
         <div class="flex items-center gap-2 mb-3">
           <div class="w-1 h-8 rounded-full bg-blue-500" />
-          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-white/70 transition-colors">Module 04 · Weather</span>
+          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-white/70 transition-colors">
+            {{ lang === 'en' ? 'Module 04 · Weather' : 'Moduli 04 · Hali ya Anga' }}
+          </span>
         </div>
         <h2 class="font-display font-extrabold text-4xl md:text-5xl text-white leading-tight transition-colors" style="letter-spacing:-0.02em">
-          Weather Forecast
+          {{ lang === 'en' ? 'Weather Forecast' : 'Utabiri wa Hali ya Hewa' }}
         </h2>
-        <p class="mt-2 font-display font-medium text-lg italic text-[#E09E34] transition-colors">Hali ya anga · Open-Meteo</p>
-        <p class="mt-3 text-white/90 text-[15px] leading-relaxed max-w-2xl transition-colors">
-          Real-time atmospheric data for Amboseli Basin (Lat −2.64°, Lon 37.25°).
-          Sourced live from the Open-Meteo free weather API.
+        <p class="mt-2 font-display font-medium text-lg italic transition-colors" style="color: #E09E34;">
+          {{ lang === 'en' ? 'Weather Conditions · Open-Meteo' : 'Hali ya anga · Open-Meteo' }}
+        </p>
+        <p class="mt-3 text-[15px] leading-relaxed max-w-2xl transition-colors" style="color: #ffffff;">
+          {{ lang === 'en'
+            ? 'Real-time atmospheric data for Amboseli Basin (Lat −2.64°, Lon 37.25°). Sourced live from the Open-Meteo free weather API.'
+            : 'Takwimu za anga kwa wakati halisi kwa Bonde la Amboseli (Lat −2.64°, Lon 37.25°). Zikitoka moja kwa moja kwenye API ya hali ya hewa ya bure ya Open-Meteo.'
+          }}
         </p>
       </div>
 

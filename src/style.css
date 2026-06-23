@@ -239,7 +239,6 @@
     -webkit-user-select: none;
     user-select: none;
   }
-
   html.dark .audio-btn {
     background: rgba(74, 125, 65, 0.1);
     border-color: rgba(74, 125, 65, 0.22);
@@ -251,7 +250,6 @@
     border-color: rgba(74, 125, 65, 0.32);
     color: #2a5a24;
     transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(74, 125, 65, 0.12);
   }
 
   html.dark .audio-btn:hover {
@@ -259,21 +257,18 @@
     border-color: rgba(74, 125, 65, 0.4);
     color: #9edf8e;
     transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(74, 125, 65, 0.15);
   }
 
   .audio-btn.playing {
     background: rgba(74, 125, 65, 0.14);
     border-color: rgba(74, 125, 65, 0.4);
     color: #2a5a24;
-    box-shadow: 0 0 18px rgba(74, 125, 65, 0.12);
   }
 
   html.dark .audio-btn.playing {
     background: rgba(74, 125, 65, 0.22);
     border-color: rgba(74, 125, 65, 0.5);
     color: #b0f0a0;
-    box-shadow: 0 0 24px rgba(74, 125, 65, 0.25);
   }
 
   /* Primary CTA */
