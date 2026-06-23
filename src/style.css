@@ -53,20 +53,18 @@
 
   /* Sharper custom scrollbar */
   ::-webkit-scrollbar {
-    width: 3px;
+    width: 6px;
+    height: 6px;
   }
 
   ::-webkit-scrollbar-track {
     background: transparent;
+    margin: 4px 0;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: rgba(74, 125, 65, 0.4);
-    border-radius: 2px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: rgba(74, 125, 65, 0.7);
+    background: #64748b;
+    border-radius: 3px;
   }
 
   /* Selection color (light) handled above inline */

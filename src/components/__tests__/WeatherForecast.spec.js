@@ -17,7 +17,7 @@ describe('WeatherForecast.vue TestSuite', () => {
         await wrapper.vm.$nextTick()
         // Assert main header titles
         expect(wrapper.text()).toContain('Weather Forecast')
-        expect(wrapper.text()).toContain('Hali ya anga · Open-Meteo')
+        expect(wrapper.text()).toContain('Weather Conditions · Open-Meteo')
     })
 
     it('displays mock offline air temperature translations correctly', async () => {

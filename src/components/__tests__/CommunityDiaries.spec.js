@@ -56,11 +56,11 @@ describe('CommunityDiaries.vue TestSuite', () => {
         await new Promise(resolve => setTimeout(resolve, 0))
 
         // Find actual diary entries (not skeleton loaders)
-        const entries = wrapper.findAll('.glass-card').filter(w => w.text().includes('Sentiment'))
+        const entries = wrapper.findAll('.glass-card').filter(w => w.text().includes('Dry season'))
         expect(entries.length).toBeGreaterThan(0) // Verify entries list is not empty
 
         // Test the first entry to ensure properties map
         const firstEntry = entries[0]
-        expect(firstEntry.text()).toContain('Sentiment') // Verifies sentiment text renders
+        expect(firstEntry.text()).toContain('Dry season') // Verifies content text renders
     })
 })

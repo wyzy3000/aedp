@@ -11,7 +11,7 @@
       <div class="mb-10 fade-up" ref="headerRef">
         <div class="flex items-center gap-2 mb-3">
           <div class="w-1 h-8 rounded-full bg-red-600 dark:bg-red-700 transition-colors" />
-          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-white/70 transition-colors">Module 06 · Drought</span>
+          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-white transition-colors">Module 06 · Drought</span>
         </div>
         <h2 class="font-display font-extrabold text-4xl md:text-5xl text-white leading-tight transition-colors" style="letter-spacing:-0.02em">
           Recent Droughts in Kajiado

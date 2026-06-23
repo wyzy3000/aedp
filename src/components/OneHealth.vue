@@ -14,7 +14,7 @@
             {{ lang === 'en' ? 'Module 07 · One Health' : 'Moduli 07 · Afya Moja' }}
           </span>
         </div>
-        <h2 class="font-display font-extrabold text-4xl md:text-5xl text-white leading-tight transition-colors" style="letter-spacing:-0.02em">
+        <h2 class="font-sans font-extrabold text-white leading-tight transition-colors" style="letter-spacing:-0.02em; font-size: 40px;">
           {{ lang === 'en' ? 'One Health Indicators' : 'Viashiria vya Afya Moja' }}
         </h2>
        
@@ -28,13 +28,29 @@
 
       <div class="flex flex-col lg:flex-row gap-8 fade-up" ref="mapSectionRef">
         
-        <div class="flex-1 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm overflow-hidden shadow-2xl relative min-h-[600px] lg:h-[700px] flex flex-col">
+        <div class="flex-1 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm overflow-hidden shadow-2xl relative min-h-[500px] lg:h-[600px] flex flex-col">
           <div v-if="loadingData" class="absolute inset-0 z-[400] bg-black/50 backdrop-blur-sm flex flex-col items-center justify-center">
             <div class="w-10 h-10 border-4 border-forest-500/30 border-t-forest-500 rounded-full animate-spin mb-4" />
             <span class="text-white text-sm font-medium">Loading Map Data...</span>
           </div>
 
           <div id="public-onehealth-map" class="flex-1 w-full bg-[#e5e3df] z-0"></div>
+
+          <!-- Toggle Points Visibility Control -->
+          <div class="absolute top-4 right-4 z-[400]">
+            <button @click="toggleShowSelectedOnly"
+                    class="px-3.5 py-2 rounded-xl bg-slate-900 border border-white/10 text-white text-xs font-semibold flex items-center gap-2 shadow-lg backdrop-blur-sm select-none">
+              <span class="material-symbols-outlined text-[16px]">
+                {{ showSelectedOnly ? 'map' : 'location_searching' }}
+              </span>
+              <span>
+                {{ lang === 'en'
+                    ? (showSelectedOnly ? 'Show All Points' : 'Show Selected Only')
+                    : (showSelectedOnly ? 'Onyesha Zote' : 'Onyesha Iliyochaguliwa Tu')
+                }}
+              </span>
+            </button>
+          </div>
 
           <div class="bg-white/5 border-t border-white/10 px-4 py-3 flex items-center justify-between z-10">
             <div class="flex items-center gap-4 hidden sm:flex">
@@ -52,26 +68,32 @@
         </div>
 
         <div class="w-full lg:w-[380px] flex-shrink-0">
-          <div class="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-6 lg:p-8 min-h-[400px] lg:h-[700px] shadow-2xl lg:sticky lg:top-8 overflow-y-auto custom-scroll relative">
+          <div class="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-6 lg:p-8 min-h-[350px] lg:h-[600px] shadow-2xl lg:sticky lg:top-8 overflow-y-auto custom-scroll relative">
             
             <div v-if="!selectedPoint && !loadingData" class="flex flex-col items-center justify-center py-12 text-center h-full opacity-60">
                <span class="material-symbols-outlined text-5xl text-white/30 mb-4 animate-bounce">touch_app</span>
                <p class="text-white/70 text-sm max-w-[200px]">Click on any blue marker on the map to view data collected from that location.</p>
             </div>
 
-            <div v-if="selectedPoint" class="space-y-5 animate-fade-in pb-16">
-               <div class="pb-4 border-b border-white/10">
-                 <div class="flex items-start justify-between">
-                   <div>
-                     <h4 class="text-lg font-bold text-white">{{ selectedPoint.location_name.replace(/ area/i, '') }}</h4>
-                     <p class="text-[10px] text-white/40 uppercase tracking-widest mt-1">
-                       Lat: {{ selectedPoint.latitude.toFixed(4) }} | Lng: {{ selectedPoint.longitude.toFixed(4) }}
-                     </p>
-                   </div>
-                   <span v-if="selectedPoint.point_label" class="text-xs font-semibold text-forest-400 bg-forest-900/30 px-2 py-1 rounded-full border border-forest-500/30">
-                     {{ selectedPoint.point_label }}
-                   </span>
-                 </div>
+            <div v-if="selectedPoint" class="space-y-5 animate-fade-in">
+                <div class="pb-4 border-b border-white/10">
+                  <div class="flex items-start justify-between gap-4">
+                    <div>
+                      <h4 class="text-lg font-bold text-white">{{ selectedPoint.location_name.replace(/ area/i, '') }}</h4>
+                      <p class="text-[10px] text-white/40 uppercase tracking-widest mt-1">
+                        Lat: {{ selectedPoint.latitude.toFixed(4) }} | Lng: {{ selectedPoint.longitude.toFixed(4) }}
+                      </p>
+                    </div>
+                    <div class="flex items-center gap-1.5 flex-shrink-0">
+                      <span class="text-[11px] text-white/50 font-medium mr-1">{{ currentPointIndex + 1 }}/{{ mapPoints.length }}</span>
+                      <button @click="navigatePoint(-1)" class="w-7 h-7 rounded bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors border border-white/10" title="Previous Point">
+                        <span class="material-symbols-outlined text-[16px]">chevron_left</span>
+                      </button>
+                      <button @click="navigatePoint(1)" class="w-7 h-7 rounded bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors border border-white/10" title="Next Point">
+                        <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+                      </button>
+                    </div>
+                  </div>
                  <p class="text-xs text-white/50 mt-3 flex items-center gap-1">
                   
                    Recorded on: {{ new Date(selectedPoint.created_at).toLocaleDateString() }}
@@ -128,7 +150,7 @@
 </template>
 
 <script setup>
-import { ref, inject, onMounted, onUnmounted } from 'vue'
+import { ref, inject, computed, onMounted, onUnmounted } from 'vue'
 import { supabase } from '../supabase'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
@@ -141,9 +163,11 @@ const mapSectionRef = ref(null)
 const loadingData = ref(true)
 const mapPoints = ref([])
 const selectedPoint = ref(null)
+const showSelectedOnly = ref(false)
 
 let map = null
 const markersLayerGroup = L.layerGroup()
+const markersMap = new Map()
 let currentSelectedMarker = null
 
 const defaultIcon = L.icon({
@@ -167,17 +191,20 @@ const selectedIcon = L.icon({
 const fetchMapData = async () => {
   loadingData.value = true
   try {
-    if (supabase) {
       const { data, error } = await supabase
         .from('one_health_data')
         .select('*')
-        .order('created_at', { ascending: false })
         
       if (!error && data) {
+        // Sort numerically by point number extracted from location_name
+        data.sort((a, b) => {
+          const numA = parseInt(a.location_name.match(/Point\s+(\d+)/i)?.[1] || 0, 10)
+          const numB = parseInt(b.location_name.match(/Point\s+(\d+)/i)?.[1] || 0, 10)
+          return numA - numB
+        })
         mapPoints.value = data
         plotMarkers()
       }
-    }
   } catch (err) {
     console.error('Error fetching map data:', err)
   } finally {
@@ -185,45 +212,102 @@ const fetchMapData = async () => {
   }
 }
 
-const plotMarkers = () => {
-  markersLayerGroup.clearLayers()
-  let point1Marker = null
+const selectPointById = (id) => {
+  const point = mapPoints.value.find(p => p.id === id)
+  if (!point) return
 
-  mapPoints.value.forEach((point, index) => {
-    const marker = L.marker([point.latitude, point.longitude], { icon: defaultIcon })
-    
-    const title = point.location_name.replace(/ area/i, '')
-    marker.bindPopup(`<b>${title}</b>`, { closeButton: false })
-    
-    marker.on('click', () => {
-      // Revert previous marker color
+  selectedPoint.value = point
+  
+  if (showSelectedOnly.value) {
+    plotMarkers()
+  } else {
+    const marker = markersMap.get(id)
+    if (marker) {
       if (currentSelectedMarker) {
         currentSelectedMarker.setIcon(defaultIcon)
       }
       marker.setIcon(selectedIcon)
       currentSelectedMarker = marker
-      
-      selectedPoint.value = point
-      
       map.panTo([point.latitude, point.longitude], { animate: true, duration: 0.5 })
+    }
+  }
+}
+
+const plotMarkers = () => {
+  markersLayerGroup.clearLayers()
+  markersMap.clear()
+  let point1Marker = null
+
+  mapPoints.value.forEach((point, index) => {
+    // If showSelectedOnly is true, only plot the selected point
+    if (showSelectedOnly.value && selectedPoint.value && point.id !== selectedPoint.value.id) {
+      return
+    }
+
+    const isSelected = selectedPoint.value && point.id === selectedPoint.value.id
+    const marker = L.marker([point.latitude, point.longitude], { 
+      icon: isSelected ? selectedIcon : defaultIcon 
+    })
+    
+    const title = point.location_name.replace(/ area/i, '')
+    marker.bindPopup(`<b>${title}</b>`, { closeButton: false })
+    
+    marker.on('click', () => {
+      selectPointById(point.id)
     })
     
     if (index === 0) {
       point1Marker = marker
     }
 
+    if (isSelected) {
+      currentSelectedMarker = marker
+    }
+
+    markersMap.set(point.id, marker)
     markersLayerGroup.addLayer(marker)
   })
 
-  // Auto-fit map to show all markers with padding so none are hidden behind others
-  if (mapPoints.value.length > 1) {
-    const bounds = L.latLngBounds(mapPoints.value.map(p => [p.latitude, p.longitude]))
-    map.fitBounds(bounds, { padding: [40, 40], maxZoom: 12 })
+  if (showSelectedOnly.value && selectedPoint.value) {
+    map.setView([selectedPoint.value.latitude, selectedPoint.value.longitude], 12, { animate: false })
+  } else {
+    // Auto-fit map to show all markers with padding so none are hidden behind others
+    if (mapPoints.value.length > 1) {
+      const bounds = L.latLngBounds(mapPoints.value.map(p => [p.latitude, p.longitude]))
+      map.fitBounds(bounds, { padding: [40, 40], maxZoom: 12, animate: false })
+    }
   }
 
-  if (point1Marker) {
+  // If no point was selected yet, select the first one
+  if (!selectedPoint.value && point1Marker) {
     point1Marker.fire('click')
   }
+}
+
+const toggleShowSelectedOnly = () => {
+  showSelectedOnly.value = !showSelectedOnly.value
+  plotMarkers()
+}
+
+const currentPointIndex = computed(() => {
+  if (!selectedPoint.value) return 0
+  return mapPoints.value.findIndex(p => p.id === selectedPoint.value.id)
+})
+
+const navigatePoint = (direction) => {
+  if (!mapPoints.value.length || !selectedPoint.value) return
+  const currentIndex = currentPointIndex.value
+  if (currentIndex === -1) return
+  
+  let nextIndex = currentIndex + direction
+  if (nextIndex < 0) {
+    nextIndex = mapPoints.value.length - 1
+  } else if (nextIndex >= mapPoints.value.length) {
+    nextIndex = 0
+  }
+  
+  const nextPoint = mapPoints.value[nextIndex]
+  selectPointById(nextPoint.id)
 }
 
 onMounted(() => {
@@ -249,9 +333,9 @@ onMounted(() => {
   // Custom scrollbar css
   const style = document.createElement('style')
   style.textContent = `
-    .custom-scroll::-webkit-scrollbar { width: 4px; }
-    .custom-scroll::-webkit-scrollbar-track { background: transparent; }
-    .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+    .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scroll::-webkit-scrollbar-track { background: transparent; margin: 8px 0; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #64748b; border-radius: 3px; }
     
     .leaflet-popup-content-wrapper { background: #0A4570; color: #fff; border-radius: 12px; }
     .leaflet-popup-tip { background: #0A4570; }

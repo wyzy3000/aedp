@@ -10,7 +10,7 @@
       <div class="mb-10 fade-up" ref="headerRef">
         <div class="flex items-center gap-2 mb-3">
           <div class="w-1 h-8 rounded-full bg-savanna-500" />
-          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-white/70 transition-colors">
+          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-white transition-colors">
             {{ lang === 'en' ? 'Module 05 · Outlook' : 'Moduli 05 · Mwelekeo' }}
           </span>
         </div>

@@ -10,7 +10,7 @@
       <div class="mb-10 fade-up" ref="headerRef">
         <div class="flex items-center gap-2 mb-3">
           <div class="w-1 h-8 rounded-full bg-savanna-500" />
-          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-white/70 transition-colors">
+          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-white transition-colors">
             {{ lang === 'en' ? 'Module 02 · Habitat' : 'Moduli 02 · Makazi' }}
           </span>
         </div>
@@ -265,9 +265,9 @@ onMounted(() => {
   filter: contrast(1.2) brightness(1.05) saturate(1.2);
 }
 
-.custom-scroll-light::-webkit-scrollbar { width: 3px; }
-.custom-scroll-light::-webkit-scrollbar-track { background: transparent; }
-.custom-scroll-light::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+.custom-scroll-light::-webkit-scrollbar { width: 6px; height: 6px; }
+.custom-scroll-light::-webkit-scrollbar-track { background: transparent; margin-top: 8px; margin-bottom: 8px; }
+.custom-scroll-light::-webkit-scrollbar-thumb { background: #64748b; border-radius: 3px; }
 
 .fade-enter-active, .fade-leave-active {
   transition: opacity 0.3s ease, transform 0.3s ease;

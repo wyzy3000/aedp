@@ -10,7 +10,7 @@
       <div class="mb-10 fade-up" ref="headerRef">
         <div class="flex items-center gap-2 mb-3">
           <div class="w-1 h-8 rounded-full" :style="{ background: selectedYearData.lineColor }" />
-          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-white/70">
+          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-white">
             {{ lang === 'en' ? 'Module 01 · Pasture' : 'Moduli 01 · Nyasi' }}
           </span>
         </div>
@@ -20,7 +20,7 @@
         <p class="mt-2 font-display font-medium text-lg italic" style="color: #E09E34;">
           {{ lang === 'en' ? 'Grass Level' : 'Kiwango cha Nyasi' }}
         </p>
-        <p class="mt-3 text-[15px] leading-relaxed max-w-2xl" style="color: #ffffff;">
+        <p class="mt-3 text-[15px] leading-relaxed max-w-4xl" style="color: #ffffff;">
           {{ lang === 'en' ? selectedYearData.contextEn : selectedYearData.contextSw }}
         </p>
       </div>
@@ -40,8 +40,7 @@
       <div class="rounded-2xl border border-white/8 overflow-hidden mb-8 fade-up bg-[#0a160c]/80 backdrop-blur-md" ref="chartRef">
         <div class="flex items-center justify-between px-6 py-4 border-b border-white/5">
           <div class="flex items-center gap-2.5">
-            <div class="w-2 h-2 rounded-full animate-pulse" :style="{ background: selectedYearData.lineColor }" />
-            <span class="text-xs font-semibold uppercase tracking-wider text-neutral-500">
+            <span class="text-xs font-semibold uppercase tracking-wider text-white">
               {{ lang === 'en' ? 'Multi-Year NDVI Trend' : 'Mwelekeo wa NDVI wa Miaka Mingi' }}
             </span>
           </div>
@@ -73,7 +72,7 @@
                       class="cursor-pointer transition-all duration-300"
                       @click="selectedYear = yd.year" />
               <text :x="yearX(i)" y="210"
-                    :fill="yd.year === selectedYear ? yd.lineColor : '#4b5563'"
+                    :fill="yd.year === selectedYear ? yd.lineColor : '#ffffff'"
                     font-size="11" text-anchor="middle" font-family="Inter, sans-serif"
                     class="cursor-pointer" font-weight="500"
                     @click="selectedYear = yd.year">
@@ -89,7 +88,7 @@
         </div>
 
         <div class="px-6 py-3 border-t border-white/5 flex items-center gap-4">
-          <span class="text-xs text-neutral-600">
+          <span class="text-xs text-white">
             {{ lang === 'en' ? 'Pasture Condition:' : 'Hali ya Nyasi:' }}
           </span>
           <div class="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden">
@@ -105,7 +104,7 @@
       <!-- Live Grass Preview -->
       <div class="rounded-2xl border border-white/8 overflow-hidden mb-8 fade-up bg-[#08120a]/90" ref="grassRef">
         <div class="flex items-center justify-between px-6 py-3 border-b border-white/5">
-          <span class="text-[11px] uppercase tracking-widest text-neutral-600 font-semibold">
+          <span class="text-[11px] uppercase tracking-widest text-white font-semibold">
             {{ lang === 'en' ? 'Live Condition Preview' : 'Uhakiki wa Hali Halisi' }} · {{ selectedYear }}
           </span>
           <span class="text-[11px] font-semibold text-white">

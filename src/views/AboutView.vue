@@ -19,8 +19,8 @@
           About AEDP
         </h2>
         
-        <p class="text-[15px] font-medium leading-relaxed max-w-3xl transition-colors"
-           :class="isDark ? 'text-white' : 'text-[#4a4230]'">
+        <p class="text-[15px] font-normal leading-relaxed max-w-5xl transition-colors"
+           :class="isDark ? '!text-white' : 'text-[#4a4230]'">
           AEDP turns long-term rangeland monitoring into clear, practical stories communities and partners can use. It combines visuals with audio narration (including Maa and Swahili) to support informed decisions across the Amboseli landscape.
         </p>
       </div>
@@ -34,8 +34,8 @@
             What you will find
           </h3>
           <ul class="space-y-2 list-none">
-            <li v-for="(item, idx) in findings" :key="idx" class="flex gap-3 text-[15px] font-medium leading-relaxed transition-colors"
-                :class="isDark ? 'text-white' : 'text-[#4a4230]'">
+            <li v-for="(item, idx) in findings" :key="idx" class="flex gap-3 text-[15px] font-normal leading-relaxed transition-colors"
+                :class="isDark ? '!text-white' : 'text-[#4a4230]'">
               <span class="text-[#E09E34] text-xl leading-none">•</span>
               {{ item }}
             </li>
@@ -47,8 +47,8 @@
           <h3 class="text-3xl font-extrabold transition-colors" :class="isDark ? 'text-white' : 'text-[#1a2a12]'">
             Technologies
           </h3>
-          <p class="text-[15px] font-medium leading-relaxed transition-colors" 
-             :class="isDark ? 'text-white' : 'text-[#4a4230]'">
+          <p class="text-[15px] font-normal leading-relaxed transition-colors" 
+             :class="isDark ? '!text-white' : 'text-[#4a4230]'">
             R, Shiny, Bootstrap, animated GIFs, HTML5 audio.
           </p>
         </div>
@@ -59,12 +59,11 @@
             Credits
           </h3>
           
-          <div class="space-y-2 text-[15px] font-medium leading-relaxed transition-colors" 
-               :class="isDark ? 'text-white' : 'text-[#4a4230]'">
-            <p><span class="font-bold">Principal Investigator:</span> Dr. Victor N. Mose, PhD</p>
-            <p><span class="font-bold">Email:</span> victor.mose@acc.or.ke, vnmose@gmail.com</p>
-            <p><span class="font-bold">Team:</span> Felista Ndunge, Immaculate Ombongi, Sakimba Kimiti, Winfridah Kemunto, David Western</p>
-            <p><span class="font-bold">In association with:</span> Brandika Technologies and Marketing Agency, and the partners listed on this page.</p>
+          <div class="space-y-2 text-[15px] font-normal leading-relaxed transition-colors">
+            <p :class="isDark ? '!text-white' : 'text-[#4a4230]'" class="transition-colors"><span class="font-bold">Principal Investigator:</span> Dr. Victor N. Mose, PhD</p>
+            <p :class="isDark ? '!text-white' : 'text-[#4a4230]'" class="transition-colors"><span class="font-bold">Email:</span> victor.mose@acc.or.ke, vnmose@gmail.com</p>
+            <p :class="isDark ? '!text-white' : 'text-[#4a4230]'" class="transition-colors"><span class="font-bold">Team:</span> Felista Ndunge, Immaculate Ombongi, Sakimba Kimiti, Winfridah Kemunto, David Western</p>
+            <p :class="isDark ? '!text-white' : 'text-[#4a4230]'" class="transition-colors"><span class="font-bold">In association with:</span> Brandika Technologies and Marketing Agency, and the partners listed on this page.</p>
           </div>
         </div>
 

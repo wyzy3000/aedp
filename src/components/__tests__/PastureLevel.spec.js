@@ -15,7 +15,7 @@ describe('PastureLevel.vue TestSuite', () => {
         })
 
         // Assert main header titles
-        expect(wrapper.text()).toContain('The Grass Story of Amboseli')
+        expect(wrapper.text()).toContain('The Pasture Levels of Amboseli')
     })
 
     it('displays the default year and allows toggling to a different year', async () => {

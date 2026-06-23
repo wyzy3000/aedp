@@ -5,12 +5,11 @@ import OneHealth from '../OneHealth.vue'
 vi.mock('../../supabase', () => ({
     supabase: {
         from: vi.fn(() => ({
-            select: vi.fn().mockReturnThis(),
-            order: vi.fn().mockResolvedValue({
+            select: vi.fn().mockResolvedValue({
                 data: [
                     {
                         id: 1,
-                        location_name: 'Test Location',
+                        location_name: 'Point 1 Area',
                         latitude: -2.6,
                         longitude: 37.2,
                         economic_activity: 'Pastoralism',
@@ -60,6 +59,29 @@ describe('OneHealth.vue TestSuite', () => {
         // The test used to contain "Explore the One Health Dashboard" which is NOT in the component either.
         // Wait, line 20: Interactive Household Research Dissemination Explorer.
         // I should check what's actually rendered.
-        expect(wrapper.text()).toContain('Indicators')
+        expect(wrapper.text()).toContain('Viashiria')
+    })
+
+    it('allows toggling between showing all points and selected point only', async () => {
+        const wrapper = mount(OneHealth, {
+            global: {
+                provide: {
+                    lang: 'en',
+                    isDark: false
+                }
+            }
+        })
+        
+        // Find the toggle button (first button in template)
+        const button = wrapper.find('button')
+        expect(button.text()).toContain('Show Selected Only')
+        
+        // Click the toggle button
+        await button.trigger('click')
+        expect(button.text()).toContain('Show All Points')
+        
+        // Click again
+        await button.trigger('click')
+        expect(button.text()).toContain('Show Selected Only')
     })
 })

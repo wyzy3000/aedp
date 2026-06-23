@@ -10,7 +10,7 @@
       <div class="mb-10 fade-up" ref="headerRef">
         <div class="flex items-center gap-2 mb-3">
           <div class="w-1 h-8 rounded-full bg-blue-500" />
-          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-white/70 transition-colors">
+          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-white transition-colors">
             {{ lang === 'en' ? 'Module 04 · Weather' : 'Moduli 04 · Hali ya Anga' }}
           </span>
         </div>
@@ -20,7 +20,7 @@
         <p class="mt-2 font-display font-medium text-lg italic transition-colors" style="color: #E09E34;">
           {{ lang === 'en' ? 'Weather Conditions · Open-Meteo' : 'Hali ya anga · Open-Meteo' }}
         </p>
-        <p class="mt-3 text-[15px] leading-relaxed max-w-2xl transition-colors" style="color: #ffffff;">
+        <p class="mt-3 text-[15px] leading-relaxed max-w-5xl transition-colors" style="color: #ffffff;">
           {{ lang === 'en'
             ? 'Real-time atmospheric data for Amboseli Basin (Lat −2.64°, Lon 37.25°). Sourced live from the Open-Meteo free weather API.'
             : 'Takwimu za anga kwa wakati halisi kwa Bonde la Amboseli (Lat −2.64°, Lon 37.25°). Zikitoka moja kwa moja kwenye API ya hali ya hewa ya bure ya Open-Meteo.'
@@ -40,12 +40,12 @@
               <div class="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center">
                 <Thermometer class="w-4 h-4 text-orange-500 dark:text-orange-400" />
               </div>
-              <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-600">Now</span>
+              <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-white">Now</span>
             </div>
             <p class="text-3xl font-display font-bold text-slate-900 dark:text-white transition-colors">
-              {{ weatherData?.current?.temperature_2m?.toFixed(1) ?? '--' }}<span class="text-base text-slate-500 dark:text-neutral-500">°C</span>
+              {{ weatherData?.current?.temperature_2m?.toFixed(1) ?? '--' }}<span class="text-base text-slate-500 dark:text-white">°C</span>
             </p>
-            <p class="text-xs text-slate-600 dark:text-neutral-500 mt-1.5">{{ lang === 'en' ? 'Air temperature (2m)' : 'Joto la hewa' }}</p>
+            <p class="text-xs text-slate-600 dark:text-white mt-1.5">{{ lang === 'en' ? 'Air temperature (2m)' : 'Joto la hewa' }}</p>
           </div>
 
           <div class="metric-card hover:border-sky-500/20 group">
@@ -53,12 +53,12 @@
               <div class="w-8 h-8 rounded-lg bg-sky-500/10 flex items-center justify-center">
                 <Wind class="w-4 h-4 text-sky-500 dark:text-sky-400" />
               </div>
-              <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-600">Now</span>
+              <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-white">Now</span>
             </div>
             <p class="text-3xl font-display font-bold text-slate-900 dark:text-white transition-colors">
-              {{ weatherData?.current?.wind_speed_10m?.toFixed(1) ?? '--' }}<span class="text-base text-slate-500 dark:text-neutral-500"> km/h</span>
+              {{ weatherData?.current?.wind_speed_10m?.toFixed(1) ?? '--' }}<span class="text-base text-slate-500 dark:text-white"> km/h</span>
             </p>
-            <p class="text-xs text-slate-600 dark:text-neutral-500 mt-1.5">{{ lang === 'en' ? 'Wind speed (10m)' : 'Kasi ya upepo' }}</p>
+            <p class="text-xs text-slate-600 dark:text-white mt-1.5">{{ lang === 'en' ? 'Wind speed (10m)' : 'Kasi ya upepo' }}</p>
           </div>
 
           <div class="metric-card hover:border-blue-500/20 group">
@@ -66,12 +66,12 @@
               <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
                 <CloudRain class="w-4 h-4 text-blue-500 dark:text-blue-400" />
               </div>
-              <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-600">Now</span>
+              <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-white">Now</span>
             </div>
             <p class="text-3xl font-display font-bold text-slate-900 dark:text-white transition-colors">
-              {{ weatherData?.current?.precipitation?.toFixed(1) ?? '--' }}<span class="text-base text-slate-500 dark:text-neutral-500"> mm</span>
+              {{ weatherData?.current?.precipitation?.toFixed(1) ?? '--' }}<span class="text-base text-slate-500 dark:text-white"> mm</span>
             </p>
-            <p class="text-xs text-slate-600 dark:text-neutral-500 mt-1.5">{{ lang === 'en' ? 'Precipitation' : 'Mvua' }}</p>
+            <p class="text-xs text-slate-600 dark:text-white mt-1.5">{{ lang === 'en' ? 'Precipitation' : 'Mvua' }}</p>
           </div>
 
           <div class="metric-card hover:border-indigo-500/20 group">
@@ -79,12 +79,12 @@
               <div class="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center">
                 <Droplets class="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
               </div>
-              <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-600">6h</span>
+              <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-white">6h</span>
             </div>
             <p class="text-3xl font-display font-bold text-slate-900 dark:text-white transition-colors">
-              {{ rainProb }}<span class="text-base text-slate-500 dark:text-neutral-500">%</span>
+              {{ rainProb }}<span class="text-base text-slate-500 dark:text-white">%</span>
             </p>
-            <p class="text-xs text-slate-600 dark:text-neutral-500 mt-1.5">{{ lang === 'en' ? 'Rain probability (6h)' : 'Uwezekano mvua' }}</p>
+            <p class="text-xs text-slate-600 dark:text-white mt-1.5">{{ lang === 'en' ? 'Rain probability (6h)' : 'Uwezekano mvua' }}</p>
           </div>
         </template>
 
@@ -103,11 +103,11 @@
                     class="px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200"
                     :class="activeTab === tab.key
                       ? 'bg-blue-50 border border-blue-200 text-blue-700 dark:bg-blue-500/15 dark:border-blue-500/25 dark:text-blue-300'
-                      : 'text-slate-500 dark:text-neutral-500 hover:text-slate-800 dark:hover:text-neutral-300 hover:bg-black/5 dark:hover:bg-white/5'">
+                      : 'text-slate-500 dark:text-white hover:text-slate-800 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5'">
               {{ tab.label }}
             </button>
           </div>
-          <div class="text-[10px] text-slate-500 dark:text-neutral-700 flex items-center gap-1.5 transition-colors">
+          <div class="text-[10px] text-slate-500 dark:text-white flex items-center gap-1.5 transition-colors">
             <div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
             Live · Open-Meteo API
           </div>
@@ -115,7 +115,7 @@
 
         <div class="px-6 pt-4 pb-2">
           <div v-if="activeTab === 'temp'" class="relative" style="height: 140px;">
-            <div class="absolute left-0 top-0 bottom-6 flex flex-col justify-between text-[10px] text-slate-400 dark:text-neutral-600 pr-2">
+            <div class="absolute left-0 top-0 bottom-6 flex flex-col justify-between text-[10px] text-slate-400 dark:text-white pr-2">
               <span>{{ tempMax }}°</span>
               <span>{{ Math.round((tempMax + tempMin) / 2) }}°</span>
               <span>{{ tempMin }}°</span>
@@ -134,13 +134,13 @@
                     stroke-linecap="round" stroke-linejoin="round" />
             </svg>
 
-            <div class="absolute bottom-0 left-8 right-0 flex justify-between text-[10px] text-slate-400 dark:text-neutral-600">
+            <div class="absolute bottom-0 left-8 right-0 flex justify-between text-[10px] text-slate-400 dark:text-white">
               <span>6h ago</span><span>3h ago</span><span>Now</span><span>+6h</span><span>+12h</span><span>+18h</span><span>+24h</span>
             </div>
           </div>
 
           <div v-else-if="activeTab === 'rain'" class="relative" style="height: 140px;">
-            <div class="absolute left-0 top-0 bottom-6 flex flex-col justify-between text-[10px] text-slate-400 dark:text-neutral-600 pr-2">
+            <div class="absolute left-0 top-0 bottom-6 flex flex-col justify-between text-[10px] text-slate-400 dark:text-white pr-2">
               <span>100%</span><span>50%</span><span>0%</span>
             </div>
             <div class="absolute inset-0 flex items-end gap-0.5 pl-8 pb-6">
@@ -153,7 +153,7 @@
                      minHeight: '2px',
                    }" :title="prob + '%'" />
             </div>
-            <div class="absolute bottom-0 left-8 right-0 flex justify-between text-[10px] text-slate-400 dark:text-neutral-600">
+            <div class="absolute bottom-0 left-8 right-0 flex justify-between text-[10px] text-slate-400 dark:text-white">
               <span>6h ago</span><span></span><span>Now</span><span></span><span></span><span></span><span>+24h</span>
             </div>
           </div>
@@ -161,7 +161,7 @@
           <div v-else-if="activeTab === 'wind'" class="relative" style="height: 140px;">
             <div class="flex flex-col gap-3 pt-2">
               <div class="flex items-center gap-3">
-                <span class="text-xs text-slate-500 dark:text-neutral-500 w-16">Speed</span>
+                <span class="text-xs text-slate-500 dark:text-white w-16">Speed</span>
                 <div class="flex-1 h-2 bg-black/5 dark:bg-white/[0.06] rounded-full overflow-hidden">
                   <div class="h-full bg-sky-500 dark:bg-sky-400 rounded-full transition-all duration-700"
                        :style="{ width: Math.min(100, (weatherData?.current?.wind_speed_10m || 0) / 50 * 100) + '%' }" />
@@ -169,13 +169,13 @@
                 <span class="text-sm font-semibold text-sky-700 dark:text-sky-300 w-16 text-right">{{ weatherData?.current?.wind_speed_10m?.toFixed(1) }} km/h</span>
               </div>
               <div class="flex items-center gap-3">
-                <span class="text-xs text-slate-500 dark:text-neutral-500 w-16">Category</span>
+                <span class="text-xs text-slate-500 dark:text-white w-16">Category</span>
                 <div class="flex-1">
                   <span class="px-3 py-1 rounded-full text-xs font-semibold"
                         :style="windCategory.style">{{ windCategory.label }}</span>
                 </div>
               </div>
-              <p class="text-xs text-slate-500 dark:text-neutral-600 mt-2 px-1">
+              <p class="text-xs text-slate-500 dark:text-white mt-2 px-1">
                 {{ lang === 'en' ? 'Wind data sourced from ERA5 reanalysis at 10m height above ground level.' : 'Data ya upepo kutoka ERA5 kwa urefu wa mita 10.' }}
               </p>
             </div>
@@ -184,7 +184,7 @@
         </div>
 
         <div class="px-6 py-3 border-t border-black/5 dark:border-white/5 flex items-center justify-between transition-colors">
-          <p class="text-[11px] text-slate-500 dark:text-neutral-600 transition-colors">
+          <p class="text-[11px] text-slate-500 dark:text-white transition-colors">
             Data refreshed on component mount · Amboseli, Kenya
           </p>
           <a href="https://open-meteo.com/en/docs#latitude=-2.64&longitude=37.25&current=temperature_2m,wind_speed_10m,precipitation&hourly=temperature_2m,precipitation_probability"
