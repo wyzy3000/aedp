@@ -15,7 +15,7 @@ describe('HabitatChanges.vue TestSuite', () => {
         })
 
         // Check if the title text exists
-        expect(wrapper.text()).toContain('Habitat Dynamics')
+        expect(wrapper.text()).toContain('Habitat Conditions')
         // Check if default year context renders
         expect(wrapper.text()).toContain('2023')
     })

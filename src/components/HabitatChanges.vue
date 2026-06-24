@@ -14,17 +14,14 @@
             {{ lang === 'en' ? 'Module 02 · Habitat' : 'Moduli 02 · Makazi' }}
           </span>
         </div>
-        <h2 class="font-display font-extrabold text-4xl md:text-5xl text-white leading-tight transition-colors" style="letter-spacing:-0.02em">
-          {{ lang === 'en' ? 'Habitat Dynamics' : 'Mabadiliko ya Makazi' }}
+        <h2 class="module-title transition-colors" style="letter-spacing:-0.02em">
+          {{ lang === 'en' ? cmsData.titleEn : cmsData.titleSw }}
         </h2>
         <p class="mt-2 font-display font-medium text-lg italic transition-colors" style="color: #E09E34;">
-          {{ lang === 'en' ? 'Tree and Habitat Condition' : 'Hali ya miti na makazi' }}
+          {{ lang === 'en' ? cmsData.subtitleEn : cmsData.subtitleSw }}
         </p>
         <p class="mt-3 text-[15px] leading-relaxed max-w-2xl transition-colors" style="color: #ffffff;">
-          {{ lang === 'en'
-            ? 'Observe spatial shifts in woody cover, wetlands, and open plains. Select a year to view the corresponding satellite terrain mapping.'
-            : 'Chunguza mabadiliko ya maeneo ya miti, maeneo ya majimaji, na nyanda wazi. Chagua mwaka ili kuona ramani ya satelaiti ya kipindi husika.'
-          }}
+          {{ lang === 'en' ? cmsData.descEn : cmsData.descSw }}
         </p>
       </div>
 
@@ -130,6 +127,9 @@
 <script setup>
 import { ref, inject, computed, onMounted } from 'vue'
 
+import { getActivePinia } from 'pinia'
+import { useCmsStore } from '../stores/cms'
+
 const lang = inject('lang')
 const isDark = inject('isDark')
 const headerRef = ref(null)
@@ -139,10 +139,26 @@ const selectorRef = ref(null)
 const selectedYear = ref(2023)
 const showLegend = ref(false)
 
-const yearsList = [1950, 1967, 1973, 1978, 1983, 1987, 1993, 1997, 2002, 2007, 2012, 2017, 2023]
+const defaultHabitatData = {
+  titleEn: 'Habitat Conditions',
+  titleSw: 'Mabadiliko ya Makazi',
+  subtitleEn: 'Tree and Habitat Condition',
+  subtitleSw: 'Hali ya miti na makazi',
+  descEn: 'Observe spatial shifts in woody cover, wetlands, and open plains. Select a year to view the corresponding satellite terrain mapping.',
+  descSw: 'Chunguza mabadiliko ya maeneo ya miti, maeneo ya majimaji, na nyanda wazi. Chagua mwaka ili kuona ramani ya satelaiti ya kipindi husika.',
+  yearsList: [1950, 1967, 1973, 1978, 1983, 1987, 1993, 1997, 2002, 2007, 2012, 2017, 2023]
+}
+
+const cmsData = computed(() => {
+  if (getActivePinia()) {
+    return useCmsStore().getContent('habitat_changes', defaultHabitatData)
+  }
+  return defaultHabitatData
+})
+const yearsList = computed(() => cmsData.value.yearsList || defaultHabitatData.yearsList)
 
 const habitatDataSet = computed(() => {
-  return yearsList.map(y => {
+  return yearsList.value.map(y => {
     const ext = [1983, 1997, 2002, 2007].includes(y) ? 'jpg' : 'png'
     return {
       year: y,

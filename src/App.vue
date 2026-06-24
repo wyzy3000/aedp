@@ -11,6 +11,7 @@ import MainLayout from './layouts/MainLayout.vue'
 import { useAuthStore } from './stores/auth'
 import { useThemeStore } from './stores/theme'
 import { useDevice } from './composables/useDevice'
+import { useCmsStore } from './stores/cms'
 
 const route = useRoute()
 const { isMobile } = useDevice()
@@ -20,6 +21,7 @@ provide('isMobile', isMobile)
 
 const authStore = useAuthStore()
 const themeStore = useThemeStore()
+const cmsStore = useCmsStore()
 
 provide('isDark', computed(() => themeStore.isDark))
 provide('user', computed(() => authStore.user))
@@ -36,5 +38,6 @@ watch(
 onMounted(() => {
   authStore.initAuth()
   themeStore.initTheme()
+  cmsStore.fetchCmsData()
 })
 </script>

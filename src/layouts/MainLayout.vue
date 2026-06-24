@@ -116,6 +116,16 @@
               <span v-if="!collapsed" class="sidebar-label">Settings</span>
             </Transition>
           </button>
+
+          <button v-if="authStore.profile?.role === 'Admin'" @click="router.push('/dashboard/cms')"
+            class="sidebar-link group w-full text-amber-500 hover:text-amber-600 dark:text-[#E09E34] dark:hover:text-[#f3b652]"
+            :class="route.path === '/dashboard/cms' ? 'active' : ''"
+            :title="collapsed ? 'Portal Editor' : ''">
+            <LayoutDashboard class="sidebar-icon" />
+            <Transition name="fade-side">
+              <span v-if="!collapsed" class="sidebar-label">Portal Editor</span>
+            </Transition>
+          </button>
         </template>
       </nav>
 
@@ -189,15 +199,6 @@
       ]"
     >
       <slot />
-
-      <!-- Footer -->
-      <footer class="border-t border-stone-100 dark:border-white/5 py-7 transition-colors">
-        <div class="max-w-5xl mx-auto px-8 flex justify-center text-center">
-          <div class="text-white text-sm font-medium transition-colors">
-            Amboseli Ecosystem Data Portal (AEDP)
-          </div>
-        </div>
-      </footer>
     </main>
     <!-- ─── Bottom Navigation (Mobile Only) ─────────────────── -->
     <nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/90 dark:bg-[#050e07]/95 backdrop-blur-md border-t border-black/5 dark:border-white/10 shadow-[0_-2px_10px_rgba(0,0,0,0.06)]">
@@ -249,6 +250,12 @@
             :class="route.path === '/dashboard/settings' ? 'text-[#E09E34]' : 'text-stone-400 dark:text-neutral-500'">
             <Settings class="w-5 h-5" />
             <span class="text-[9px] font-semibold">Settings</span>
+          </button>
+          <button v-if="authStore.profile?.role === 'Admin'" @click="router.push('/dashboard/cms')"
+            class="flex flex-col items-center justify-center gap-1 min-h-[56px] min-w-[52px] px-2 transition-colors"
+            :class="route.path === '/dashboard/cms' ? 'text-[#E09E34]' : 'text-stone-400 dark:text-neutral-500'">
+            <LayoutDashboard class="w-5 h-5" />
+            <span class="text-[9px] font-semibold">Editor</span>
           </button>
           <button @click="handleSignOut"
             class="flex flex-col items-center justify-center gap-1 min-h-[56px] min-w-[52px] px-2 transition-colors text-red-400/70">

@@ -15,16 +15,13 @@
           </span>
         </div>
         <h2 class="font-display font-extrabold text-4xl md:text-5xl text-white leading-tight transition-colors" style="letter-spacing:-0.02em">
-          {{ lang === 'en' ? 'Amboseli Outlook Report' : 'Ripoti ya Mwelekeo ya Amboseli' }}
+          {{ lang === 'en' ? cmsData.titleEn : cmsData.titleSw }}
         </h2>
         <p class="mt-2 font-display font-medium text-lg italic transition-colors" style="color: #E09E34;">
-          {{ lang === 'en' ? 'Amboseli Reports' : 'Taarifa za Amboseli' }}
+          {{ lang === 'en' ? cmsData.subtitleEn : cmsData.subtitleSw }}
         </p>
         <p class="mt-3 text-[15px] leading-relaxed max-w-2xl transition-colors" style="color: #ffffff;">
-          {{ lang === 'en'
-            ? 'Expert synthesis of current ecosystem conditions drawn from satellite data, ground-truth surveys, and meteorological analysis.'
-            : 'Uchambuzi wa wataalamu wa hali ya sasa ya ikolojia kutoka kwa data ya satelaiti, tafiti za ardhini, na uchambuzi wa hali ya hewa.'
-          }}
+          {{ lang === 'en' ? cmsData.descEn : cmsData.descSw }}
         </p>
       </div>
 
@@ -44,7 +41,7 @@
 
         <!-- Summary text -->
         <p class="text-base text-slate-700 dark:text-neutral-300 leading-relaxed max-w-3xl transition-colors">
-          {{ outlookData.summary }}
+          {{ lang === 'en' ? cmsData.summaryEn : cmsData.summarySw }}
         </p>
 
         <!-- Condition indicators -->
@@ -52,7 +49,7 @@
           <div v-for="cond in conditions" :key="cond.label" class="text-center">
             <div class="w-10 h-10 rounded-full mx-auto mb-2 flex items-center justify-center transition-colors"
                  :style="{ background: cond.bg }">
-              <component :is="cond.icon" class="w-5 h-5 transition-colors" :style="{ color: cond.color }" />
+              <component :is="iconMap[cond.key] || cond.icon" class="w-5 h-5 transition-colors" :style="{ color: cond.color }" />
             </div>
             <p class="text-xs text-slate-500 dark:text-neutral-400 transition-colors">
               {{ lang === 'en' ? cond.label : cond.sw }}
@@ -87,6 +84,8 @@
 <script setup>
 import { ref, inject, computed, onMounted } from 'vue'
 import { Sprout, Cloud, Activity, AlertTriangle } from 'lucide-vue-next'
+import { getActivePinia } from 'pinia'
+import { useCmsStore } from '../stores/cms'
 
 const lang = inject('lang')
 const isDark = inject('isDark')
@@ -96,39 +95,66 @@ const cardRef = ref(null)
 const audioRef = ref(null)
 const audioElement = ref(null)
 
+const defaultOutlookData = {
+  titleEn: 'Amboseli Outlook Report',
+  titleSw: 'Ripoti ya Mwelekeo ya Amboseli',
+  subtitleEn: 'Amboseli Reports',
+  subtitleSw: 'Taarifa za Amboseli',
+  descEn: 'Expert synthesis of current ecosystem conditions drawn from satellite data, ground-truth surveys, and meteorological analysis.',
+  descSw: 'Uchambuzi wa wataalamu wa hali ya sasa ya ikolojia kutoka kwa data ya satelaiti, tafiti za ardhini, na uchambuzi wa hali ya hewa.',
+  summaryEn: 'Pasture conditions are showing early signs of recovery across the Amboseli basin following the onset of short rains in late October. Short-term weather forecasts indicate continued rainfall over the next two weeks, which should support further vegetation growth and livestock body condition recovery. However, habitat monitoring shows significant woody cover loss from the previous drought sequence, and wetland margins remain stressed. Community monitors report wildlife movements returning to typical seasonal patterns.',
+  summarySw: 'Hali ya malisho inaonyesha ishara za mapema za kurejea katika bonde la Amboseli kufuatia kuanza kwa mvua fupi mwishoni mwa Oktoba. Utabiri wa hali ya hewa wa muda mfupi unaonyesha mvua inayoendelea katika wiki mbili zijazo, ambayo inapaswa kusaidia ukuaji zaidi wa uoto na kurejea kwa hali ya mifugo. Hata hivyo, ufuatiliaji wa makazi unaonyesha upotezaji mkubwa wa misitu kutoka kwa ukame uliopita, na pembezoni mwa ardhi ya majimaji bado kuna changamoto. Waangalizi wa jamii wanaripoti harakati za wanyamapori zikirejea katika mifumo ya kawaida ya msimu.',
+  conditions: [
+    {
+      key: 'pasture',
+      label: 'Pasture', sw: 'Nyasi',
+      status: 'Recovering', statusSw: 'Inajipona',
+      icon: Sprout, color: '#4a7d41',
+      bg: 'rgba(74,125,65,0.15)',
+    },
+    {
+      key: 'rainfall',
+      label: 'Rainfall', sw: 'Mvua',
+      status: 'Improving', statusSw: 'Inaimarika',
+      icon: Cloud, color: '#3b82f6',
+      bg: 'rgba(59,130,246,0.12)',
+    },
+    {
+      key: 'wildlife',
+      label: 'Wildlife', sw: 'Wanyama',
+      status: 'Stable', statusSw: 'Imara',
+      icon: Activity, color: '#e9c160',
+      bg: 'rgba(233,193,96,0.12)',
+    },
+    {
+      key: 'drought',
+      label: 'Drought Risk', sw: 'Hatari ya Kiangazi',
+      status: 'Moderate', statusSw: 'Ya Wastani',
+      icon: AlertTriangle, color: '#f97316',
+      bg: 'rgba(249,115,22,0.12)',
+    },
+  ]
+}
+const cmsData = computed(() => {
+  if (getActivePinia()) {
+    return useCmsStore().getContent('outlook_report', defaultOutlookData)
+  }
+  return defaultOutlookData
+})
+
 const outlookData = computed(() => ({
   date: lang.value === 'en' ? 'Current Outlook' : 'Mwelekeo wa Sasa',
-  summary: lang.value === 'en'
-    ? 'Pasture conditions are showing early signs of recovery across the Amboseli basin following the onset of short rains in late October. Short-term weather forecasts indicate continued rainfall over the next two weeks, which should support further vegetation growth and livestock body condition recovery. However, habitat monitoring shows significant woody cover loss from the previous drought sequence, and wetland margins remain stressed. Community monitors report wildlife movements returning to typical seasonal patterns.'
-    : 'Hali ya malisho inaonyesha ishara za mapema za kurejea katika bonde la Amboseli kufuatia kuanza kwa mvua fupi mwishoni mwa Oktoba. Utabiri wa hali ya hewa wa muda mfupi unaonyesha mvua inayoendelea katika wiki mbili zijazo, ambayo inapaswa kusaidia ukuaji zaidi wa uoto na kurejea kwa hali ya mifugo. Hata hivyo, ufuatiliaji wa makazi unaonyesha upotezaji mkubwa wa misitu kutoka kwa ukame uliopita, na pembezoni mwa ardhi ya majimaji bado kuna changamoto. Waangalizi wa jamii wanaripoti harakati za wanyamapori zikirejea katika mifumo ya kawaida ya msimu.'
+  summary: lang.value === 'en' ? cmsData.value.summaryEn : cmsData.value.summarySw
 }))
 
-const conditions = [
-  {
-    label: 'Pasture', sw: 'Nyasi',
-    status: 'Recovering', statusSw: 'Inajipona',
-    icon: Sprout, color: '#4a7d41',
-    bg: 'rgba(74,125,65,0.15)',
-  },
-  {
-    label: 'Rainfall', sw: 'Mvua',
-    status: 'Improving', statusSw: 'Inaimarika',
-    icon: Cloud, color: '#3b82f6',
-    bg: 'rgba(59,130,246,0.12)',
-  },
-  {
-    label: 'Wildlife', sw: 'Wanyama',
-    status: 'Stable', statusSw: 'Imara',
-    icon: Activity, color: '#e9c160',
-    bg: 'rgba(233,193,96,0.12)',
-  },
-  {
-    label: 'Drought Risk', sw: 'Hatari ya Kiangazi',
-    status: 'Moderate', statusSw: 'Ya Wastani',
-    icon: AlertTriangle, color: '#f97316',
-    bg: 'rgba(249,115,22,0.12)',
-  },
-]
+const iconMap = {
+  pasture: Sprout,
+  rainfall: Cloud,
+  wildlife: Activity,
+  drought: AlertTriangle
+}
+
+const conditions = computed(() => cmsData.value.conditions || defaultOutlookData.conditions)
 
 const toggleAudio = () => {
   if (!audioElement.value) return

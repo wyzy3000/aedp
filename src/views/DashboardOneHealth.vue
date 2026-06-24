@@ -227,6 +227,23 @@ import { useAuthStore } from '../stores/auth'
 import { useThemeStore } from '../stores/theme'
 import BaseButton from '../components/ui/BaseButton.vue'
 
+const safeGetLocalStorage = (key) => {
+  try {
+    if (typeof window !== 'undefined' && window.localStorage && typeof window.localStorage.getItem === 'function') {
+      return window.localStorage.getItem(key)
+    }
+  } catch (e) {}
+  return null
+}
+
+const safeSetLocalStorage = (key, value) => {
+  try {
+    if (typeof window !== 'undefined' && window.localStorage && typeof window.localStorage.setItem === 'function') {
+      window.localStorage.setItem(key, value)
+    }
+  } catch (e) {}
+}
+
 const authStore = useAuthStore()
 const { user } = storeToRefs(authStore)
 const isDark = useThemeStore().isDark
@@ -239,23 +256,41 @@ let selectedMarkerInstance = null
 const lat = ref(null)
 const lng = ref(null)
 
-const blueIcon = new L.Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-  iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34],
-  shadowUrl: '', shadowSize: [0, 0]
-})
+const blueMarkerOptions = {
+  radius: 6,
+  fillColor: '#3B82F6',
+  color: '#FFFFFF',
+  weight: 1.5,
+  opacity: 1,
+  fillOpacity: 0.6
+}
 
-const redIcon = new L.Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-  iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34],
-  shadowUrl: '', shadowSize: [0, 0]
-})
+const greenMarkerOptions = {
+  radius: 6,
+  fillColor: '#10B981',
+  color: '#FFFFFF',
+  weight: 1.5,
+  opacity: 1,
+  fillOpacity: 0.6
+}
 
-const greenIcon = new L.Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-  iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34],
-  shadowUrl: '', shadowSize: [0, 0]
-})
+const redMarkerOptions = {
+  radius: 10,
+  fillColor: '#EF4444',
+  color: '#FFFFFF',
+  weight: 2,
+  opacity: 1,
+  fillOpacity: 0.95
+}
+
+const formMarkerOptions = {
+  radius: 8,
+  fillColor: '#F59E0B',
+  color: '#FFFFFF',
+  weight: 2,
+  opacity: 1,
+  fillOpacity: 0.9
+}
 
 const initialFormState = {
   location_name: '',
@@ -277,7 +312,21 @@ const submitError = ref('')
 const isEditing = ref(false)
 const editId = ref(null)
 
-const allEntries = ref([])
+// Load cached data from localStorage if available
+const cachedData = safeGetLocalStorage('one_health_map_points')
+const initialEntries = []
+if (cachedData) {
+  try {
+    const parsed = JSON.parse(cachedData)
+    if (Array.isArray(parsed) && parsed.length > 0) {
+      initialEntries.push(...parsed)
+    }
+  } catch (e) {
+    console.error('Failed to parse cached map data:', e)
+  }
+}
+
+const allEntries = ref(initialEntries)
 const sortOrder = ref('desc')
 
 const myEntries = computed(() => {
@@ -291,7 +340,7 @@ const myEntries = computed(() => {
     return sortOrder.value === 'asc' ? valA - valB : valB - valA
   })
 })
-const loadingEntries = ref(true)
+const loadingEntries = ref(initialEntries.length === 0)
 
 onMounted(async () => {
   setTimeout(() => { isMounted.value = true }, 100)
@@ -315,6 +364,10 @@ onMounted(async () => {
     updateMarker(e.latlng)
     // If we were editing, stay in edit but marker moves
   })
+
+  if (allEntries.value.length > 0) {
+    renderMapMarkers()
+  }
 
   await fetchAllEntries()
   
@@ -349,12 +402,12 @@ const updateMarker = (latlng) => {
   if (formMarker) {
     formMarker.setLatLng(latlng)
   } else {
-    formMarker = L.marker(latlng, { icon: greenIcon }).addTo(map)
+    formMarker = L.circleMarker(latlng, formMarkerOptions).addTo(map)
   }
 }
 
 const fetchAllEntries = async () => {
-  loadingEntries.value = true
+  loadingEntries.value = allEntries.value.length === 0
   const { data, error } = await supabase
     .from('one_health_data')
     .select('*')
@@ -362,6 +415,7 @@ const fetchAllEntries = async () => {
   
   if (!error && data) {
     allEntries.value = data
+    safeSetLocalStorage('one_health_map_points', JSON.stringify(data))
     renderMapMarkers()
   }
   loadingEntries.value = false
@@ -373,10 +427,12 @@ const renderMapMarkers = () => {
   
   allEntries.value.forEach(entry => {
     const isMine = user.value && entry.user_id === user.value.id
-    const m = L.marker([entry.latitude, entry.longitude], { 
-      icon: isMine ? greenIcon : blueIcon 
-    }).addTo(map)
+    const isSelected = isEditing.value && editId.value === entry.id
+    const options = isSelected ? redMarkerOptions : (isMine ? greenMarkerOptions : blueMarkerOptions)
+    
+    const m = L.circleMarker([entry.latitude, entry.longitude], options).addTo(map)
 
+    m.isMine = isMine
     m.on('click', () => {
       if (isMine) {
         selectMine(entry, m)
@@ -385,16 +441,22 @@ const renderMapMarkers = () => {
       }
     })
     
+    if (isSelected) {
+      selectedMarkerInstance = m
+      setTimeout(() => { if (m._map) m.bringToFront() }, 0)
+    }
+
     mapMarkers.push(m)
   })
 }
 
 const selectMine = (entry, markerInstance) => {
   if (selectedMarkerInstance) {
-     selectedMarkerInstance.setIcon(selectedMarkerInstance.isMine ? greenIcon : blueIcon)
+     selectedMarkerInstance.setStyle(selectedMarkerInstance.isMine ? greenMarkerOptions : blueMarkerOptions)
   }
   
-  markerInstance.setIcon(redIcon)
+  markerInstance.setStyle(redMarkerOptions)
+  markerInstance.bringToFront()
   markerInstance.isMine = true
   selectedMarkerInstance = markerInstance
   
@@ -427,9 +489,10 @@ const editExistingEntry = (entry) => {
 const selectOther = (entry, markerInstance) => {
   // Read-only essentially in this compact UI
   if (selectedMarkerInstance) {
-     selectedMarkerInstance.setIcon(selectedMarkerInstance.isMine ? greenIcon : blueIcon)
+     selectedMarkerInstance.setStyle(selectedMarkerInstance.isMine ? greenMarkerOptions : blueMarkerOptions)
   }
-  markerInstance.setIcon(redIcon)
+  markerInstance.setStyle(redMarkerOptions)
+  markerInstance.bringToFront()
   markerInstance.isMine = false
   selectedMarkerInstance = markerInstance
   
@@ -444,7 +507,7 @@ const resetForm = () => {
   lng.value = null
   submitError.value = ''
   if (selectedMarkerInstance) {
-    selectedMarkerInstance.setIcon(selectedMarkerInstance.isMine ? greenIcon : blueIcon)
+    selectedMarkerInstance.setStyle(selectedMarkerInstance.isMine ? greenMarkerOptions : blueMarkerOptions)
     selectedMarkerInstance = null
   }
   if (formMarker) { map.removeLayer(formMarker); formMarker = null }

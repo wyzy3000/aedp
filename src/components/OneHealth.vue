@@ -14,7 +14,7 @@
             {{ lang === 'en' ? 'Module 07 · One Health' : 'Moduli 07 · Afya Moja' }}
           </span>
         </div>
-        <h2 class="font-sans font-extrabold text-white leading-tight transition-colors" style="letter-spacing:-0.02em; font-size: 40px;">
+        <h2 class="module-title transition-colors" style="letter-spacing:-0.02em">
           {{ lang === 'en' ? 'One Health Indicators' : 'Viashiria vya Afya Moja' }}
         </h2>
        
@@ -55,10 +55,12 @@
           <div class="bg-white/5 border-t border-white/10 px-4 py-3 flex items-center justify-between z-10">
             <div class="flex items-center gap-4 hidden sm:flex">
               <span class="flex items-center gap-1.5 text-xs text-white/50">
-                <span class="w-3 h-3 rounded-full bg-blue-600 block"></span> Observation Point
+                <span class="w-3 h-3 rounded-full bg-blue-600 block"></span>
+                {{ lang === 'en' ? 'Observation Point' : 'Kituo cha Uchunguzi' }}
               </span>
               <span class="flex items-center gap-1.5 text-xs text-white/50">
-                <span class="w-3 h-3 rounded-full bg-red-600 block"></span> Selected
+                <span class="w-3 h-3 rounded-full bg-red-600 block"></span>
+                {{ lang === 'en' ? 'Selected' : 'Iliyochaguliwa' }}
               </span>
             </div>
             <span class="text-[10px] text-white/30 truncate">
@@ -72,14 +74,19 @@
             
             <div v-if="!selectedPoint && !loadingData" class="flex flex-col items-center justify-center py-12 text-center h-full opacity-60">
                <span class="material-symbols-outlined text-5xl text-white/30 mb-4 animate-bounce">touch_app</span>
-               <p class="text-white/70 text-sm max-w-[200px]">Click on any blue marker on the map to view data collected from that location.</p>
+               <p class="text-white/70 text-sm max-w-[200px]">
+                 {{ lang === 'en'
+                   ? 'Click on any blue marker on the map to view data collected from that location.'
+                   : 'Bonyeza alama yoyote ya bluu kwenye ramani ili kuona data iliyokusanywa kutoka eneo hilo.'
+                 }}
+               </p>
             </div>
 
             <div v-if="selectedPoint" class="space-y-5 animate-fade-in">
                 <div class="pb-4 border-b border-white/10">
                   <div class="flex items-start justify-between gap-4">
                     <div>
-                      <h4 class="text-lg font-bold text-white">{{ selectedPoint.location_name.replace(/ area/i, '') }}</h4>
+                      <h4 class="text-lg font-bold text-white">{{ translateLocationName(selectedPoint.location_name.replace(/ area/i, '')) }}</h4>
                       <p class="text-[10px] text-white/40 uppercase tracking-widest mt-1">
                         Lat: {{ selectedPoint.latitude.toFixed(4) }} | Lng: {{ selectedPoint.longitude.toFixed(4) }}
                       </p>
@@ -96,47 +103,47 @@
                   </div>
                  <p class="text-xs text-white/50 mt-3 flex items-center gap-1">
                   
-                   Recorded on: {{ new Date(selectedPoint.created_at).toLocaleDateString() }}
+                   {{ lang === 'en' ? 'Recorded on:' : 'Imerekodiwa tarehe:' }} {{ new Date(selectedPoint.created_at).toLocaleDateString() }}
                  </p>
                </div>
 
                <div class="space-y-4">
                  <div class="info-group">
-                   <label class="info-label">Main economic activity</label>
-                   <p class="info-val">{{ selectedPoint.economic_activity }}</p>
+                   <label class="info-label">{{ lang === 'en' ? 'Main economic activity' : 'Shughuli kuu ya kiuchumi' }}</label>
+                   <p class="info-val">{{ translate(selectedPoint.economic_activity) }}</p>
                  </div>
                  <div class="info-group">
-                   <label class="info-label text-orange-400">Livestock diseases in area</label>
-                   <p class="info-val">{{ selectedPoint.livestock_diseases }}</p>
+                   <label class="info-label text-orange-400">{{ lang === 'en' ? 'Livestock diseases in area' : 'Magonjwa ya mifugo katika eneo' }}</label>
+                   <p class="info-val">{{ translate(selectedPoint.livestock_diseases) }}</p>
                  </div>
                  <div class="info-group">
-                   <label class="info-label text-red-400">Human diseases mentioned</label>
-                   <p class="info-val">{{ selectedPoint.human_diseases }}</p>
+                   <label class="info-label text-red-400">{{ lang === 'en' ? 'Human diseases mentioned' : 'Magonjwa ya binadamu yaliyotajwa' }}</label>
+                   <p class="info-val">{{ translate(selectedPoint.human_diseases) }}</p>
                  </div>
                  <div class="info-group">
-                   <label class="info-label text-blue-400">Wildlife trends</label>
+                   <label class="info-label text-blue-400">{{ lang === 'en' ? 'Wildlife trends' : 'Mwelekeo wa wanyamapori' }}</label>
                    <p class="info-val">
                      <span class="inline-flex items-center gap-1 bg-white/5 px-2 py-0.5 rounded border border-white/10"
                            :class="{'text-green-400': selectedPoint.wildlife_trends === 'Increased', 'text-red-400': selectedPoint.wildlife_trends === 'Decreased'}">
-                       {{ selectedPoint.wildlife_trends }}
+                       {{ translate(selectedPoint.wildlife_trends) }}
                      </span>
                    </p>
                  </div>
                  <div class="info-group">
-                   <label class="info-label text-cyan-400">Water quality</label>
-                   <p class="info-val">{{ selectedPoint.water_quality }}</p>
+                   <label class="info-label text-cyan-400">{{ lang === 'en' ? 'Water quality' : 'Ubora wa maji' }}</label>
+                   <p class="info-val">{{ translate(selectedPoint.water_quality) }}</p>
                  </div>
                  <div class="info-group">
-                   <label class="info-label">Drought preparedness</label>
-                   <p class="info-val">{{ selectedPoint.drought_preparedness }}</p>
+                   <label class="info-label">{{ lang === 'en' ? 'Drought preparedness' : 'Kujiandaa kwa ukame' }}</label>
+                   <p class="info-val">{{ translate(selectedPoint.drought_preparedness) }}</p>
                  </div>
                  <div class="info-group">
-                   <label class="info-label">Major life stressors</label>
-                   <p class="info-val">{{ selectedPoint.major_stressors }}</p>
+                   <label class="info-label">{{ lang === 'en' ? 'Major life stressors' : 'Changamoto kuu za maisha' }}</label>
+                   <p class="info-val">{{ translate(selectedPoint.major_stressors) }}</p>
                  </div>
                  <div class="info-group">
-                   <label class="info-label">Response to extreme climate</label>
-                   <p class="info-val">{{ selectedPoint.extreme_climate_response }}</p>
+                   <label class="info-label">{{ lang === 'en' ? 'Response to extreme climate' : 'Majibu kwa hali mbaya ya hewa' }}</label>
+                   <p class="info-val">{{ translate(selectedPoint.extreme_climate_response) }}</p>
                  </div>
                </div>
 
@@ -150,7 +157,7 @@
 </template>
 
 <script setup>
-import { ref, inject, computed, onMounted, onUnmounted } from 'vue'
+import { ref, inject, computed, watch, onMounted, onUnmounted } from 'vue'
 import { supabase } from '../supabase'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
@@ -158,10 +165,286 @@ import 'leaflet/dist/leaflet.css'
 const lang = inject('lang')
 const isDark = inject('isDark')
 const headerRef = ref(null)
+
+const safeGetLocalStorage = (key) => {
+  try {
+    if (typeof window !== 'undefined' && window.localStorage && typeof window.localStorage.getItem === 'function') {
+      return window.localStorage.getItem(key)
+    }
+  } catch (e) {}
+  return null
+}
+
+const safeSetLocalStorage = (key, value) => {
+  try {
+    if (typeof window !== 'undefined' && window.localStorage && typeof window.localStorage.setItem === 'function') {
+      window.localStorage.setItem(key, value)
+    }
+  } catch (e) {}
+}
 const mapSectionRef = ref(null)
 
-const loadingData = ref(true)
-const mapPoints = ref([])
+const translationMap = {
+  // Field values
+  'Increased': 'Imeongezeka',
+  'Decreased': 'Imepungua',
+  'No Change': 'Hakuna mabadiliko',
+  'Good': 'Nzuri',
+  'Fair': 'Wastani',
+  'Poor': 'Mbaya',
+  'Fully prepared': 'Kujitayarisha kikamilifu',
+  'Somehow prepared': 'Kujitayarisha kiasi',
+  'Not prepared at all': 'Hajajitayarisha kabisa',
+  'N/A': 'N/A',
+  'None': 'Hakuna',
+  'No response': 'Hakuna jibu',
+  
+  // Economic activities
+  'Casual labourer': 'Kibarua',
+  'Crop farmer': 'Mkulima wa mazao',
+  'Formal employment': 'Ajira rasmi',
+  'Livestock & crop farming': 'Ufugaji wa mifugo na ukulima',
+  'Livestock keeping': 'Ufugaji wa mifugo',
+  'Tourism activity': 'Shughuli za utalii',
+  'farming': 'ukulima',
+  
+  // Livestock diseases
+  'Anthrax': 'Kimeta (Anthrax)',
+  'Arbotions': 'Kuharibika kwa mimba',
+  'Black quarter': 'Homa ya vipindi (Black quarter)',
+  'CCPP': 'CCPP (Homa ya mapafu ya mbuzi)',
+  'East Coast Fever': 'Homa ya Bonde la Ufa (East Coast Fever)',
+  'Enterotoxaemia': 'Enterotoxaemia',
+  'Ephemeral fever': 'Homa ya siku tatu (Ephemeral fever)',
+  'Foot and mouth': 'Ugonjwa wa miguu na midomo',
+  'Foot and mouth disease': 'Ugonjwa wa miguu na midomo',
+  'Foot rot': 'Ugonjwa wa kuoza miguu (Foot rot)',
+  'Glaucoma': 'Glaucoma (Shinikizo la jicho)',
+  'Heart water': 'Maji kwenye moyo (Heart water)',
+  'Liver fluke': 'Minyoo ya ini (Liver fluke)',
+  'Lumpy skin disease': 'Ugonjwa wa ngozi (Lumpy skin disease)',
+  'Malignant catarrh': 'Homa ya mafua ya ng\'ombe (Malignant catarrh)',
+  'Mastitis': 'Ugonjwa wa kiwele (Mastitis)',
+  'Rinderpest': 'Sotoka ya ng\'ombe (Rinderpest)',
+  'Ringworms': 'Masundosundo (Ringworms)',
+  'Sleeping sickness': 'Ugonjwa wa kulala (Sleeping sickness)',
+  'Trypanasomiasis': 'Trypanasomiasis (Ugonjwa wa ndorobo)',
+  
+  // Human diseases
+  'Blood pressure': 'Shinikizo la damu',
+  'Brucellosis': 'Ugonjwa wa kutupa mimba (Brucellosis)',
+  'COVID': 'COVID',
+  'Cold and flu': 'Mafua na homa',
+  'Coughing': 'Kukohoa',
+  'Diabetes': 'Ugonjwa wa kisukari',
+  'Diarrhoea': 'Kuhara',
+  'Eye infection': 'Maambukizi ya macho',
+  'Malaria': 'Malaria',
+  'Tracoma': 'Trakoma (Vikope)',
+  'Typhoid': 'Homa ya matumbo (Typhoid)',
+  
+  // Major stressors
+  'Accessing health facilities': 'Kufikia vituo vya afya',
+  'Access to health facilities': 'Kufikia vituo vya afya',
+  'Access to hospitals': 'Kufikia hospitali',
+  'Accessing hospitals': 'Kufikia hospitali',
+  'Crop disease': 'Magonjwa ya mazao',
+  'Droughts': 'Ukame',
+  'High temperature': 'Joto la juu',
+  'Lack of money': 'Ukosefu wa pesa',
+  'Employment opportunity': 'Fursa za ajira',
+  'Frequent droughts': 'Ukame wa mara kwa mara',
+  'Lack of basic needs': 'Ukosefu wa mahitaji ya msingi',
+  'Livestock diseases': 'Magonjwa ya mifugo',
+  'Household food': 'Chakula cha kaya',
+  'School fees': 'Ada ya shule',
+  'Lack of school fees': 'Ukosefu wa ada ya shule',
+  'Lacking school fees': 'Ukosefu wa ada ya shule',
+  'Livestock predation': 'Mifugo kuliwa na wanyamapori',
+  'Human diseases': 'Magonjwa ya binadamu',
+  'Lack of health facilities': 'Ukosefu wa vituo vya afya',
+  'Lack of water': 'Ukosefu wa maji',
+  'Reduced herd sizes': 'Kupungua kwa saizi ya mifugo',
+  'Reduced herd size': 'Kupungua kwa saizi ya mifugo',
+  'Unreliable rainfall': 'Mvua isiyotabirika',
+  'Land subdivision': 'Mgawanyiko wa ardhi',
+  'Settling down': 'Kutulia / Makazi ya kudumu',
+  'Lack of early warnings': 'Ukosefu wa tahadhari za mapema',
+  'Severe livestock death': 'Vifo vikubwa vya mifugo',
+  'Severe livestock deaths': 'Vifo vikubwa vya mifugo',
+  'Where to move to': 'Pa kuhamia',
+  'Poor infrastructure': 'Miundombinu mibovu',
+  'Poor livestock health': 'Afya duni ya mifugo',
+  'Poor rains': 'Mvua duni',
+  'Ready market for produce': 'Soko tayari kwa mazao',
+  'Reduced pastures': 'Kupungua kwa malisho',
+  'Drought': 'Ukame',
+  'Sickness': 'Ugonjwa',
+  'Testing stressors': 'Majaribio ya changamoto',
+  'Wildlife conflicts': 'Migogoro ya wanyamapori',
+  'Market access': 'Upatikanaji wa soko',
+  'Food insecurity': 'Uhaba wa chakula',
+  'Pasture decline': 'Kupungua kwa malisho',
+  'Loss of livestock': 'Kupoteza mifugo',
+  'Climate change': 'Mabadiliko ya tabianchi',
+  'Flooding': 'Mafuriko',
+  'Lack of pasture': 'Ukosefu wa malisho',
+  'Conflict': 'Mgongano',
+  'Insecurity': 'Kutokuwa salama',
+  'Poverty': 'Umaskini',
+  
+  // Extreme climate responses
+  'Migrate with livestock': 'Hama na mifugo',
+  'Sell livestock': 'Uza mifugo',
+  'Destocking': 'Kupunguza mifugo',
+  'Supplementary feeding': 'Kulisha ziada',
+  'Water trucking': 'Usafirishaji wa maji',
+  'Seek alternative livelihood': 'Tafuta njia mbadala ya maisha',
+  'Plant drought resistant crops': 'Panda mazao yanayostahimili ukame',
+  'Diversify income': 'Tofautisha mapato',
+  'Save money': 'Weka akiba',
+  'Pray for rain': 'Omba mvua',
+  'Do nothing': 'Fanya chochote',
+  'Nothing': 'Hakuna hatua',
+  'Seeking food aid': 'Tafuta msaada wa chakula',
+  'Food aid': 'Msaada wa chakula',
+  'Move to other areas': 'Hamia maeneo mengine',
+  'Move livestock': 'Hamia na mifugo',
+  'Reduce household expenditure': 'Punguza matumizi ya kaya',
+  'Buy food': 'Nunua chakula',
+  'Borrow money': 'Kukopa pesa',
+  'Engage in casual labour': 'Fanya kazi ya kibarua',
+  'Irrigation': 'Umwagiliaji',
+  'Practice irrigation': 'Fanya umwagiliaji',
+  'Testing response': 'Majaribio ya majibu',
+  
+  // Common compound space-separated phrases from database
+  'Frequent droughts Livestock diseases Household food School fees Employment opportunity': 'Ukame wa mara kwa mara, Magonjwa ya mifugo, Chakula cha kaya, Ada ya shule, Fursa za ajira',
+  'Trypanasomiasis Foot and mouth Black quarter': 'Ugonjwa wa ndorobo, Ugonjwa wa miguu na midomo, Homa ya vipindi'
+}
+
+// Sort translation map keys by length descending for greedy matching
+const sortedTranslationKeys = Object.keys(translationMap).sort((a, b) => b.length - a.length)
+
+/**
+ * Greedily parse space-separated tokens into known phrases.
+ * This handles database values like "Frequent droughts Livestock diseases School fees"
+ * where terms are joined by spaces without delimiters.
+ */
+const greedyParseSpaceSeparated = (text) => {
+  const result = []
+  let remaining = text.trim()
+  let safetyBreak = 0
+
+  while (remaining.length > 0 && safetyBreak < 50) {
+    safetyBreak++
+    let matched = false
+
+    // Try to match from longest key to shortest
+    for (const key of sortedTranslationKeys) {
+      const keyLower = key.toLowerCase()
+      const remLower = remaining.toLowerCase()
+      if (remLower.startsWith(keyLower)) {
+        // Make sure we're matching a full word boundary (next char is space or end)
+        const nextChar = remaining[key.length]
+        if (!nextChar || nextChar === ' ') {
+          result.push(translationMap[key])
+          remaining = remaining.slice(key.length).trimStart()
+          matched = true
+          break
+        }
+      }
+    }
+
+    if (!matched) {
+      // No match found: consume the first word as-is
+      const spaceIdx = remaining.indexOf(' ')
+      if (spaceIdx === -1) {
+        result.push(remaining)
+        remaining = ''
+      } else {
+        result.push(remaining.slice(0, spaceIdx))
+        remaining = remaining.slice(spaceIdx + 1).trimStart()
+      }
+    }
+  }
+
+  return result
+}
+
+const translate = (text) => {
+  if (!text) return text
+  if (lang.value !== 'sw') return text
+  
+  const trimmed = text.trim()
+  
+  const exactLookup = (val) => {
+    const v = val.trim()
+    if (!v) return ''
+    const matchedKey = sortedTranslationKeys.find(k => k.toLowerCase() === v.toLowerCase())
+    return matchedKey ? translationMap[matchedKey] : v
+  }
+
+  // First check for an exact full-string match in the translation map
+  const fullMatch = sortedTranslationKeys.find(k => k.toLowerCase() === trimmed.toLowerCase())
+  if (fullMatch) return translationMap[fullMatch]
+
+  // Split by newlines, commas, or semicolons
+  const parts = trimmed.split(/[\r\n,;]+/)
+  if (parts.length > 1) {
+    return parts
+      .map(part => part.trim())
+      .filter(part => part.length > 0)
+      .map(part => {
+        // Try exact lookup first, then greedy space-separated parsing
+        const exact = exactLookup(part)
+        if (exact !== part) return exact
+        // If exact lookup failed, try greedy parse for space-separated multi-term values
+        const parsed = greedyParseSpaceSeparated(part)
+        return parsed.join(', ')
+      })
+      .join(', ')
+  }
+
+  // Single value: try exact lookup then greedy parse
+  const single = exactLookup(trimmed)
+  if (single !== trimmed) return single
+  
+  // Try greedy space-separated parsing for values like "Frequent droughts Livestock diseases"
+  const parsed = greedyParseSpaceSeparated(trimmed)
+  if (parsed.length > 1) return parsed.join(', ')
+  
+  return parsed[0] || trimmed
+}
+
+const translateLocationName = (name) => {
+  if (!name) return name
+  if (lang.value === 'sw') {
+    return name.replace(/Point/i, 'Kituo')
+  }
+  return name
+}
+
+watch(() => (lang && lang.value ? lang.value : lang), () => {
+  plotMarkers()
+})
+
+// Load cached data from localStorage if available
+const cachedData = safeGetLocalStorage('one_health_map_points')
+const initialPoints = []
+if (cachedData) {
+  try {
+    const parsed = JSON.parse(cachedData)
+    if (Array.isArray(parsed) && parsed.length > 0) {
+      initialPoints.push(...parsed)
+    }
+  } catch (e) {
+    console.error('Failed to parse cached map data:', e)
+  }
+}
+
+const loadingData = ref(initialPoints.length === 0)
+const mapPoints = ref(initialPoints)
 const selectedPoint = ref(null)
 const showSelectedOnly = ref(false)
 
@@ -170,43 +453,70 @@ const markersLayerGroup = L.layerGroup()
 const markersMap = new Map()
 let currentSelectedMarker = null
 
-const defaultIcon = L.icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowUrl: '',
-  shadowSize: [0, 0]
-})
+const defaultMarkerOptions = {
+  radius: 6,
+  fillColor: '#3B82F6',
+  color: '#FFFFFF',
+  weight: 1.5,
+  opacity: 1,
+  fillOpacity: 0.6
+}
 
-const selectedIcon = L.icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowUrl: '',
-  shadowSize: [0, 0]
-})
+const selectedMarkerOptions = {
+  radius: 10,
+  fillColor: '#EF4444',
+  color: '#FFFFFF',
+  weight: 2,
+  opacity: 1,
+  fillOpacity: 0.95
+}
 
 const fetchMapData = async () => {
-  loadingData.value = true
+  if (mapPoints.value.length === 0) {
+    loadingData.value = true
+  }
+  
+  const timeoutPromise = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error('TIMEOUT')), 6000)
+  )
+
   try {
-      const { data, error } = await supabase
-        .from('one_health_data')
-        .select('*')
-        
-      if (!error && data) {
-        // Sort numerically by point number extracted from location_name
-        data.sort((a, b) => {
-          const numA = parseInt(a.location_name.match(/Point\s+(\d+)/i)?.[1] || 0, 10)
-          const numB = parseInt(b.location_name.match(/Point\s+(\d+)/i)?.[1] || 0, 10)
-          return numA - numB
-        })
-        mapPoints.value = data
-        plotMarkers()
-      }
+    const fetchPromise = supabase.from('one_health_data').select('*')
+    const result = await Promise.race([fetchPromise, timeoutPromise])
+    
+    if (result && !result.error && result.data) {
+      const data = result.data
+      data.sort((a, b) => {
+        const numA = parseInt(a.location_name.match(/Point\s+(\d+)/i)?.[1] || 0, 10)
+        const numB = parseInt(b.location_name.match(/Point\s+(\d+)/i)?.[1] || 0, 10)
+        return numA - numB
+      })
+      mapPoints.value = data
+      safeSetLocalStorage('one_health_map_points', JSON.stringify(data))
+      plotMarkers()
+    } else if (result && result.error) {
+      console.error('Supabase error:', result.error)
+    }
   } catch (err) {
-    console.error('Error fetching map data:', err)
+    if (err.message === 'TIMEOUT') {
+      console.warn('Supabase fetch timed out (possibly waking up). Fetching will continue in the background.')
+      loadingData.value = false
+      
+      supabase.from('one_health_data').select('*').then(({ data, error }) => {
+        if (!error && data) {
+          data.sort((a, b) => {
+            const numA = parseInt(a.location_name.match(/Point\s+(\d+)/i)?.[1] || 0, 10)
+            const numB = parseInt(b.location_name.match(/Point\s+(\d+)/i)?.[1] || 0, 10)
+            return numA - numB
+          })
+          mapPoints.value = data
+          safeSetLocalStorage('one_health_map_points', JSON.stringify(data))
+          plotMarkers()
+        }
+      }).catch(e => console.error('Background fetch error:', e))
+    } else {
+      console.error('Error fetching map data:', err)
+    }
   } finally {
     loadingData.value = false
   }
@@ -224,9 +534,10 @@ const selectPointById = (id) => {
     const marker = markersMap.get(id)
     if (marker) {
       if (currentSelectedMarker) {
-        currentSelectedMarker.setIcon(defaultIcon)
+        currentSelectedMarker.setStyle(defaultMarkerOptions)
       }
-      marker.setIcon(selectedIcon)
+      marker.setStyle(selectedMarkerOptions)
+      marker.bringToFront()
       currentSelectedMarker = marker
       map.panTo([point.latitude, point.longitude], { animate: true, duration: 0.5 })
     }
@@ -245,11 +556,9 @@ const plotMarkers = () => {
     }
 
     const isSelected = selectedPoint.value && point.id === selectedPoint.value.id
-    const marker = L.marker([point.latitude, point.longitude], { 
-      icon: isSelected ? selectedIcon : defaultIcon 
-    })
+    const marker = L.circleMarker([point.latitude, point.longitude], isSelected ? selectedMarkerOptions : defaultMarkerOptions)
     
-    const title = point.location_name.replace(/ area/i, '')
+    const title = translateLocationName(point.location_name.replace(/ area/i, ''))
     marker.bindPopup(`<b>${title}</b>`, { closeButton: false })
     
     marker.on('click', () => {
@@ -262,6 +571,11 @@ const plotMarkers = () => {
 
     if (isSelected) {
       currentSelectedMarker = marker
+      setTimeout(() => {
+        if (marker._map) {
+          marker.bringToFront()
+        }
+      }, 0)
     }
 
     markersMap.set(point.id, marker)
@@ -322,6 +636,10 @@ onMounted(() => {
   }).addTo(map)
   
   markersLayerGroup.addTo(map)
+
+  if (mapPoints.value.length > 0) {
+    plotMarkers()
+  }
 
   fetchMapData()
 

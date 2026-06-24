@@ -14,12 +14,13 @@
           <span class="text-xs font-semibold uppercase tracking-[0.2em] text-white transition-colors">Module 06 · Drought</span>
         </div>
         <h2 class="font-display font-extrabold text-4xl md:text-5xl text-white leading-tight transition-colors" style="letter-spacing:-0.02em">
-          Recent Droughts in Kajiado
+          {{ lang === 'en' ? cmsData.titleEn : cmsData.titleSw }}
         </h2>
-        <p class="mt-2 font-display font-medium text-lg italic text-[#E09E34] transition-colors">Kiangazi Katika Kaunti</p>
+        <p class="mt-2 font-display font-medium text-lg italic text-[#E09E34] transition-colors">
+          {{ lang === 'en' ? cmsData.subtitleEn : cmsData.subtitleSw }}
+        </p>
         <p class="mt-3 text-white/90 text-[15px] leading-relaxed max-w-2xl transition-colors">
-          A satellite-derived narrative timeline of the 2022–2023 drought sequence in Kajiado County,
-          tracking progression from early stress signals through peak impact and early recovery.
+          {{ lang === 'en' ? cmsData.descEn : cmsData.descSw }}
         </p>
       </div>
 
@@ -72,66 +73,87 @@
 import { ref, inject, onMounted } from 'vue'
 import { Satellite } from 'lucide-vue-next'
 
+import { computed } from 'vue'
+import { getActivePinia } from 'pinia'
+import { useCmsStore } from '../stores/cms'
+
 const lang = inject('lang')
 const isDark = inject('isDark')
 const headerRef = ref(null)
 const timelineRef = ref(null)
 const noteRef = ref(null)
 
-const timelineEvents = [
-  {
-    period: 'Mar – May 2022',
-    phase: 'Early Warning',
-    title: 'Long Rains Failure – Third Consecutive Season',
-    description: 'Satellite data confirmed failure of the 2022 long rains (MAM), the third consecutive season of below-average rainfall. SPI-3 dropped to −1.8 across Kajiado County. Livestock body conditions began declining, and community reports noted drying water sources.',
-    color: '#e9c160', colorDarker: '#d69e2e',
-    bg: 'rgba(233,193,96,0.1)',
-    metrics: [
-      { value: '−1.8', label: 'SPI-3 index' },
-      { value: '35%', label: 'below avg. rainfall' },
-      { value: 'VCI 0.28', label: 'vegetation stress' },
-    ],
-  },
-  {
-    period: 'Jun – Sep 2022',
-    phase: 'Escalation',
-    title: 'Short Rains Delayed – Crisis Deepens',
-    description: 'The inter-seasonal dry spell extended into the short rains window. LST anomalies averaged +2.4°C above the 20-year mean. Mass livestock movement eastward observed in MODIS reflectance analysis. First mortality reports in Amboseli heartland.',
-    color: '#f97316', colorDarker: '#ea580c',
-    bg: 'rgba(249,115,22,0.08)',
-    metrics: [
-      { value: '+2.4°C', label: 'LST anomaly' },
-      { value: '−62%', label: 'NDVI vs. baseline' },
-      { value: '~15k', label: 'livestock lost (est.)' },
-    ],
-  },
-  {
-    period: 'Oct 2022 – Feb 2023',
-    phase: 'Peak Impact',
-    title: 'Worst Drought in 40 Years – La Niña Driver',
-    description: 'Kajiado hit peak drought conditions driven by the 2022–23 La Niña event. VCI fell below 0.15 (extreme drought) across 68% of rangeland. Water pans ran dry. Maasai community declared emergency at sub-county level. Wildebeest migration routes severely disrupted.',
-    color: '#ef4444', colorDarker: '#dc2626',
-    bg: 'rgba(239,68,68,0.08)',
-    metrics: [
-      { value: 'VCI <0.15', label: 'extreme drought' },
-      { value: '68%', label: 'affected rangeland' },
-      { value: '4th Drt', label: 'consecutive season' },
-    ],
-  },
-  {
-    period: 'Mar – Jun 2023',
-    phase: 'Recovery',
-    title: 'Long Rains Return – Partial Vegetation Recovery',
-    description: 'The 2023 long rains (MAM) arrived near-normal, triggering rapid vegetation green-up. Sentinel-2 NDVI recovered to 60% of baseline by June. However, livestock populations remain 30–40% below pre-drought levels. Water table recovery expected to take 2–3 more seasons.',
-    color: '#4a7d41', colorDarker: '#166534',
-    bg: 'rgba(74,125,65,0.1)',
-    metrics: [
-      { value: '60%', label: 'NDVI recovery' },
-      { value: '−35%', label: 'livestock below baseline' },
-      { value: '2–3 Seasons', label: 'for full recovery' },
-    ],
-  },
-]
+const defaultDroughtData = {
+  titleEn: 'Recent Droughts in Kajiado',
+  titleSw: 'Kiangazi Katika Kaunti ya Kajiado',
+  subtitleEn: 'Kiangazi Katika Kaunti',
+  subtitleSw: 'Kiangazi Katika Kaunti',
+  descEn: 'A satellite-derived narrative timeline of the 2022–2023 drought sequence in Kajiado County, tracking progression from early stress signals through peak impact and early recovery.',
+  descSw: 'A satellite-derived narrative timeline of the 2022–2023 drought sequence in Kajiado County, tracking progression from early stress signals through peak impact and early recovery.',
+  events: [
+    {
+      period: 'Mar – May 2022',
+      phase: 'Early Warning',
+      title: 'Long Rains Failure – Third Consecutive Season',
+      description: 'Satellite data confirmed failure of the 2022 long rains (MAM), the third consecutive season of below-average rainfall. SPI-3 dropped to −1.8 across Kajiado County. Livestock body conditions began declining, and community reports noted drying water sources.',
+      color: '#e9c160', colorDarker: '#d69e2e',
+      bg: 'rgba(233,193,96,0.1)',
+      metrics: [
+        { value: '−1.8', label: 'SPI-3 index' },
+        { value: '35%', label: 'below avg. rainfall' },
+        { value: 'VCI 0.28', label: 'vegetation stress' },
+      ],
+    },
+    {
+      period: 'Jun – Sep 2022',
+      phase: 'Escalation',
+      title: 'Short Rains Delayed – Crisis Deepens',
+      description: 'The inter-seasonal dry spell extended into the short rains window. LST anomalies averaged +2.4°C above the 20-year mean. Mass livestock movement eastward observed in MODIS reflectance analysis. First mortality reports in Amboseli heartland.',
+      color: '#f97316', colorDarker: '#ea580c',
+      bg: 'rgba(249,115,22,0.08)',
+      metrics: [
+        { value: '+2.4°C', label: 'LST anomaly' },
+        { value: '−62%', label: 'NDVI vs. baseline' },
+        { value: '~15k', label: 'livestock lost (est.)' },
+      ],
+    },
+    {
+      period: 'Oct 2022 – Feb 2023',
+      phase: 'Peak Impact',
+      title: 'Worst Drought in 40 Years – La Niña Driver',
+      description: 'Kajiado hit peak drought conditions driven by the 2022–23 La Niña event. VCI fell below 0.15 (extreme drought) across 68% of rangeland. Water pans ran dry. Maasai community declared emergency at sub-county level. Wildebeest migration routes severely disrupted.',
+      color: '#ef4444', colorDarker: '#dc2626',
+      bg: 'rgba(239,68,68,0.08)',
+      metrics: [
+        { value: 'VCI <0.15', label: 'extreme drought' },
+        { value: '68%', label: 'affected rangeland' },
+        { value: '4th Drt', label: 'consecutive season' },
+      ],
+    },
+    {
+      period: 'Mar – Jun 2023',
+      phase: 'Recovery',
+      title: 'Long Rains Return – Partial Vegetation Recovery',
+      description: 'The 2023 long rains (MAM) arrived near-normal, triggering rapid vegetation green-up. Sentinel-2 NDVI recovered to 60% of baseline by June. However, livestock populations remain 30–40% below pre-drought levels. Water table recovery expected to take 2–3 more seasons.',
+      color: '#4a7d41', colorDarker: '#166534',
+      bg: 'rgba(74,125,65,0.1)',
+      metrics: [
+        { value: '60%', label: 'NDVI recovery' },
+        { value: '−35%', label: 'livestock below baseline' },
+        { value: '2–3 Seasons', label: 'for full recovery' },
+      ],
+    },
+  ]
+}
+
+const cmsData = computed(() => {
+  if (getActivePinia()) {
+    return useCmsStore().getContent('drought_story', defaultDroughtData)
+  }
+  return defaultDroughtData
+})
+
+const timelineEvents = computed(() => cmsData.value.events || defaultDroughtData.events)
 
 onMounted(() => {
   const observer = new IntersectionObserver((entries) => {

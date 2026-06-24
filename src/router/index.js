@@ -16,6 +16,7 @@ const routes = [
     { path: '/dashboard', component: () => import('../views/DashboardView.vue'), meta: { requiresAuth: true } },
     { path: '/dashboard/one-health', component: () => import('../views/DashboardOneHealth.vue'), meta: { requiresAuth: true } },
     { path: '/dashboard/settings', component: () => import('../views/SettingsView.vue'), meta: { requiresAuth: true } },
+    { path: '/dashboard/cms', component: () => import('../views/DashboardCMSView.vue'), meta: { requiresAuth: true, requiresAdmin: true } },
     { path: '/about', component: () => import('../views/AboutView.vue') }
 ]
 
@@ -29,6 +30,17 @@ router.beforeEach(async (to) => {
         if (!supabase) return { path: '/login' }
         const { data } = await supabase.auth.getSession()
         if (!data.session) return { path: '/login' }
+
+        if (to.meta.requiresAdmin) {
+            const { data: profile, error } = await supabase
+                .from('profiles')
+                .select('role')
+                .eq('id', data.session.user.id)
+                .maybeSingle()
+            if (error || !profile || profile.role !== 'Admin') {
+                return { path: '/dashboard' }
+            }
+        }
     }
 })
 

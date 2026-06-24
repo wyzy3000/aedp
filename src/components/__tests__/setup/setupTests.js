@@ -35,7 +35,16 @@ vi.mock('leaflet', () => ({
             setIcon: vi.fn(),
             fire: vi.fn()
         })),
+        circleMarker: vi.fn(() => ({
+            bindPopup: vi.fn().mockReturnThis(),
+            on: vi.fn().mockReturnThis(),
+            addTo: vi.fn(),
+            setStyle: vi.fn(),
+            bringToFront: vi.fn(),
+            fire: vi.fn()
+        })),
         icon: vi.fn(),
+        divIcon: vi.fn(),
         layerGroup: vi.fn(() => ({
             clearLayers: vi.fn(),
             addLayer: vi.fn(),
@@ -60,10 +69,34 @@ vi.mock('leaflet', () => ({
         setIcon: vi.fn(),
         fire: vi.fn()
     })),
+    circleMarker: vi.fn(() => ({
+        bindPopup: vi.fn().mockReturnThis(),
+        on: vi.fn().mockReturnThis(),
+        addTo: vi.fn(),
+        setStyle: vi.fn(),
+        bringToFront: vi.fn(),
+        fire: vi.fn()
+    })),
     icon: vi.fn(),
+    divIcon: vi.fn(),
     layerGroup: vi.fn(() => ({
         clearLayers: vi.fn(),
         addLayer: vi.fn(),
         addTo: vi.fn()
     }))
 }));
+
+// Mock Pinia globally to prevent injection warnings during unit tests
+vi.mock('pinia', () => ({
+    defineStore: () => () => ({
+        getContent: (key, defaultVal) => defaultVal,
+        fetchCmsData: vi.fn(),
+        saveCmsData: vi.fn(),
+        loading: false,
+        error: null
+    }),
+    getActivePinia: () => true
+}))
+
+
+

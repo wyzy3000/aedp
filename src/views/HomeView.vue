@@ -18,22 +18,19 @@
 
       <h1 class="font-display font-extrabold text-4xl sm:text-5xl md:text-7xl lg:text-8xl leading-[0.95] mb-5 transition-colors overflow-visible pb-2 select-none"
           :class="isDark ? 'text-white' : 'text-[#1a2a12]'">
-        Amboseli<br />
+        {{ lang === 'en' ? cmsData.titleEn : cmsData.titleSw }}<br />
         <span
           :style="isDark
             ? 'background: linear-gradient(135deg, #4a9e3a 0%, #8fd47c 45%, #e9c160 85%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;'
             : 'background: linear-gradient(135deg, #2d6b20 0%, #4a9e3a 45%, #c48a1a 88%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;'"
         >
-          {{ lang === 'en' ? 'Data Portal' : 'Tovuti ya Takwimu' }}
+          {{ lang === 'en' ? cmsData.subtitleEn : cmsData.subtitleSw }}
         </span>
       </h1>
 
 
       <p class="text-[16px] max-w-lg mx-auto leading-relaxed mb-10 transition-colors text-white font-light">
-        {{ lang === 'en' 
-          ? 'A community-driven decision support interface for the Amboseli Basin. Monitoring pasture, habitat, water, and wildlife health — in real time.' 
-          : 'Kiolesura cha usaidizi wa maamuzi kinachoendeshwa na jamii kwa Bonde la Amboseli. Kufuatilia malisho, mazingira, maji, na afya ya wanyamapori — kwa wakati halisi.' 
-        }}
+        {{ lang === 'en' ? cmsData.descEn : cmsData.descSw }}
       </p>
 
       <div class="flex flex-col items-stretch sm:flex-row sm:items-center justify-center gap-3 w-full max-w-sm mx-auto sm:max-w-none">
@@ -60,11 +57,29 @@
 </template>
 
 <script setup>
-import { inject } from 'vue'
+import { inject, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { ChevronDown, Activity } from 'lucide-vue-next'
+import { getActivePinia } from 'pinia'
+import { useCmsStore } from '../stores/cms'
 
 const isDark = inject('isDark')
 const lang = inject('lang')
 const router = useRouter()
+
+const defaultHomeData = {
+  titleEn: 'Amboseli',
+  subtitleEn: 'Data Portal',
+  titleSw: 'Amboseli',
+  subtitleSw: 'Tovuti ya Takwimu',
+  descEn: 'A community-driven decision support interface for the Amboseli Basin. Monitoring pasture, habitat, water, and wildlife health — in real time.',
+  descSw: 'Kiolesura cha usaidizi wa maamuzi kinachoendeshwa na jamii kwa Bonde la Amboseli. Kufuatilia malisho, mazingira, maji, na afya ya wanyamapori — kwa wakati halisi.'
+}
+
+const cmsData = computed(() => {
+  if (getActivePinia()) {
+    return useCmsStore().getContent('home_page', defaultHomeData)
+  }
+  return defaultHomeData
+})
 </script>

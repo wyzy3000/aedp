@@ -14,7 +14,7 @@
             {{ lang === 'en' ? 'Module 04 · Weather' : 'Moduli 04 · Hali ya Anga' }}
           </span>
         </div>
-        <h2 class="font-display font-extrabold text-4xl md:text-5xl text-white leading-tight transition-colors" style="letter-spacing:-0.02em">
+        <h2 class="module-title transition-colors" style="letter-spacing:-0.02em">
           {{ lang === 'en' ? 'Weather Forecast' : 'Utabiri wa Hali ya Hewa' }}
         </h2>
         <p class="mt-2 font-display font-medium text-lg italic transition-colors" style="color: #E09E34;">
