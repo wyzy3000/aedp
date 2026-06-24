@@ -180,13 +180,7 @@
           </Transition>
         </button>
 
-        <!-- Collapse toggle -->
-        <button @click="collapsed = !collapsed"
-          class="flex items-center justify-center w-full py-2 rounded-lg
-                 hover:bg-stone-200/50 dark:hover:bg-white/5
-                 text-stone-400 dark:text-neutral-600 hover:text-stone-700 dark:hover:text-neutral-400 transition-all duration-200">
-          <ChevronLeft class="w-4 h-4 transition-transform duration-300" :class="collapsed ? 'rotate-180' : ''" />
-        </button>
+
       </div>
     </aside>
 
