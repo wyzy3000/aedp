@@ -29,10 +29,10 @@
               <div class="w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
                 <AlertCircle class="w-7 h-7 text-[#E09E34]" />
               </div>
-              <p class="text-white font-semibold text-lg">Video Unavailable</p>
-              <p class="text-white/50 text-sm max-w-sm">The video could not be loaded. The server may be temporarily offline or the file path is incorrect.</p>
+              <p class="text-white font-semibold text-lg">{{ t('Video Unavailable') }}</p>
+              <p class="text-white/50 text-sm max-w-sm">{{ t('The video could not be loaded. The server may be temporarily offline or the file path is incorrect.') }}</p>
               <button @click="retryVideo" class="mt-2 px-5 py-2 rounded-xl bg-[#E09E34] text-white text-sm font-semibold hover:bg-[#c88a2a] transition-all hover:scale-105 active:scale-95 duration-200">
-                Retry
+                {{ t('Retry') }}
               </button>
             </div>
 
@@ -40,7 +40,7 @@
             <div v-if="!videoReady && !videoError" class="absolute inset-0 flex items-center justify-center bg-black/75 z-10">
               <div class="flex flex-col items-center gap-3">
                 <div class="w-12 h-12 border-2 border-[#E09E34]/30 border-t-[#E09E34] rounded-full animate-spin" />
-                <span class="text-white/60 text-xs uppercase tracking-widest font-semibold">Loading video...</span>
+                <span class="text-white/60 text-xs uppercase tracking-widest font-semibold">{{ t('Loading video...') }}</span>
               </div>
             </div>
 
@@ -60,113 +60,30 @@
             ></video>
           </div>
 
-          <!-- Video Details (YouTube-Style) -->
-          <div class="mt-4 flex-1 flex flex-col">
+          <!-- Video Details & Description Box -->
+          <div class="mt-4 bg-slate-100 dark:bg-white/5 hover:bg-slate-200/50 dark:hover:bg-white/[0.08] transition-all duration-300 rounded-xl p-5 flex flex-col">
             <!-- Title -->
             <h1 class="text-xl md:text-2xl font-bold font-display leading-snug text-slate-900 dark:text-neutral-50">
-              {{ activeVideo.title }}
+              {{ t(activeVideo.title) }}
             </h1>
 
-            <!-- Channel and Actions Row -->
-            <div class="mt-3 flex flex-wrap items-center justify-between gap-4 border-b border-black/5 dark:border-white/10 pb-4">
-              <!-- Channel Info -->
-              <div class="flex items-center gap-3">
-                <!-- Avatar / Logo -->
-                <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white shadow-md select-none bg-gradient-to-tr from-emerald-600 to-[#E09E34]">
-                  AV
-                </div>
-                <div>
-                  <div class="flex items-center gap-1.5">
-                    <span class="text-sm font-bold text-slate-800 dark:text-neutral-100">AEDP Voices</span>
-                    <span class="w-3.5 h-3.5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[8px] font-bold" title="Verified source">✓</span>
-                  </div>
-                  <span class="text-xs text-slate-500 dark:text-neutral-400">Amboseli Community • 2.4K observers</span>
-                </div>
-
-                <!-- Subscribe (Observe) Button -->
-                <button
-                  @click="toggleSubscribe"
-                  class="ml-4 px-4 py-2 rounded-full text-xs font-bold transition-all duration-300 shadow-sm"
-                  :class="isSubscribed
-                    ? 'bg-slate-200 dark:bg-neutral-800 text-slate-800 dark:text-neutral-200 hover:bg-slate-300 dark:hover:bg-neutral-700'
-                    : 'bg-slate-950 dark:bg-white text-white dark:text-black hover:opacity-90'"
-                >
-                  {{ isSubscribed ? 'Observing' : 'Observe' }}
-                </button>
+            <!-- Info summary -->
+            <div class="mt-3 flex items-center gap-3 text-xs font-bold text-slate-800 dark:text-neutral-200 mb-3 border-b border-black/5 dark:border-white/10 pb-3">
+              <div class="flex items-center gap-1">
+                <Calendar class="w-3.5 h-3.5 text-[#E09E34]" />
+                <span>{{ activeVideo.date }}</span>
               </div>
-
-              <!-- Action Buttons -->
-              <div class="flex items-center gap-2">
-                <!-- Like / Dislike pill group -->
-                <div class="flex items-center bg-slate-100 dark:bg-white/5 rounded-full p-0.5 border border-black/5 dark:border-white/5">
-                  <button
-                    @click="toggleLike"
-                    class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-l-full text-xs font-semibold text-slate-700 dark:text-neutral-200 hover:bg-slate-200 dark:hover:bg-white/10 transition-colors"
-                    :title="isLiked ? 'Unlike' : 'Like this diary'"
-                  >
-                    <ThumbsUp class="w-3.5 h-3.5" :class="isLiked ? 'text-[#E09E34] fill-current' : ''" />
-                    <span>{{ likeCount }}</span>
-                  </button>
-                  <div class="w-[1px] h-4 bg-slate-300 dark:bg-white/10" />
-                  <button
-                    @click="toggleDislike"
-                    class="px-3.5 py-1.5 rounded-r-full text-xs font-semibold text-slate-700 dark:text-neutral-200 hover:bg-slate-200 dark:hover:bg-white/10 transition-colors"
-                    :title="isDisliked ? 'Remove dislike' : 'Dislike this diary'"
-                  >
-                    <ThumbsDown class="w-3.5 h-3.5" :class="isDisliked ? 'text-red-500 fill-current' : ''" />
-                  </button>
-                </div>
-
-                <!-- Share Button -->
-                <button
-                  @click="copyShareLink"
-                  class="flex items-center gap-1.5 px-4 py-2 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 border border-black/5 dark:border-white/5 rounded-full text-xs font-semibold text-slate-700 dark:text-neutral-200 transition-all active:scale-95 duration-150 relative"
-                >
-                  <component :is="shareCopied ? Check : Share2" class="w-3.5 h-3.5" :class="shareCopied ? 'text-emerald-500 animate-pulse' : ''" />
-                  <span>{{ shareCopied ? 'Copied' : 'Share' }}</span>
-                </button>
-
-                <!-- Download Button -->
-                <a
-                  :href="activeVideo.video_url"
-                  download
-                  target="_blank"
-                  class="flex items-center gap-1.5 px-4 py-2 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 border border-black/5 dark:border-white/5 rounded-full text-xs font-semibold text-slate-700 dark:text-neutral-200 transition-all active:scale-95 duration-150"
-                  title="Download MP4 source"
-                >
-                  <Download class="w-3.5 h-3.5" />
-                  <span class="hidden sm:inline">Download</span>
-                </a>
+              <span>&bull;</span>
+              <div class="flex items-center gap-1">
+                <MapPin class="w-3.5 h-3.5 text-[#E09E34]" />
+                <span>{{ t(activeVideo.location) }}</span>
               </div>
             </div>
 
-            <!-- Expandable Description Box -->
-            <div
-              class="mt-4 bg-slate-100 dark:bg-white/5 hover:bg-slate-200/50 dark:hover:bg-white/[0.08] transition-all duration-300 rounded-xl p-4 cursor-pointer"
-              @click="isExpanded = !isExpanded"
-            >
-              <!-- Info summary -->
-              <div class="flex items-center gap-3 text-xs font-bold text-slate-800 dark:text-neutral-100 mb-1.5">
-                <div class="flex items-center gap-1">
-                  <Calendar class="w-3.5 h-3.5 text-[#E09E34]" />
-                  <span>{{ activeVideo.date }}</span>
-                </div>
-                <span>&bull;</span>
-                <div class="flex items-center gap-1">
-                  <MapPin class="w-3.5 h-3.5 text-[#E09E34]" />
-                  <span>{{ activeVideo.location }}</span>
-                </div>
-                <span class="ml-auto text-[#E09E34] text-[10px] uppercase tracking-wider font-extrabold">{{ isExpanded ? 'Show less' : 'Show more' }}</span>
-              </div>
-
-              <!-- Main text description -->
-              <p
-                class="text-slate-600 dark:text-neutral-300 text-sm leading-relaxed whitespace-pre-line"
-                :class="isExpanded ? '' : 'line-clamp-2'"
-              >
-                {{ activeVideo.description }}
-              </p>
-            </div>
+            <!-- Main text description -->
+            <p class="text-slate-600 dark:text-neutral-300 text-sm leading-relaxed whitespace-pre-line">
+              {{ t(activeVideo.description) }}
+            </p>
           </div>
         </div>
 
@@ -174,8 +91,8 @@
         <div class="lg:col-span-1 flex flex-col">
           <div class="glass-card p-5 rounded-2xl border border-black/5 dark:border-white/10 bg-white/40 dark:bg-black/20 backdrop-blur-md flex-1 flex flex-col">
             <h3 class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-neutral-400 mb-4 px-1 flex items-center justify-between">
-              <span>Related Logs</span>
-              <span class="text-[10px] font-medium text-slate-400 dark:text-neutral-500 normal-case">{{ videos.length }} videos</span>
+              <span>{{ t('Related Logs') }}</span>
+              <span class="text-[10px] font-medium text-slate-400 dark:text-neutral-500 normal-case">{{ videos.length }} {{ t('videos') }}</span>
             </h3>
 
             <!-- Playlist items -->
@@ -213,10 +130,10 @@
                     class="text-xs font-bold leading-snug line-clamp-2 text-slate-800 dark:text-neutral-100 group-hover:text-[#E09E34] transition-colors"
                     :class="activeVideo.id === video.id ? 'text-[#E09E34] dark:text-[#E09E34]' : ''"
                   >
-                    {{ video.title }}
+                    {{ t(video.title) }}
                   </h4>
                   <span class="text-[10px] font-medium text-slate-500 dark:text-neutral-400 mt-1 flex items-center gap-1">
-                    <span class="truncate">{{ video.location }}</span>
+                    <span class="truncate">{{ t(video.location) }}</span>
                   </span>
                   <span class="text-[9px] text-slate-400 dark:text-neutral-500 mt-0.5">{{ video.date }}</span>
                 </div>
@@ -235,12 +152,38 @@ import { Calendar, MapPin, Play, AlertCircle, ThumbsUp, ThumbsDown, Share2, Down
 import { supabase } from '../supabase'
 
 const isDark = inject('isDark')
+const lang = inject('lang')
 const headerRef = ref(null)
 const videoRef = ref(null)
 const videoReady = ref(false)
 const videoError = ref(false)
 const isExpanded = ref(false)
 const isSubscribed = ref(false)
+
+const translations = {
+  sw: {
+    'Main Marsh Herd Movement': 'Miondoko ya Mifugo Kwenye Bwawa Kuu',
+    'Community members in Kimana and nearby areas share how climate change affects grasslands, livestock, farming, markets, and health, while describing local adaptations such as irrigation, drought-resistant breeds, and livestock treatment.': 'Wanajamii wa Kimana na maeneo ya karibu wanaeleza jinsi mabadiliko ya tabianchi yanavyoathiri nyasi, mifugo, kilimo, masoko, na afya, huku wakielezea njia za kujiandaa za wenyeji kama vile umwagiliaji, mifugo inayostahimili ukame, na matibabu ya mifugo.',
+    'Kimana Section': 'Sehemu ya Kimana',
+    'Maasai Adaptations To Climate Change': 'Mbinu za Wamaasai za Kukabiliana na Mabadiliko ya Tabianchi',
+    'Amboseli\'s Maasai community is combating climate change by adopting sedentary lifestyles and advanced livestock management. Through supplemental feeding and structured grazing, herders are preventing drought-related animal losses and better navigating human-wildlife interactions.': 'Jamii ya Wamaasai ya Amboseli inapambana na mabadiliko ya tabianchi kwa kuanza kuishi maisha ya makazi ya kudumu na usimamizi wa kisasa wa mifugo. Kupitia ulishaji wa ziada na malisho yaliyopangwa, wafugaji wanazuia vifo vya wanyama vinavyosababishwa na ukame na kukabiliana vyema na mwingiliano kati ya binadamu na wanyamapori.',
+    'Amboseli Basin': 'Bonde la Amboseli',
+    'Related Logs': 'Maoni Yanayohusiana',
+    'videos': 'video',
+    'Loading video...': 'Inapakia video...',
+    'Video Unavailable': 'Video Haipatikani',
+    'The video could not be loaded. The server may be temporarily offline or the file path is incorrect.': 'Video haikuweza kupakiwa. Labda seva haipatikani kwa muda au njia ya faili si sahihi.',
+    'Retry': 'Jaribu Tena'
+  }
+}
+
+const t = (key) => {
+  const currentLang = (lang && typeof lang === 'object' && 'value' in lang) ? lang.value : (lang || 'en')
+  if (currentLang === 'sw' && translations.sw && translations.sw[key]) {
+    return translations.sw[key]
+  }
+  return key
+}
 
 const likedStates = ref({})
 const dislikedStates = ref({})
