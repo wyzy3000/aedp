@@ -8,7 +8,7 @@
     <div class="absolute inset-0 pointer-events-none"
          style="background: radial-gradient(ellipse at 25% 40%, rgba(59,130,246,0.07) 0%, transparent 55%)" />
 
-    <div class="relative z-10 max-w-[1240px] mx-auto px-8 lg:px-12 w-full pt-[6vh] lg:pt-[12vh] pb-28">
+    <div class="relative z-10 max-w-[1240px] mx-auto px-8 lg:px-12 w-full pt-0 pb-28">
 
       <!-- ─── GAME TITLE HEADER ─── -->
       <div class="mb-10 w-full text-left">
