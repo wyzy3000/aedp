@@ -196,24 +196,24 @@
     </main>
     <!-- ─── Bottom Navigation (Mobile Only) ─────────────────── -->
     <nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/90 dark:bg-[#050e07]/95 backdrop-blur-md border-t border-black/5 dark:border-white/10 shadow-[0_-2px_10px_rgba(0,0,0,0.06)]">
-      <div class="flex items-center justify-around px-2 pb-safe">
+      <div class="flex items-center overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden snap-x scroll-smooth px-2 pb-safe">
 
         <!-- PUBLIC PORTAL NAV -->
         <template v-if="!isDashboard">
           <button @click="scrollTo('__top')"
-            class="flex flex-col items-center justify-center gap-1 min-h-[56px] min-w-[52px] px-2 transition-colors"
+            class="flex flex-col items-center justify-center gap-1 min-h-[56px] min-w-[52px] px-2 transition-colors flex-shrink-0"
             :class="activeSection === '' ? 'text-[#E09E34]' : 'text-stone-400 dark:text-neutral-500'">
             <Home class="w-5 h-5" />
             <span class="text-[9px] font-semibold">Home</span>
           </button>
-          <button v-for="link in navLinks.slice(0,3)" :key="link.id" @click="scrollTo(link.id)"
-            class="flex flex-col items-center justify-center gap-1 min-h-[56px] min-w-[52px] px-2 transition-colors"
+          <button v-for="link in navLinks" :key="link.id" @click="scrollTo(link.id)"
+            class="flex flex-col items-center justify-center gap-1 min-h-[56px] min-w-[52px] px-2 transition-colors flex-shrink-0"
             :class="activeSection === link.id ? 'text-[#E09E34]' : 'text-stone-400 dark:text-neutral-500'">
             <component :is="link.icon" class="w-5 h-5" />
             <span class="text-[9px] font-semibold">{{ lang === 'en' ? link.en : link.sw }}</span>
           </button>
           <button @click="authStore.user ? router.push('/dashboard') : router.push('/login')"
-            class="flex flex-col items-center justify-center gap-1 min-h-[56px] min-w-[52px] px-2 transition-colors"
+            class="flex flex-col items-center justify-center gap-1 min-h-[56px] min-w-[52px] px-2 transition-colors flex-shrink-0"
             :class="'text-stone-400 dark:text-neutral-500'">
             <UserCircle class="w-5 h-5" />
             <span class="text-[9px] font-semibold">{{ authStore.user ? 'Dashboard' : 'Login' }}</span>
@@ -223,36 +223,36 @@
         <!-- DASHBOARD NAV -->
         <template v-else>
           <button @click="router.push('/')"
-            class="flex flex-col items-center justify-center gap-1 min-h-[56px] min-w-[52px] px-2 transition-colors text-stone-400 dark:text-neutral-500">
+            class="flex flex-col items-center justify-center gap-1 min-h-[56px] min-w-[52px] px-2 transition-colors flex-shrink-0 text-stone-400 dark:text-neutral-500">
             <Home class="w-5 h-5" />
             <span class="text-[9px] font-semibold">Portal</span>
           </button>
           <button @click="router.push('/dashboard')"
-            class="flex flex-col items-center justify-center gap-1 min-h-[56px] min-w-[52px] px-2 transition-colors"
+            class="flex flex-col items-center justify-center gap-1 min-h-[56px] min-w-[52px] px-2 transition-colors flex-shrink-0"
             :class="route.path === '/dashboard' ? 'text-[#E09E34]' : 'text-stone-400 dark:text-neutral-500'">
             <BookOpen class="w-5 h-5" />
             <span class="text-[9px] font-semibold">Diaries</span>
           </button>
           <button @click="router.push('/dashboard/one-health')"
-            class="flex flex-col items-center justify-center gap-1 min-h-[56px] min-w-[52px] px-2 transition-colors"
+            class="flex flex-col items-center justify-center gap-1 min-h-[56px] min-w-[52px] px-2 transition-colors flex-shrink-0"
             :class="route.path === '/dashboard/one-health' ? 'text-[#E09E34]' : 'text-stone-400 dark:text-neutral-500'">
             <Heart class="w-5 h-5" />
             <span class="text-[9px] font-semibold">Health</span>
           </button>
           <button @click="router.push('/dashboard/settings')"
-            class="flex flex-col items-center justify-center gap-1 min-h-[56px] min-w-[52px] px-2 transition-colors"
+            class="flex flex-col items-center justify-center gap-1 min-h-[56px] min-w-[52px] px-2 transition-colors flex-shrink-0"
             :class="route.path === '/dashboard/settings' ? 'text-[#E09E34]' : 'text-stone-400 dark:text-neutral-500'">
             <Settings class="w-5 h-5" />
             <span class="text-[9px] font-semibold">Settings</span>
           </button>
           <button v-if="authStore.profile?.role === 'Admin'" @click="router.push('/dashboard/cms')"
-            class="flex flex-col items-center justify-center gap-1 min-h-[56px] min-w-[52px] px-2 transition-colors"
+            class="flex flex-col items-center justify-center gap-1 min-h-[56px] min-w-[52px] px-2 transition-colors flex-shrink-0"
             :class="route.path === '/dashboard/cms' ? 'text-[#E09E34]' : 'text-stone-400 dark:text-neutral-500'">
             <LayoutDashboard class="w-5 h-5" />
             <span class="text-[9px] font-semibold">Editor</span>
           </button>
           <button @click="handleSignOut"
-            class="flex flex-col items-center justify-center gap-1 min-h-[56px] min-w-[52px] px-2 transition-colors text-red-400/70">
+            class="flex flex-col items-center justify-center gap-1 min-h-[56px] min-w-[52px] px-2 transition-colors flex-shrink-0 text-red-400/70">
             <LogOut class="w-5 h-5" />
             <span class="text-[9px] font-semibold">Sign Out</span>
           </button>
@@ -267,7 +267,7 @@
 <script setup>
 import { ref, inject, provide, computed, watchEffect, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { Sun, Moon, Leaf, Globe, ChevronLeft, Home, Sprout, Trees, BookOpen, Cloud, BarChart2, AlertTriangle, Heart, LayoutDashboard, ArrowLeft, LogOut, UserCircle, Settings, Info } from 'lucide-vue-next'
+import { Sun, Moon, Leaf, Globe, ChevronLeft, Home, Sprout, Trees, BookOpen, Cloud, BarChart2, AlertTriangle, Heart, LayoutDashboard, ArrowLeft, LogOut, UserCircle, Settings, Info, Gamepad2 } from 'lucide-vue-next'
 import { Capacitor } from '@capacitor/core'
 import { supabase } from '../supabase'
 import { useAuthStore } from '../stores/auth'
@@ -299,6 +299,7 @@ const navLinks = [
   { id: 'diaries',   en: 'Diaries',      sw: 'Maoni',       icon: BookOpen },
   { id: 'weather',   en: 'Weather',      sw: 'Hali ya Anga', icon: Cloud },
   { id: 'onehealth', en: 'One Health',   sw: 'Afya Moja',   icon: Heart },
+  { id: 'nyasi-game', en: 'Nyasi Game',  sw: 'Mchezo wa Nyasi', icon: Gamepad2 },
 ]
 
 const scrollTo = (id) => {

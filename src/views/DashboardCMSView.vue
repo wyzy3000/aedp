@@ -672,6 +672,7 @@
 <script setup>
 import { ref, inject, computed, watch } from 'vue'
 import { useCmsStore } from '../stores/cms'
+import { sanitizeText } from '../utils/sanitize'
 
 const isDark = inject('isDark')
 const cmsStore = useCmsStore()
@@ -746,8 +747,8 @@ const loadActiveTabState = () => {
       subtitleEn: 'Data Portal',
       titleSw: 'Amboseli',
       subtitleSw: 'Tovuti ya Takwimu',
-      descEn: 'A community-driven decision support interface for the Amboseli Basin. Monitoring pasture, habitat, water, and wildlife health — in real time.',
-      descSw: 'Kiolesura cha usaidizi wa maamuzi kinachoendeshwa na jamii kwa Bonde la Amboseli. Kufuatilia malisho, mazingira, maji, na afya ya wanyamapori — kwa wakati halisi.'
+      descEn: 'A community-driven decision support interface for the Amboseli Basin. Monitoring pasture, habitat, water, and wildlife health.',
+      descSw: 'Kiolesura cha usaidizi wa maamuzi kinachoendeshwa na jamii kwa Bonde la Amboseli. Kufuatilia malisho, mazingira, maji, na afya ya wanyamapori.'
     }
     const val = cmsStore.getContent('home_page', defaultData)
     formHome.value = { ...defaultData, ...val }
@@ -1109,12 +1110,23 @@ const saveActivePage = async () => {
 
   let payload = null
 
+  // Helper: sanitize an object's string fields before sending to DB
+  const sanitizeObj = (obj) => {
+    if (!obj || typeof obj !== 'object') return obj
+    if (Array.isArray(obj)) return obj.map(sanitizeObj)
+    const out = {}
+    for (const [k, v] of Object.entries(obj)) {
+      out[k] = typeof v === 'string' ? sanitizeText(v, 5000) : sanitizeObj(v)
+    }
+    return out
+  }
+
   if (activeTab.value === 'home_page') {
-    payload = formHome.value
+    payload = sanitizeObj(formHome.value)
   } else if (activeTab.value === 'about_page') {
-    payload = formAbout.value
+    payload = sanitizeObj(formAbout.value)
   } else if (activeTab.value === 'pasture_level') {
-    payload = formPasture.value
+    payload = sanitizeObj(formPasture.value)
   } else if (activeTab.value === 'habitat_changes') {
     // Parse yearsListStr back to array of integers
     const yearsArray = formHabitat.value.yearsListStr
@@ -1122,7 +1134,7 @@ const saveActivePage = async () => {
       .map(s => parseInt(s.trim()))
       .filter(n => !isNaN(n))
     
-    payload = {
+    payload = sanitizeObj({
       titleEn: formHabitat.value.titleEn,
       subtitleEn: formHabitat.value.subtitleEn,
       descEn: formHabitat.value.descEn,
@@ -1130,11 +1142,11 @@ const saveActivePage = async () => {
       subtitleSw: formHabitat.value.subtitleSw,
       descSw: formHabitat.value.descSw,
       yearsList: yearsArray
-    }
+    })
   } else if (activeTab.value === 'outlook_report') {
-    payload = formOutlook.value
+    payload = sanitizeObj(formOutlook.value)
   } else if (activeTab.value === 'drought_story') {
-    payload = formDrought.value
+    payload = sanitizeObj(formDrought.value)
   }
 
   if (payload) {

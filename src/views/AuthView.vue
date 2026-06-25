@@ -81,7 +81,6 @@ import { useRouter } from 'vue-router'
 import { supabase } from '../supabase'
 import { validateEmail, validatePassword, createRateLimiter } from '../utils/sanitize'
 import { useThemeStore } from '../stores/theme'
-import { useAuthStore } from '../stores/auth'
 import BaseInput from '../components/ui/BaseInput.vue'
 import BaseButton from '../components/ui/BaseButton.vue'
 
@@ -180,12 +179,8 @@ const handleSubmit = async () => {
   loading.value = true
   try {
     if (!supabase) {
-      // Mock login for UI-only mode
-      const authStore = useAuthStore()
-      authStore.user = { id: 'mock-user-id', email: email.value.trim().toLowerCase() }
-      authStore.profile = { id: 'mock-user-id', role: 'Admin', full_name: 'Mock User', status: 'Activated' }
-      limiter.reset()
-      router.push('/dashboard')
+      errorMsg.value = 'Authentication service is not configured. Please contact the administrator.'
+      loading.value = false
       return
     }
 

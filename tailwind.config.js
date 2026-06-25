@@ -10,6 +10,7 @@ export default {
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
         display: ['Outfit', 'Inter', 'sans-serif'],
+        sourcesans: ['"Source Sans 3"', '"Source Sans Pro"', 'sans-serif'],
       },
       colors: {
         savanna: {

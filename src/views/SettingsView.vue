@@ -257,12 +257,13 @@ const loadInitialData = async () => {
   // Use maybeSingle() to avoid 406 when no profile row exists yet
   let { data } = await supabase.from('profiles').select('*').eq('id', user.value.id).maybeSingle()
   
-  // If no profile exists, create one (first-time admin bootstrap)
+  // If no profile exists, create a standard user profile.
+  // Admin role is only assigned via the Supabase Dashboard or the admin Edge Function — never via client-side logic.
   if (!data) {
     const { data: upserted } = await supabase.from('profiles').upsert({
       id: user.value.id,
       email: user.value.email,
-      role: user.value.email === 'wycliff.ontiri@gmail.com' ? 'Admin' : 'User',
+      role: 'User',
       status: 'Activated'
     }).select().maybeSingle()
     data = upserted

@@ -20,7 +20,6 @@ describe('CommunityDiaries.vue TestSuite', () => {
         })
 
         expect(wrapper.text()).toContain('Community Diaries')
-        expect(wrapper.text()).toContain('Maoni ya wenyeji')
         expect(wrapper.text()).toContain('Main Marsh Herd Movement')
         expect(wrapper.text()).toContain('Kimana Section')
     })

@@ -14,7 +14,7 @@
           <span class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-neutral-400">Module 03 · Diaries</span>
         </div>
         <h2 class="module-title transition-colors">
-          Community Diaries <span class="text-sm font-medium italic block md:inline md:ml-2 text-[#E09E34]">(Maoni ya wenyeji)</span>
+          Community Diaries
         </h2>
       </div>
 
@@ -108,6 +108,7 @@
                 <div class="relative w-32 aspect-video rounded-lg overflow-hidden bg-black flex-shrink-0 border border-black/10 dark:border-white/10 shadow-sm">
                   <img
                     :src="getLocalThumbnail(video.video_url) || video.thumbnail_url"
+                    loading="lazy"
                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     @error="(e) => e.target.style.display = 'none'"
                   />

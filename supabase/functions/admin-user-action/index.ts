@@ -4,15 +4,36 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+// Allowed origins — add your staging domain here if needed
+const ALLOWED_ORIGINS = [
+  "https://aedp.brandika.co.ke",
+  "http://localhost:5151",
+  "http://localhost:5173",
+]
+
+function getCorsHeaders(req: Request) {
+  const origin = req.headers.get("Origin") || ""
+  const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0]
+  return {
+    "Access-Control-Allow-Origin": allowed,
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Vary": "Origin",
+  }
+}
 
 Deno.serve(async (req) => {
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response("ok", { headers: getCorsHeaders(req) });
+  }
+
+  // Only allow POST
+  if (req.method !== "POST") {
+    return new Response(JSON.stringify({ error: "Method not allowed" }), {
+      status: 405,
+      headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
+    });
   }
 
   try {
@@ -21,7 +42,7 @@ Deno.serve(async (req) => {
     if (!callerJwt) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
       });
     }
 
@@ -38,7 +59,7 @@ Deno.serve(async (req) => {
     if (userErr || !caller) {
       return new Response(JSON.stringify({ error: "Invalid session" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
       });
     }
 
@@ -52,7 +73,7 @@ Deno.serve(async (req) => {
     if (profileErr || !profile || profile.role !== "Admin") {
       return new Response(JSON.stringify({ error: "Forbidden: Admin role required" }), {
         status: 403,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
       });
     }
 
@@ -65,15 +86,28 @@ Deno.serve(async (req) => {
 
     const { action, ...payload } = await req.json();
 
+    // Validate action is one of the known safe values
+    const VALID_ACTIONS = ["createUser", "deleteUser"]
+    if (!VALID_ACTIONS.includes(action)) {
+      return new Response(JSON.stringify({ error: "Unknown action" }), {
+        status: 400,
+        headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
+      });
+    }
+
     // 4. Route to the correct admin action
     if (action === "createUser") {
       const { email, password, role } = payload;
       if (!email || !password) {
         return new Response(JSON.stringify({ error: "email and password required" }), {
           status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
         });
       }
+
+      // Validate role is one of the allowed values
+      const VALID_ROLES = ["User", "Data Analyst", "Resource Assessor", "Admin"]
+      const safeRole = VALID_ROLES.includes(role) ? role : "User"
 
       const res = await fetch(`${supabaseUrl}/auth/v1/admin/users`, {
         method: "POST",
@@ -82,7 +116,7 @@ Deno.serve(async (req) => {
           email: email.trim().toLowerCase(),
           password,
           email_confirm: true,
-          user_metadata: { role },
+          user_metadata: { role: safeRole },
         }),
       });
       const result = await res.json();
@@ -90,7 +124,7 @@ Deno.serve(async (req) => {
       if (!res.ok) {
         return new Response(JSON.stringify({ error: result.msg || result.message }), {
           status: res.status,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
         });
       }
 
@@ -99,12 +133,12 @@ Deno.serve(async (req) => {
       await adminClient.from("profiles").upsert({
         id: result.id,
         email: email.trim().toLowerCase(),
-        role: role || "Standard User",
+        role: safeRole,
         status: "Activated",
       });
 
       return new Response(JSON.stringify({ success: true, user: result }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
       });
     }
 
@@ -113,14 +147,14 @@ Deno.serve(async (req) => {
       if (!userId) {
         return new Response(JSON.stringify({ error: "userId required" }), {
           status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
         });
       }
       // Prevent deleting yourself
       if (userId === caller.id) {
         return new Response(JSON.stringify({ error: "Cannot delete your own account" }), {
           status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
         });
       }
 
@@ -133,7 +167,7 @@ Deno.serve(async (req) => {
         const err = await res.json();
         return new Response(JSON.stringify({ error: err.msg || err.message || res.status }), {
           status: res.status,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
         });
       }
 
@@ -141,18 +175,14 @@ Deno.serve(async (req) => {
       await adminClient.from("profiles").delete().eq("id", userId);
 
       return new Response(JSON.stringify({ success: true }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
       });
     }
 
-    return new Response(JSON.stringify({ error: "Unknown action" }), {
-      status: 400,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
   } catch (err) {
-    return new Response(JSON.stringify({ error: err.message }), {
+    return new Response(JSON.stringify({ error: "Internal server error" }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
     });
   }
 });

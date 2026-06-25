@@ -17,9 +17,6 @@
         <h2 class="module-title transition-colors">
           {{ lang === 'en' ? cmsData.titleEn : cmsData.titleSw }}
         </h2>
-        <p class="mt-2 font-display font-medium text-lg italic" style="color: #E09E34;">
-          {{ lang === 'en' ? cmsData.subtitleEn : cmsData.subtitleSw }}
-        </p>
         <p class="mt-3 text-[15px] leading-relaxed max-w-4xl" style="color: #ffffff;">
           {{ lang === 'en' ? selectedYearData.contextEn : selectedYearData.contextSw }}
         </p>

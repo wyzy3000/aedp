@@ -17,9 +17,6 @@
         <h2 class="module-title transition-colors" style="letter-spacing:-0.02em">
           {{ lang === 'en' ? cmsData.titleEn : cmsData.titleSw }}
         </h2>
-        <p class="mt-2 font-display font-medium text-lg italic transition-colors" style="color: #E09E34;">
-          {{ lang === 'en' ? cmsData.subtitleEn : cmsData.subtitleSw }}
-        </p>
         <p class="mt-3 text-[15px] leading-relaxed max-w-2xl transition-colors" style="color: #ffffff;">
           {{ lang === 'en' ? cmsData.descEn : cmsData.descSw }}
         </p>
@@ -39,13 +36,12 @@
         <div class="flex flex-col lg:flex-row gap-2 bg-white dark:bg-white border border-slate-100 transition-colors shadow-2xl" style="height:550px; border-radius:12px; overflow:hidden; padding:8px;">
           <!-- MAP CONTAINER -->
           <div class="relative flex-1 bg-white rounded-lg overflow-hidden border border-slate-50">
-            <div v-for="yd in habitatDataSet" :key="yd.year"
-                 class="absolute transition-opacity duration-700 ease-in-out inset-0"
-                 :style="{ opacity: selectedYear === yd.year ? 1 : 0, zIndex: selectedYear === yd.year ? 2 : 1 }">
-              <img :src="yd.image"
-                   class="map-image w-full h-full object-contain"
-                   :alt="`Amboseli Basin map ${yd.year}`" />
-            </div>
+            <transition name="map-fade" mode="out-in">
+              <img :src="currentYearData.image"
+                   :key="selectedYear"
+                   class="map-image w-full h-full object-contain absolute inset-0"
+                   :alt="`Amboseli Basin map ${selectedYear}`" />
+            </transition>
 
             <div v-if="selectedYear === 2023" class="absolute inset-0 z-[5] pointer-events-none">
               <!-- Example Hotspots for 2023 -->
@@ -291,5 +287,12 @@ onMounted(() => {
 .fade-enter-from, .fade-leave-to {
   opacity: 0;
   transform: translateY(10px);
+}
+
+.map-fade-enter-active, .map-fade-leave-active {
+  transition: opacity 0.25s ease;
+}
+.map-fade-enter-from, .map-fade-leave-to {
+  opacity: 0;
 }
 </style>

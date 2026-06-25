@@ -1,55 +1,55 @@
 <template>
   <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
-    <div class="absolute inset-0 pointer-events-none"
-         :style="isDark
-           ? 'background: radial-gradient(ellipse at 55% 55%, rgba(74,125,65,0.16) 0%, transparent 65%), radial-gradient(ellipse at 15% 15%, rgba(212,145,31,0.07) 0%, transparent 50%)'
-           : 'background: radial-gradient(ellipse at 62% 48%, rgba(101,130,60,0.09) 0%, transparent 60%), radial-gradient(ellipse at 22% 18%, rgba(190,140,40,0.06) 0%, transparent 52%)'" />
-    <div class="absolute top-28 left-[28%] w-72 h-72 rounded-full pointer-events-none"
-         :style="'background: radial-gradient(circle, rgba(74,125,65,' + (isDark ? '0.12' : '0.07') + '), transparent 70%); filter: blur(52px); animation: pulse 7s ease-in-out infinite;'" />
-    <div class="absolute bottom-24 right-[22%] w-80 h-80 rounded-full pointer-events-none"
-         :style="'background: radial-gradient(circle, rgba(190,140,40,' + (isDark ? '0.08' : '0.05') + '), transparent 70%); filter: blur(64px); animation: pulse 8.5s ease-in-out 2.3s infinite;'" />
+    <!-- Video Background Container -->
+    <div class="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
+      <video
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+        class="absolute inset-0 w-full h-full object-cover"
+      >
+        <source src="https://media.brandika.co.ke/final-video.mp4" type="video/mp4" />
+      </video>
+      <!-- Readability Overlay -->
+      <div 
+        class="absolute inset-0 transition-colors duration-700"
+        :class="isDark ? 'bg-black/55' : 'bg-black/45'"
+      ></div>
+    </div>
 
     <div class="relative z-10 text-center max-w-6xl mx-auto px-6 pt-16 pb-28 md:pb-16">
       <div class="inline-flex items-center gap-2 mb-8">
-        <span class="text-xs font-semibold uppercase tracking-[0.2em] text-white">
+        <span class="text-[16px] font-sans font-light text-white" style="color: white !important;">
           {{ lang === 'en' ? 'Ecosystem Early Warning System' : 'Mfumo wa Onyo la Mapema wa Ikolojia' }}
         </span>
       </div>
 
-      <h1 class="font-display font-extrabold text-4xl sm:text-5xl md:text-7xl lg:text-8xl leading-[0.95] mb-5 transition-colors overflow-visible pb-2 select-none"
-          :class="isDark ? 'text-white' : 'text-[#1a2a12]'">
+      <h1 class="font-sourcesans font-extrabold text-4xl sm:text-5xl md:text-7xl lg:text-8xl leading-[0.95] mb-5 text-white overflow-visible pb-2">
         {{ lang === 'en' ? cmsData.titleEn : cmsData.titleSw }}<br />
-        <span
-          :style="isDark
-            ? 'background: linear-gradient(135deg, #4a9e3a 0%, #8fd47c 45%, #e9c160 85%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;'
-            : 'background: linear-gradient(135deg, #2d6b20 0%, #4a9e3a 45%, #c48a1a 88%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;'"
-        >
+        <span>
           {{ lang === 'en' ? cmsData.subtitleEn : cmsData.subtitleSw }}
         </span>
       </h1>
 
 
-      <p class="text-[16px] max-w-lg mx-auto leading-relaxed mb-10 transition-colors text-white font-light">
+      <p class="text-[16px] max-w-lg mx-auto leading-relaxed mb-10 text-white font-light" style="color: white !important;">
         {{ lang === 'en' ? cmsData.descEn : cmsData.descSw }}
       </p>
 
       <div class="flex flex-col items-stretch sm:flex-row sm:items-center justify-center gap-3 w-full max-w-sm mx-auto sm:max-w-none">
         <button @click="router.push('/pasture')"
-                class="group flex items-center justify-center gap-2.5 px-7 py-4 rounded-2xl font-semibold text-[15px] text-white
-                       transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-forest-500/25"
-                style="background: linear-gradient(135deg, #376332, #4a9e3a)">
+                class="flex items-center justify-center gap-2 px-6 py-[12px] rounded-xl font-bold text-sm tracking-wide text-white transition-all duration-300 hover:-translate-y-px active:translate-y-0"
+                style="background: linear-gradient(135deg, #376332, #4a9e3a); border: 1px solid rgba(0, 0, 0, 0.15);">
           <span>{{ lang === 'en' ? 'Explore the Data' : 'Chunguza Takwimu' }}</span>
-          <ChevronDown class="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
+          <ChevronDown class="w-4 h-4 flex-shrink-0" />
         </button>
 
         <button @click="router.push('/onehealth')"
-                class="flex items-center justify-center gap-2 px-7 py-4 rounded-xl text-[14px] font-medium
-                       transition-all duration-300 border"
-                :class="isDark
-                  ? 'text-neutral-300 hover:text-white hover:bg-white/8 border-white/10'
-                  : 'text-[#3d5a1a] hover:text-[#1a2a12] hover:bg-[#3d7035]/8 border-[#3d7035]/20'">
-          <Activity class="w-4 h-4" />
-          {{ lang === 'en' ? 'One Health Dashboard' : 'Dashibodi ya Afya Moja' }}
+                class="flex items-center justify-center gap-2 px-6 py-[12px] rounded-xl font-bold text-sm tracking-wide text-neutral-300 hover:text-white transition-all duration-300 hover:-translate-y-px active:translate-y-0 border border-white/10 hover:bg-white/8">
+          <Activity class="w-4 h-4 flex-shrink-0" />
+          <span>{{ lang === 'en' ? 'One Health Dashboard' : 'Dashibodi ya Afya Moja' }}</span>
         </button>
       </div>
     </div>
@@ -72,8 +72,8 @@ const defaultHomeData = {
   subtitleEn: 'Data Portal',
   titleSw: 'Amboseli',
   subtitleSw: 'Tovuti ya Takwimu',
-  descEn: 'A community-driven decision support interface for the Amboseli Basin. Monitoring pasture, habitat, water, and wildlife health — in real time.',
-  descSw: 'Kiolesura cha usaidizi wa maamuzi kinachoendeshwa na jamii kwa Bonde la Amboseli. Kufuatilia malisho, mazingira, maji, na afya ya wanyamapori — kwa wakati halisi.'
+  descEn: 'A community-driven decision support interface for the Amboseli Basin. Monitoring pasture, habitat, water, and wildlife health.',
+  descSw: 'Kiolesura cha usaidizi wa maamuzi kinachoendeshwa na jamii kwa Bonde la Amboseli. Kufuatilia malisho, mazingira, maji, na afya ya wanyamapori.'
 }
 
 const cmsData = computed(() => {

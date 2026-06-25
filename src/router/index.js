@@ -17,7 +17,8 @@ const routes = [
     { path: '/dashboard/one-health', component: () => import('../views/DashboardOneHealth.vue'), meta: { requiresAuth: true } },
     { path: '/dashboard/settings', component: () => import('../views/SettingsView.vue'), meta: { requiresAuth: true } },
     { path: '/dashboard/cms', component: () => import('../views/DashboardCMSView.vue'), meta: { requiresAuth: true, requiresAdmin: true } },
-    { path: '/about', component: () => import('../views/AboutView.vue') }
+    { path: '/about', component: () => import('../views/AboutView.vue') },
+    { path: '/nyasi-game', component: () => import('../views/NyasiGameView.vue') }
 ]
 
 const router = createRouter({
