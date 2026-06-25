@@ -45,6 +45,11 @@
               
               <svg viewBox="0 0 300 300" class="w-full h-full select-none">
                 <defs>
+                  <!-- Arrow marker definition -->
+                  <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1.5 L 8 5 L 0 8.5 Z" fill="#e8c840" />
+                  </marker>
+
                   <!-- Zone fills - earthy natural palette -->
                   <radialGradient id="parkCenter" cx="50%" cy="50%" r="50%">
                     <stop offset="0%" stop-color="#2a6e45"/>
@@ -197,6 +202,28 @@
                   </g>
                 </g>
 
+                <!-- Migration line with arrow & phantom preview target -->
+                <g v-if="showMigrationLine" class="pointer-events-none">
+                  <!-- Translucent dotted path line -->
+                  <line
+                    :x1="currentCoords.x"
+                    :y1="currentCoords.y"
+                    :x2="targetCoords.x"
+                    :y2="targetCoords.y"
+                    stroke="#e8c840"
+                    stroke-width="2"
+                    stroke-dasharray="4 3"
+                    marker-end="url(#arrow)"
+                    opacity="0.8"
+                  />
+                  <!-- Target placeholder token -->
+                  <g :transform="`translate(${targetCoords.x}, ${targetCoords.y})`" class="opacity-60 animate-pulse">
+                    <circle cx="0" cy="0" r="12" fill="none" stroke="#e8c840" stroke-width="2" stroke-dasharray="3 3"/>
+                    <circle cx="0" cy="0" r="9" fill="rgba(232,200,64,0.15)"/>
+                    <text x="0" y="3" fill="#e8c840" font-size="9" font-weight="900" text-anchor="middle" font-family="Outfit, sans-serif">?</text>
+                  </g>
+                </g>
+
                 <!-- Decorative cattle silhouettes -->
                 <text x="150" y="18" fill="rgba(255,255,255,0.08)" font-size="14" text-anchor="middle">🐄</text>
                 <text x="282" y="155" fill="rgba(255,255,255,0.08)" font-size="14" text-anchor="middle">🦁</text>
@@ -217,6 +244,24 @@
               <RotateCcw class="w-3.5 h-3.5"/>
               {{ lang === 'en' ? 'Restart' : 'Anza Upya' }}
             </button>
+          </div>
+
+          <!-- ─── TURN PROGRESS BAR ─── -->
+          <div class="zone-card space-y-2 w-full max-w-[420px]">
+            <div class="flex items-center justify-between text-[11px] font-black uppercase tracking-wider">
+              <span class="text-[#9a8a60]">{{ lang === 'en' ? 'Progress' : 'Maendeleo' }}</span>
+              <span class="text-white/40">{{ store.turn - 1 }} / {{ store.TOTAL_TURNS }} {{ lang === 'en' ? 'Seasons' : 'Misimu' }}</span>
+            </div>
+            <div class="h-2.5 rounded-full bg-black/40 border border-white/5 overflow-hidden">
+              <div class="h-full rounded-full transition-all duration-500"
+                   :style="{ width: ((store.turn - 1) / store.TOTAL_TURNS * 100) + '%', background: 'linear-gradient(90deg, #5DC13E, #c9a84c)' }">
+              </div>
+            </div>
+            <div class="flex gap-1">
+              <div v-for="s in store.TOTAL_TURNS" :key="s"
+                   class="flex-1 h-1 rounded-full transition-all duration-300"
+                   :class="s <= store.turn - 1 ? 'bg-[#5DC13E]/60' : 'bg-white/5'"></div>
+            </div>
           </div>
 
         </div>
@@ -321,6 +366,35 @@
               </div>
             </div>
 
+            <!-- Outcome Forecast Preview -->
+            <div class="p-3 rounded-xl border border-white/5 bg-black/25 flex flex-col gap-1.5 text-xs text-[#b0a080] font-medium leading-relaxed">
+              <span class="text-[10px] font-black text-[#9a8a60] uppercase tracking-wider">🔮 {{ lang === 'en' ? 'Outcome Forecast (Normal Weather)' : 'Utabiri wa Matokeo (Hali ya Kawaida)' }}</span>
+              <div class="flex flex-col gap-1">
+                <div class="flex items-center justify-between">
+                  <span>🐄 {{ lang === 'en' ? 'Expected Milk Income:' : 'Maziwa Yanayotarajiwa:' }}</span>
+                  <span class="font-bold text-white">{{ (store.player.herdSize * store.milkIncome).toLocaleString() }} KES</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span>❤️ {{ lang === 'en' ? 'Health Impact:' : 'Athari kwa Afya:' }}</span>
+                  <span class="font-bold" :class="forecastHealthImpact(selectedZoneId).color">
+                    {{ forecastHealthImpact(selectedZoneId).text }}
+                  </span>
+                </div>
+                <div v-if="selectedZoneId === 'swamp' && ((store.turn - 1) % 4 === 0 || (store.turn - 1) % 4 === 2)" 
+                     class="text-red-400 font-bold flex items-center gap-1 mt-1 text-[11px] leading-tight">
+                  <span>⚠️ {{ lang === 'en' ? 'Wet Season Sickness Risk! (Foot-rot)' : 'Hatari ya Magonjwa Kipindi cha Mvua!' }}</span>
+                </div>
+                <div v-if="store.zones[selectedZoneId].isProtected"
+                     class="text-red-400 font-bold flex items-center gap-1 mt-1 text-[11px] leading-tight">
+                  <span>⚠️ {{ lang === 'en' ? 'Illegal Grazing! Risk of ranger fines.' : 'Ulishaji Haramu! Hatari ya kupigwa faini.' }}</span>
+                </div>
+                <div v-if="store.zones[selectedZoneId].isReserve && ((store.turn - 1) % 4 === 0 || (store.turn - 1) % 4 === 2)"
+                     class="text-red-400 font-bold flex items-center gap-1 mt-1 text-[11px] leading-tight">
+                  <span>⚠️ {{ lang === 'en' ? 'Reserve Grazing Fine in Wet Season!' : 'Faini ya kulisha Hifadhini msimu wa mvua!' }}</span>
+                </div>
+              </div>
+            </div>
+
             <!-- Migrate CTA -->
             <button
               @click="store.migrateAndResolve(selectedZoneId)"
@@ -331,13 +405,16 @@
               :style="store.player.position !== selectedZoneId ? 'background: linear-gradient(135deg, #c9a030 0%, #e8c840 50%, #d4a820 100%)' : ''"
             >
               <ArrowRightLeft class="w-4 h-4"/>
-              {{ store.player.position === selectedZoneId ? (lang === 'en' ? 'Graze Here (Stay)' : 'Lisha Hapa (Kaa)') : (lang === 'en' ? 'Migrate & Resolve Turn' : 'Hamisha na Uhesabu Zamu') }}
+              {{ store.player.position === selectedZoneId 
+                ? (lang === 'en' ? `Graze in ${store.zones[selectedZoneId].name} (Stay)` : `Lisha ${store.zones[selectedZoneId].swName} (Kaa)`) 
+                : (lang === 'en' ? `Migrate to ${store.zones[selectedZoneId].name} & Resolve Turn` : `Hamisha kwenda ${store.zones[selectedZoneId].swName} na Uhesabu Zamu`)
+              }}
             </button>
           </div>
 
           <!-- ─── STATS & ACTIONS ROW ─── -->
           <div class="grid grid-cols-2 gap-3">
-            <!-- Herd & Cash -->
+            <!-- Herd & Cash & Health -->
             <div class="zone-card space-y-3">
               <h3 class="text-[11px] font-black text-[#9a8a60] uppercase tracking-[0.2em]">{{ lang === 'en' ? 'Herd Stats' : 'Hali ya Kundi' }}</h3>
               <div class="flex items-center gap-2">
@@ -354,6 +431,19 @@
                   <div class="text-sm font-black text-[#c9a84c] leading-none font-mono">{{ store.player.cash.toLocaleString() }}</div>
                 </div>
               </div>
+              <div class="flex items-center gap-2">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-lg border border-red-500/20" style="background: rgba(239,68,68,0.08)">❤️</div>
+                <div class="flex-1">
+                  <div class="text-[11px] text-white/40 font-black uppercase tracking-widest flex justify-between items-center">
+                    <span>{{ lang === 'en' ? 'Condition' : 'Afya' }}</span>
+                    <span :class="getHealthColorClass(store.player.cattleHealth)">{{ store.player.cattleHealth }}%</span>
+                  </div>
+                  <div class="w-full h-1.5 rounded-full bg-white/10 mt-1 overflow-hidden">
+                    <div class="h-full rounded-full transition-all duration-300"
+                         :style="{ width: store.player.cattleHealth + '%', background: getHealthBarColor(store.player.cattleHealth) }"></div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <!-- Buy / Sell -->
@@ -367,28 +457,12 @@
               <button @click="store.sellCow" :disabled="store.player.herdSize <= 1"
                       class="w-full py-2.5 rounded-xl font-black text-xs bg-[#EF4444] text-white border-0 uppercase tracking-wide active:scale-95 disabled:opacity-30 disabled:pointer-events-none transition-all cursor-pointer">
                 -1 🐄 {{ lang === 'en' ? 'Sell' : 'Uza' }}
-                <span class="block text-[10px] text-white/80 font-medium normal-case">+{{ store.COW_SELL_PRICE.toLocaleString() }} KES</span>
+                <span class="block text-[10px] text-white/80 font-medium normal-case">+{{ store.cowSellPrice.toLocaleString() }} KES</span>
               </button>
             </div>
           </div>
 
-          <!-- ─── TURN PROGRESS BAR ─── -->
-          <div class="zone-card space-y-2">
-            <div class="flex items-center justify-between text-[11px] font-black uppercase tracking-wider">
-              <span class="text-[#9a8a60]">{{ lang === 'en' ? 'Progress' : 'Maendeleo' }}</span>
-              <span class="text-white/40">{{ store.turn - 1 }} / {{ store.TOTAL_TURNS }} {{ lang === 'en' ? 'Seasons' : 'Misimu' }}</span>
-            </div>
-            <div class="h-2.5 rounded-full bg-black/40 border border-white/5 overflow-hidden">
-              <div class="h-full rounded-full transition-all duration-500"
-                   :style="{ width: ((store.turn - 1) / store.TOTAL_TURNS * 100) + '%', background: 'linear-gradient(90deg, #5DC13E, #c9a84c)' }">
-              </div>
-            </div>
-            <div class="flex gap-1">
-              <div v-for="s in store.TOTAL_TURNS" :key="s"
-                   class="flex-1 h-1 rounded-full transition-all duration-300"
-                   :class="s <= store.turn - 1 ? 'bg-[#5DC13E]/60' : 'bg-white/5'"></div>
-            </div>
-          </div>
+
 
           <!-- ─── EVENT LOG ─── -->
           <div class="zone-card space-y-2 h-[200px] flex flex-col">
@@ -623,11 +697,78 @@ const handleRestart = () => {
   selectedZoneId.value = 'grazing'
 }
 
+// ── Computed Coordinates for Visual Migration ──
+const currentCoords = computed(() => {
+  const pos = store.player.position
+  if (pos === 'park') return { x: 150, y: 150 }
+  const angle = getMidAngle(pos)
+  return polarToCartesian(150, 150, 78, angle)
+})
+
+const targetCoords = computed(() => {
+  const pos = selectedZoneId.value
+  if (pos === 'park') return { x: 150, y: 150 }
+  const angle = getMidAngle(pos)
+  return polarToCartesian(150, 150, 78, angle)
+})
+
+const showMigrationLine = computed(() => {
+  return store.player.position !== selectedZoneId.value
+})
+
+// ── Health Bar and Text Styling ──
+const getHealthColorClass = (h) => {
+  if (h > 70) return 'text-emerald-400 font-bold'
+  if (h >= 40) return 'text-yellow-400 font-bold'
+  return 'text-red-400 font-bold animate-pulse'
+}
+
+const getHealthBarColor = (h) => {
+  if (h > 70) return '#10B981'
+  if (h >= 40) return '#F59E0B'
+  return '#EF4444'
+}
+
+// ── Forecast Health Impact of Selected Zone ──
+const forecastHealthImpact = (zoneId) => {
+  const z = store.zones[zoneId]
+  const isWetSeason = ((store.turn - 1) % 4 === 0 || (store.turn - 1) % 4 === 2)
+  
+  if (zoneId === 'swamp' && isWetSeason) {
+    return {
+      text: lang.value === 'en' ? '-25% (Disease Risk)' : '-25% (Hatari ya Magonjwa)',
+      color: 'text-red-400 font-bold animate-pulse'
+    }
+  }
+  if (z.water === 'Low') {
+    return {
+      text: lang.value === 'en' ? '-10% (Low Water)' : '-10% (Maji Machache)',
+      color: 'text-red-400 font-bold'
+    }
+  }
+  if (z.biomass < 15) {
+    return {
+      text: lang.value === 'en' ? '-15% (Starvation)' : '-15% (Njaa Kali)',
+      color: 'text-red-400 font-bold animate-pulse'
+    }
+  }
+  if (z.biomass > 60) {
+    return {
+      text: lang.value === 'en' ? '+10% (Excellent Pasture)' : '+10% (Lishe Bora)',
+      color: 'text-emerald-400 font-bold'
+    }
+  }
+  return {
+    text: lang.value === 'en' ? '+5% (Healthy)' : '+5% (Afya Nzuri)',
+    color: 'text-emerald-400 font-bold'
+  }
+}
+
 // ── Computed rules text ──
 const rulesLines = computed(() => {
   const raw = lang.value === 'sw'
-    ? ['Chagua eneo kwenye ramani.', 'Gonga "Hamisha na Uhesabu Zamu" ili kulisha kundi lako, kubadilisha hali ya hewa, na kuendeleza msimu.', 'Lisha kwenye maeneo yenye rangi ya kijani. Maeneo nyekundu/kahawia huleta njaa!', 'Nunua au Uza Ng\'ombe kulingana na mabadiliko ya msimu.', 'Hifadhi ya Amboseli ina nyasi nyingi lakini kulisha huko ni marufuku — walinzi wanatoza faini.']
-    : ['Select a zone on the map by tapping it.', 'Tap "Migrate & Resolve Turn" to move your herd, earn milk income, trigger weather events, and advance the season.', 'Keep your herd in lush green zones. Moving to barren red/brown zones causes starvation and cattle loss!', 'Buy or Sell cattle to adapt your herd size to seasonal conditions.', 'Amboseli Park has abundant grass but illegal grazing risks heavy ranger fines.']
+    ? ['Chagua eneo kwenye ramani.', 'Gonga "Hamisha kwenda [Eneo] na Uhesabu Zamu" au ubonyeze ramani ili kulisha kundi lako na kuendeleza msimu.', 'Lisha kwenye maeneo yenye rangi ya kijani. Maeneo nyekundu/kahawia na ukame hupunguza afya!', 'Nunua au Uza Ng\'ombe kulingana na afya na mabadiliko ya msimu.', 'Kipindi cha mvua, epuka Dimbwi (magonjwa ya kwato) na kulisha Hifadhini Amboseli (faini).']
+    : ['Select a zone on the map by tapping it.', 'Tap "Migrate to [Zone] & Resolve Turn" to move your herd and advance the season.', 'Keep your herd in lush green zones. Moving to low water zones or drought conditions reduces cattle health!', 'Buy or Sell cattle dynamically; weak cows sell for less cash.', 'Avoid the swamp during wet seasons (foot-rot disease) and Amboseli Park (hefty ranger fines).']
   return raw
 })
 </script>

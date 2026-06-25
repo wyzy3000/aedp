@@ -18,7 +18,8 @@ export const useNyasiGameStore = defineStore('nyasiGame', () => {
   const player = ref({
     herdSize: 10,
     cash: 10000,
-    position: 'grazing'
+    position: 'grazing',
+    cattleHealth: 100
   })
 
   // Zones representation
@@ -111,6 +112,16 @@ export const useNyasiGameStore = defineStore('nyasiGame', () => {
     return names[currentSeasonIndex.value]
   })
 
+  const cowSellPrice = computed(() => {
+    const factor = player.value.cattleHealth / 100
+    return Math.max(2000, Math.round(COW_SELL_PRICE * factor))
+  })
+
+  const milkIncome = computed(() => {
+    const factor = player.value.cattleHealth / 100
+    return Math.max(200, Math.round(MILK_INCOME * factor))
+  })
+
   // Helper to add log
   function addLog(enText, swText) {
     logs.value.unshift({
@@ -132,7 +143,8 @@ export const useNyasiGameStore = defineStore('nyasiGame', () => {
     player.value = {
       herdSize: 10,
       cash: 10000,
-      position: 'grazing'
+      position: 'grazing',
+      cattleHealth: 100
     }
 
     // Reset biomass
@@ -201,26 +213,82 @@ export const useNyasiGameStore = defineStore('nyasiGame', () => {
     // 2. Consume Grass
     targetZone.biomass = Math.max(0, targetZone.biomass - (player.value.herdSize * 2.5))
 
-    // 3. Resolve Grazing Outcomes
+    // 3. Calculate Health changes
+    let healthChange = 0
+    let healthLogEn = ''
+    let healthLogSw = ''
+
+    const isWetSeason = (currentSeasonIndex.value === 0 || currentSeasonIndex.value === 2)
+
+    if (rolledWeather === 'Drought') {
+      if (zoneId === 'swamp') {
+        healthChange = -5
+        healthLogEn = 'Drought dried pastures, but Swamp water kept cattle stable (-5% health).'
+        healthLogSw = 'Ukame ulikausha malisho, lakini maji ya Dimbwi yalisaidia mifugo (-5% afya).'
+      } else {
+        healthChange = -15
+        healthLogEn = 'Severe drought! Lack of green pasture reduced cattle health (-15%).'
+        healthLogSw = 'Ukame mkali! Ukosefu wa malisho mabichi ulipunguza afya ya mifugo (-15%).'
+      }
+    } else if (zoneId === 'swamp' && isWetSeason) {
+      healthChange = -25
+      healthLogEn = 'Cattle got foot-rot and waterborne sickness in the wet swamp (-25% health).'
+      healthLogSw = 'Mifugo ilipata ugonjwa wa kuoza kwato na magonjwa ya majini dimbwi lenye unyevu (-25% afya).'
+    } else if (targetZone.water === 'Low') {
+      healthChange = -10
+      healthLogEn = 'Buffer zone lacks sufficient water and nutrition (-10% health).'
+      healthLogSw = 'Eneo la ukingo halina maji na lishe ya kutosha (-10% afya).'
+    } else if (targetZone.biomass < 15) {
+      healthChange = -15
+      healthLogEn = 'Starvation! Almost no grass left in this zone (-15% health).'
+      healthLogSw = 'Njaa! Hakuna nyasi zilizobaki katika eneo hili (-15% afya).'
+    } else if (targetZone.biomass > 60) {
+      healthChange = 10
+      healthLogEn = 'Abundant fresh grass! Cattle health improved (+10%).'
+      healthLogSw = 'Nyasi nyingi mbichi! Afya ya mifugo imeimarika (+10%).'
+    } else {
+      healthChange = 5
+      healthLogEn = 'Decent pasture and water kept cattle healthy (+5%).'
+      healthLogSw = 'Malisho na maji ya kutosha yaliweka mifugo katika hali nzuri (+5%).'
+    }
+
+    player.value.cattleHealth = Math.max(0, Math.min(100, player.value.cattleHealth + healthChange))
+    if (healthLogEn) {
+      addLog(healthLogEn, healthLogSw)
+    }
+
+    // 4. Resolve Grazing Outcomes
     if (targetZone.biomass < 15) {
-      // Starvation
       const death = Math.max(1, Math.floor(player.value.herdSize * 0.15))
       player.value.herdSize = Math.max(0, player.value.herdSize - death)
       addLog(`Cattle starved! ${targetZone.name} has no grass. Lost ${death} cattle.`, `Ng'ombe wamekosa chakula! Malisho ya ${targetZone.swName} yameisha. Umepoteza ng'ombe ${death}.`)
     } else {
-      // Well fed: Milk income
-      const milkRev = player.value.herdSize * MILK_INCOME
+      // Well fed: Milk income based on dynamic milk value
+      const milkRev = player.value.herdSize * milkIncome.value
       player.value.cash += milkRev
-      addLog(`Earned ${milkRev} KES from milk. Cattle fed well in ${targetZone.name}.`, `Umejipatia KES ${milkRev} kutokana na maziwa. Ng'ombe wamelishwa vyema ${targetZone.swName}.`)
+      addLog(`Earned ${milkRev} KES from milk. Cattle fed in ${targetZone.name}.`, `Umejipatia KES ${milkRev} kutokana na maziwa. Ng'ombe wamelishwa ${targetZone.swName}.`)
 
-      // Birth chance
-      if (player.value.herdSize >= 5 && Math.random() > 0.5) {
+      // Birth chance (only if healthy!)
+      if (player.value.herdSize >= 5 && player.value.cattleHealth >= 70 && Math.random() > 0.5) {
         player.value.herdSize += 1
         addLog('A healthy calf was born! Herd size +1.', 'Ndama mpya amezaliwa! Ukubwa wa kundi +1.')
       }
     }
 
-    // 4. Resolve Penalties
+    // 5. Weakness / Sickness mortality risks
+    if (player.value.cattleHealth < 40 && player.value.herdSize > 0) {
+      let dieChance = 0.2
+      if (player.value.cattleHealth < 20) dieChance = 0.4
+      if (player.value.cattleHealth === 0) dieChance = 1.0
+
+      if (Math.random() < dieChance) {
+        const sickDead = player.value.cattleHealth === 0 ? Math.min(player.value.herdSize, 2) : 1
+        player.value.herdSize = Math.max(0, player.value.herdSize - sickDead)
+        addLog(`Lost ${sickDead} cattle due to severe weakness/disease (Health: ${player.value.cattleHealth}%).`, `Kundi limepoteza ng'ombe ${sickDead} kutokana na udhaifu/ugonjwa mkali (Afya: ${player.value.cattleHealth}%).`)
+      }
+    }
+
+    // 6. Resolve Penalties
     if (eventType === 'disease' && zoneId === 'swamp') {
       player.value.herdSize = Math.max(0, player.value.herdSize - 1)
       addLog('Lost 1 cow to disease outbreak in the Swamp.', 'Umepoteza ng\'ombe 1 kutokana na ugonjwa Dimbwini.')
@@ -241,13 +309,12 @@ export const useNyasiGameStore = defineStore('nyasiGame', () => {
       }
     }
 
-    const isWetSeason = (currentSeasonIndex.value === 0 || currentSeasonIndex.value === 2)
     if (targetZone.isReserve && isWetSeason) {
       player.value.cash = Math.max(0, player.value.cash - 1000)
       addLog('Fined 1,000 KES for grazing in Reserve during Wet Season.', 'Umetozwa faini ya KES 1,000 kwa kulisha Hifadhini msimu wa mvua.')
     }
 
-    // 5. Recover biomass for next turn
+    // 7. Recover biomass for next turn
     Object.keys(zones.value).forEach(k => {
       const z = zones.value[k]
       let recovery = 20
@@ -256,7 +323,7 @@ export const useNyasiGameStore = defineStore('nyasiGame', () => {
       z.biomass = Math.min(z.maxBiomass, z.biomass + recovery)
     })
 
-    // 6. Advance Turn
+    // 8. Advance Turn
     turn.value += 1
     checkGameEnd()
   }
@@ -265,6 +332,8 @@ export const useNyasiGameStore = defineStore('nyasiGame', () => {
     if (player.value.cash < COW_BUY_PRICE) return false
     player.value.herdSize += 1
     player.value.cash -= COW_BUY_PRICE
+    // Averaging health of bought cow (100% health)
+    player.value.cattleHealth = Math.round(((player.value.herdSize - 1) * player.value.cattleHealth + 100) / player.value.herdSize)
     addLog(`Bought 1 cow for ${COW_BUY_PRICE} KES.`, `Umenunua ng'ombe 1 kwa KES ${COW_BUY_PRICE}.`)
     return true
   }
@@ -272,8 +341,8 @@ export const useNyasiGameStore = defineStore('nyasiGame', () => {
   function sellCow() {
     if (player.value.herdSize <= 1) return false
     player.value.herdSize -= 1
-    player.value.cash += COW_SELL_PRICE
-    addLog(`Sold 1 cow for ${COW_SELL_PRICE} KES.`, `Umeuza ng'ombe 1 kwa KES ${COW_SELL_PRICE}.`)
+    player.value.cash += cowSellPrice.value
+    addLog(`Sold 1 cow for ${cowSellPrice.value} KES.`, `Umeuza ng'ombe 1 kwa KES ${cowSellPrice.value}.`)
     return true
   }
 
@@ -285,7 +354,6 @@ export const useNyasiGameStore = defineStore('nyasiGame', () => {
     }
 
     if (turn.value > TOTAL_TURNS) {
-      // Survive with at least 1 cow is win! Easy and simple
       gameStatus.value = 'victory'
       addLog('Victory! You successfully survived 3 years in Amboseli.', 'Ushindi! Umefanikiwa kuishi miaka 3 huko Amboseli.')
     }
@@ -311,6 +379,8 @@ export const useNyasiGameStore = defineStore('nyasiGame', () => {
     currentYear,
     currentSeasonIndex,
     currentSeasonName,
+    cowSellPrice,
+    milkIncome,
 
     initGame,
     migrateAndResolve,
